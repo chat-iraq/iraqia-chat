@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /lyan/room2/
+Disallow: /hno/room2/
+Disallow: /nwer/room3/
+Disallow: /nwer/room5/
+Disallow: /nwera/room3/
+Disallow: /nwera/room5/
+Disallow: /nora/room3/
