@@ -1,0 +1,55 @@
+# Product name: SeoMonster - OnPage SEO Raporting Script
+# Author: George Damian - ic0de  (QwebDev.eu)
+# Release date: 12 April 13
+# Product link: http://codecanyon.net/item/seomonster-onpage-seo-raporting-script/4508909
+# Version: 1.6.1
+
+================================Changelog=================================
+
+=> 1/31/2015 [1.6.1]
+
+Made the alexa popularity stat work again
+
+=> 3/28/2014 [1.6]
+
+ Fixed a bug that caused erroneous META keywords checks
+ Fixed a bug that caused erroneous META description checks
+ Rewriten all the text, fixing a lot of grammar mistakes
+ Rewriten a few functions, for faster loading time
+ Fixed other minor bugs
+
+
+
+=> 11/10/2013 [1.5]
+
+Fixed a bug related to "Content words count" Check
+Fixed a bug related to "Content characters count" Check
+Improved the "Content words count" and "Content characters count" Check algorithm
+Fixed a bug related to "Subdomains" Check
+Added favicon
+Corrected some grammatical mistakes
+Deleted some useless files
+Improved some pieces of code
+
+=> 07/06/2013 [1.4]
+
+Fixed the keywords in description check
+Fixed the Host Information -> IP bug
+
+=> 05/22/2013 [1.3]
+
+Fixed the HTTP status check(wich was returning erroneous HTPP codes)
+Fixed other minor bugs
+
+=> 04/14/2013 [1.2]
+
+Fixed a “meta description check” bug
+Fixed a “keywords in italic check” bug
+
+=> 04/12/2013 [1.1]
+
+Fixed some design problems
+Fixed some bugs with blacklist status
+Fixed a major problem related to alexa rank
+
+==========================================================================
