@@ -1,0 +1,126 @@
+@font-face{
+  font-family: f45;
+  src: url('../fts/FrutigerLight.ttf');
+}
+
+@font-face{
+  font-family: ssl;
+  src: url('../fts/Sansation_Light.ttf');
+}
+
+@font-face{
+  font-family: gss;
+  src: url('../fts/ge-ss.ttf');
+}
+
+@font-face{
+  font-family: ges;
+  src: url('../fts/ge_ss.ttf');
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+
+body{
+  font-family: "f45";
+  background: url(../img/bg.png);
+  padding-top: 90px;
+  direction: rtl;
+  max-width: 92.5%;
+}
+
+.tophead{
+  background: #fff;
+  width: 100%;
+  height: 90px;
+  position: absolute;
+  top: 0px;
+  margin-right: 0;
+}
+
+.etitle{
+  font-family: "ssl";
+  text-align: right;
+}
+
+.color-1{
+  color: #FF0000;
+}
+
+.color-2{
+  color: #FF9900;
+}
+
+.row{
+  margin-left: 0;
+}
+
+a{
+ color: #000;
+}
+
+a:hover{
+ color: #000;
+  text-decoration: none;
+}
+
+.glyphicon-envelope{
+  margin-top: 22px;
+}
+
+.text{
+  font-family: gss;
+  font-size: 20px;
+  text-align: center;
+  text-shadow: 1px 1px rgb(255, 255, 255);
+  margin: auto;
+}
+
+.border{
+  width: 100%;
+  height: 1px;
+  background: #000;
+  margin: 20px 50px;
+}
+
+.tt1{
+  font-family: "f45";
+}
+
+.tt2{
+  font-family: "ges";
+  font-weight: normal;
+}
+
+.cont1{
+  width: 915px;
+  height: 320px;
+  margin: 50px 200px;
+  border: 1px solid #000;
+}
+
+.social{
+  text-align: center;
+  height: 48px;
+  line-height: 48px;
+}
+
+.tr-bg{
+  background: #15BBE2;
+}
+
+.fb-bg{
+  background: #627AAD;
+  width: 48.4%;
+}
+
+.copy{
+  font-family: f45;
+  font-size: 16px;
+  text-align: center;
+  text-shadow: 1px 1px rgb(255, 255, 255);
+  margin: auto;
+}
