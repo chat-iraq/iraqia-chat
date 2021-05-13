@@ -138,4 +138,10 @@
 <changefreq>daily</changefreq>
 <priority>0.5120</priority>
 </url>
+<url>
+<loc>https://www.iraqia-chat.com/Forum/</loc>
+<lastmod>2020-08-21T12:32:23+00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5120</priority>
+</url>
 </urlset>
