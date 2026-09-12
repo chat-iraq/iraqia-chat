@@ -1,4 +1,4 @@
-User-agent: *
+﻿User-agent: *
 Allow: /
 Disallow: /lyan/room2/
 Disallow: /hno/room2/
@@ -7,3 +7,6 @@ Disallow: /nwer/room5/
 Disallow: /nwera/room3/
 Disallow: /nwera/room5/
 Disallow: /nora/room3/
+Sitemap: https://www.iraqia-chat.com/sitemap.xml
+Sitemap: https://www.iraqia-chat.com/sitemape.xml
+Sitemap: https://www.iraqia-chat.com/sitemap.txt
