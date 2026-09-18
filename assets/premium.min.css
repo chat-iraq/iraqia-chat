@@ -115,3 +115,4 @@ code{background:var(--soft);border:1px solid var(--line);padding:.15rem .5rem;bo
 @media(max-width:360px){.grid-4{grid-template-columns:repeat(2,1fr);gap:.6rem}.footer-links{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media print{.px-top,.px-nav,.px-cta,.px-band{display:none}.px-hero{border-radius:0}}
+.px-banner{margin:0 0 14px}.px-banner img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 2px 12px rgba(0,0,0,.10)}

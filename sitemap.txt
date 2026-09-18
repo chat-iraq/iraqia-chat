@@ -1,4 +1,4 @@
-﻿https://www.iraqia-chat.com/
+https://www.iraqia-chat.com/
 https://www.iraqia-chat.com/iraq.html
 https://www.iraqia-chat.com/saudi.html
 https://www.iraqia-chat.com/egypt.html
@@ -774,3 +774,10 @@ https://www.iraqia-chat.com/contact.html
 https://www.iraqia-chat.com/privacy.html
 https://www.iraqia-chat.com/terms.html
 https://www.iraqia-chat.com/404.html
+https://www.iraqia-chat.com/articles.html
+https://www.iraqia-chat.com/articles/ijaddat-al-khilafat.html
+https://www.iraqia-chat.com/articles/shat-al-jawal.html
+https://www.iraqia-chat.com/articles/awqat-alghuraf-alarabiya.html
+https://www.iraqia-chat.com/articles/lughat-al-khawafir.html
+https://www.iraqia-chat.com/articles/atanashr-min-dun-mukhatir.html
+https://www.iraqia-chat.com/articles/funun-kitabat-arabiya.html
