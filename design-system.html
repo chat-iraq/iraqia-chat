@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل التصميم — Design System v2 · شات درر العرب</title>
+<meta name="description" content="دليل تصميم حي لكل مكوّنات نظام التصميم v2 لشات درر العرب: الأنماط والأزرار والبطاقات والشبكات والكلاسيكية العربية RTL.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.iraqia-chat.com/design-system.html">
+<link rel="preload" href="/assets/premium.min.css" as="style">
+<link rel="stylesheet" href="/assets/premium.min.css">
+<link rel="stylesheet" href="/assets/ds.css">
+</head>
+<body class="ds-shell">
+<a class="ds-skip" href="#main">تجاوز إلى المحتوى</a>
+
+<header class="ds-header">
+  <div class="ds-container ds-nav">
+    <a class="ds-brand" href="/"><img src="https://www.iraqia-chat.com/chat-iraq.jpg" alt="شات درر العرب" width="34" height="34" loading="lazy">شات درر العرب</a>
+    <nav class="ds-menu" aria-label="القائمة الرئيسية">
+      <a href="/" aria-current="page">الرئيسية</a>
+      <a href="/articles.html">المقالات</a>
+      <a href="/questions.html">الأسئلة</a>
+      <a href="/search.html">بحث</a>
+    </nav>
+    <button class="ds-theme-btn" type="button" aria-label="تبديل السمة">◐</button>
+    <button class="ds-burger" type="button" aria-label="فتح القائمة" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+<aside class="ds-drawer" aria-hidden="true">
+  <a href="/">الرئيسية</a>
+  <a href="/articles.html">المقالات</a>
+  <a href="/questions.html">الأسئلة</a>
+  <a href="/search.html">بحث</a>
+</aside>
+<div class="ds-scrim"></div>
+
+<main class="ds-main" id="main">
+  <div class="ds-container">
+    <nav class="ds-crumbs" style="margin-top:1rem"><a href="/">الرئيسية</a><span>/</span><span aria-current="page">دليل التصميم</span></nav>
+
+    <section class="ds-hero ds-reveal">
+      <span class="ds-hero__kicker">Design System v2</span>
+      <h1>نظام التصميم — دليل حي للمكوّنات</h1>
+      <p>جميع المكوّنات هنا حية وقابلة للاعتماد. التبديل بين النهار والليل من زر السمة أعلى الصفحة، وكل المكوّنات RTL-first وقابلة للوصول.</p>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">الأزرار والشارات</h2>
+      <div class="ds-row">
+        <button class="ds-btn ds-btn--primary" type="button">دخول الشات</button>
+        <a class="ds-btn ds-btn--secondary" href="#dummy">زر ثانوي</a>
+        <button class="ds-btn ds-btn--ghost" type="button">شفاف</button>
+        <button class="ds-btn ds-btn--primary ds-btn--sm" type="button">صغير</button>
+        <span class="ds-badge ds-badge--new">جديد</span>
+        <span class="ds-badge ds-badge--hot">نشِط</span>
+        <a class="ds-pill" href="#dummy">شات العراق</a>
+        <span class="ds-pill ds-pill--brand">الأكثر زيارة</span>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">البحث والـ Command Palette</h2>
+      <div class="ds-searchbar" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="ابحث عن غرفة، مقال أو سؤال…" aria-label="بحث">
+        <kbd>Ctrl K</kbd>
+      </div>
+      <p class="ds-muted-2" style="margin-top:.6rem;font-size:.85rem">جرّب <kbd>Ctrl</kbd>+<kbd>K</kbd> على هذه الصفحة لفتح لوحة الأوامر.</p>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">البطاقات</h2>
+      <div class="ds-grid-3">
+        <a class="ds-chat-card" href="#dummy">
+          <img src="https://www.iraqia-chat.com/iraq.html" alt="" onerror="this.style.display='none'">
+          <h3>غرفة دردشة العراق</h3>
+          <p>غرفة شات عراقي مباشرة من المتصفح، كتابية وصوتية بلا تسجيل.</p>
+          <span class="ds-meta ds-meta"><span>شات عراقي</span>·<span>مباشر</span></span>
+        </a>
+        <div class="ds-card">
+          <h2>بطاقة عامة</h2>
+          <p>سطح هادئ بحدود ناعمة وظل خفيف، مع رفع عند التمرير للحالات القابلة للنقر.</p>
+        </div>
+        <div class="ds-stat">
+          <b>800+</b>
+          <span>غرفة دردشة</span>
+        </div>
+      </div>
+      <div class="ds-author-card" style="margin-top:1rem">
+        <img src="https://www.iraqia-chat.com/Kaz.png" alt="كاز الوادي" width="72" height="72" loading="lazy">
+        <div>
+          <h3 style="margin:0 0 .3rem">كاز الوادي</h3>
+          <p class="ds-muted" style="margin:0">بطاقة الكاتب مع الصورة الأصلية Kaz.png دون استبدال.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">الشبكات (Bento &amp; Grid)</h2>
+      <div class="ds-bento">
+        <div class="ds-card">خلية 1</div>
+        <div class="ds-card">خلية 2</div>
+        <div class="ds-card">خلية 3</div>
+        <div class="ds-card">خلية 4</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">القوائم والخطوات</h2>
+      <div class="ds-grid-2" style="align-items:start">
+        <ul class="ds-list">
+          <li>حماية الحساب</li>
+          <li>خصوصية المحادثة</li>
+          <li>آداب الغرف</li>
+        </ul>
+        <ol class="ds-steps">
+          <li>افتح الغرفة من المتصفح مباشرة</li>
+          <li>اختر اسماً مستعاراً</li>
+          <li>ابدأ الدردشة بلا تحميل</li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">الأسئلة الشائعة + التبويبات</h2>
+      <div class="ds-faq">
+        <details open><summary>هل الدخول مجاني؟</summary><p>نعم، الدخول للغرف مجاني تماماً من المتصفح دون تسجيل.</p></details>
+        <details><summary>هل يعمل من الجوال؟</summary><p>يعمل مباشرة من الجوال والكمبيوتر، وشاشات 320px فأعلى مدعومة.</p></details>
+      </div>
+      <div class="ds-tabs" role="tablist" style="margin-top:1.2rem">
+        <button class="ds-tab" role="tab" aria-selected="true">وضع اللغة</button>
+        <button class="ds-tab" role="tab" aria-selected="false">الأداء</button>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="ds-sec">الجداول والحوارات</h2>
+      <div class="ds-grid-2" style="align-items:start">
+        <div class="ds-table-wrap">
+          <table class="ds-table">
+            <thead><tr><th>الغرفة</th><th>الحالة</th></tr></thead>
+            <tbody><tr><td>شات العراق</td><td>نشطة</td></tr><tr><td>شات السعودية</td><td>نشطة</td></tr></tbody>
+          </table>
+        </div>
+        <div class="ds-row">
+          <button class="ds-btn ds-btn--secondary" type="button" onclick="document.getElementById('demoDialog').showModal()">افتح حوار</button>
+          <button class="ds-btn ds-btn--ghost ds-tip" type="button" data-tip="تلميح يظهر عند التمرير">تلميح</button>
+        </div>
+      </div>
+      <dialog class="ds-dialog" id="demoDialog">
+        <div class="ds-dialog__in">
+          <h2 style="margin:0 0 .6rem">حوار تجريبي</h2>
+          <p class="ds-muted">حوار أصلي بالعنصر النمطي <code>&lt;dialog&gt;</code> دون مكتبات.</p>
+          <button class="ds-btn ds-btn--primary" type="button" onclick="this.closest('dialog').close()" style="margin-top:1rem">إغلاق</button>
+        </div>
+      </dialog>
+      <div class="ds-toast" id="demoToast">تم الحفظ</div>
+    </section>
+
+    <section class="ds-reveal">
+      <h2 class="ds-sec">المناطق ذات الصلة</h2>
+      <div class="ds-related">
+        <a class="ds-pill" href="#dummy">غرف الشات العراقي</a>
+        <a class="ds-pill" href="#dummy">غرف الشات السعودي</a>
+        <a class="ds-pill" href="#dummy">غرف الشات المصري</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="ds-footer">
+  <div class="ds-container">
+    <div class="ds-footgrid">
+      <nav>
+        <h3>شات درر العرب</h3>
+        <p style="color:#a89d8a;font-size:.9rem;margin:0">شات عربي مجاني من المتصفح لجميع الدول العربية، كتابي وصوتي مباشر مع أجواء عائلية وإشراف دائم.</p>
+      </nav>
+      <nav>
+        <h3>روابط رئيسية</h3>
+        <a href="/">الرئيسية</a>
+        <a href="/articles.html">المقالات</a>
+        <a href="/questions.html">الأسئلة</a>
+        <a href="/search.html">بحث</a>
+      </nav>
+      <nav>
+        <h3>دردشات عربية</h3>
+        <a href="/iraq.html">شات العراق</a>
+        <a href="/saudi.html">شات السعودية</a>
+        <a href="/egypt.html">شات مصر</a>
+      </nav>
+    </div>
+    <p class="ds-copy">© <span data-ds-year>2026</span> شات درر العرب — جميع الحقوق محفوظة</p>
+  </div>
+</footer>
+
+<script src="/assets/app.js" defer></script>
+</body>
+</html>

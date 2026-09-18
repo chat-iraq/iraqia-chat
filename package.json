@@ -1,0 +1,15 @@
+{
+  "name": "iraqia-chat",
+  "version": "2.1.0",
+  "private": true,
+  "type": "module",
+  "description": "شات درر العرب — موقع عربي ثابت بلا Build (Design System v2). تشغيل: npm run check",
+  "scripts": {
+    "preview": "node scripts/serve.mjs",
+    "lint": "node scripts/lint.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "python scripts/validate.py",
+    "check": "npm run lint && npm run build && npm run test"
+  },
+  "engines": { "node": ">=18" }
+}

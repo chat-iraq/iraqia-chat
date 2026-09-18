@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بحث شات درر العرب</title>
+<meta name="description" content="ابحث في دليل شات درر العرب عن غرف الدردشة والمقالات والأسئلة بسرعة ودقة.">
+<link rel="canonical" href="https://www.iraqia-chat.com/search.html">
+<link rel="preload" href="/assets/premium.min.css" as="style">
+<link rel="stylesheet" href="/assets/premium.min.css">
+<link rel="stylesheet" href="/assets/ds.css">
+</head>
+<body class="ds-shell">
+<a class="ds-skip" href="#main">تجاوز إلى المحتوى</a>
+
+<header class="ds-header">
+  <div class="ds-container ds-nav">
+    <a class="ds-brand" href="/"><img src="https://www.iraqia-chat.com/chat-iraq.jpg" alt="شات درر العرب" width="34" height="34" loading="lazy">شات درر العرب</a>
+    <nav class="ds-menu" aria-label="القائمة الرئيسية">
+      <a href="/">الرئيسية</a>
+      <a href="/articles.html">المقالات</a>
+      <a href="/questions.html">الأسئلة</a>
+      <a href="/search.html" aria-current="page">بحث</a>
+    </nav>
+    <button class="ds-theme-btn" type="button" aria-label="تبديل السمة">◐</button>
+    <button class="ds-burger" type="button" aria-label="فتح القائمة" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+<aside class="ds-drawer" aria-hidden="true">
+  <a href="/">الرئيسية</a>
+  <a href="/articles.html">المقالات</a>
+  <a href="/questions.html">الأسئلة</a>
+  <a href="/search.html">بحث</a>
+</aside>
+<div class="ds-scrim"></div>
+
+<main class="ds-main" id="main">
+  <div class="ds-container" style="padding-block:1.6rem">
+    <section class="ds-reveal">
+      <h1 class="ds-h2" style="font-size:var(--ds-fs-2xl)">ابحث في دليل الشات</h1>
+      <p class="ds-muted">غرف، مقالات، أسئلة وأدلة — بضغطة زر وبحروف عربية طبيعية.</p>
+      <div class="ds-searchbar" style="margin-top:1.2rem;max-width:40rem" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="q" type="search" placeholder="مثال: شات العراق، حماية الحساب، الدخول من الجوال…" aria-label="بحث في الموقع" autocomplete="off">
+        <kbd>Ctrl K</kbd>
+      </div>
+    </section>
+
+    <section id="results-wrap" class="ds-reveal" aria-live="polite" style="margin-top:1.6rem">
+      <p id="hint" class="ds-muted-2" style="font-size:.9rem">ابدأ الكتابة لعرض النتائج.</p>
+      <div id="results" class="ds-grid-2"></div>
+      <div id="empty" class="ds-empty" hidden>
+        <h1>🔍</h1>
+        <h2 class="ds-h2" style="font-size:1.4rem">لا نتائج</h2>
+        <p>جرّب كلمات مختلفة أو راجع القسم الذي تريد من القائمة أعلاه.</p>
+      </div>
+      <div id="fallback" class="ds-related" style="margin-top:1rem">
+        <a class="ds-pill" href="/iraq.html">شات العراق</a>
+        <a class="ds-pill" href="/saudi.html">شات السعودية</a>
+        <a class="ds-pill" href="/egypt.html">شات مصر</a>
+        <a class="ds-pill" href="/articles.html">المقالات</a>
+        <a class="ds-pill" href="/questions.html">الأسئلة</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="ds-footer">
+  <div class="ds-container">
+    <div class="ds-footgrid">
+      <nav>
+        <h3>شات درر العرب</h3>
+        <p style="color:#a89d8a;font-size:.9rem;margin:0">دليل شامل لغرف الدردشة العربية المجانية.</p>
+      </nav>
+      <nav>
+        <h3>روابط</h3>
+        <a href="/">الرئيسية</a>
+        <a href="/articles.html">المقالات</a>
+        <a href="/questions.html">الأسئلة</a>
+        <a href="/sitemap.html">خريطة الموقع</a>
+      </nav>
+    </div>
+    <p class="ds-copy">© <span data-ds-year>2026</span> شات درر العرب</p>
+  </div>
+</footer>
+
+<script>
+/* search-v2: progressive — basic results work without JS via links; JS enhances */
+(function () {
+  'use strict';
+  var input = document.getElementById('q');
+  var results = document.getElementById('results');
+  var empty = document.getElementById('empty');
+  var hint = document.getElementById('hint');
+  var fallback = document.getElementById('fallback');
+  if (!input || !results) return;
+  var all = null;
+  function norm(s) {
+    return (s || '').replace(/[\u064B-\u065F\u0670]/g, '')
+      .replace(/[\u0623\u0625\u0622]/g, '\u0627').replace(/\u0629/g, '\u0647')
+      .replace(/\u0649/g, '\u064A').toLowerCase();
+  }
+  function load(cb) {
+    if (all) return cb();
+    fetch('/assets/search-index.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        all = Array.isArray(d) ? d : (d && d.pages) ? d.pages : (d && d.entries) ? d.entries : [];
+        cb();
+      })
+      .catch(function () { all = []; cb(); });
+  }
+  function render(q) {
+    results.innerHTML = '';
+    var list = all;
+    var qn = norm(q).trim();
+    if (qn) {
+      list = list.filter(function (r) {
+        return norm((r.t || '') + ' ' + (r.d || '') + ' ' + (r.u || '')).indexOf(qn) !== -1;
+      });
+    }
+    var items = list.slice(0, 24);
+    empty.hidden = qn ? items.length > 0 : true;
+    hint.hidden = !qn;
+    fallback.hidden = !!qn;
+    items.forEach(function (r) {
+      var a = document.createElement('a');
+      a.className = 'ds-card';
+      a.href = r.u;
+      a.style.textDecoration = 'none';
+      var h = document.createElement('h2');
+      h.textContent = r.t;
+      if (r.d) { var p = document.createElement('p'); p.textContent = r.d; }
+      a.appendChild(h);
+      if (p) a.appendChild(p);
+      results.appendChild(a);
+    });
+  }
+  input.addEventListener('input', function () {
+    load(function () { render(input.value); });
+  });
+  input.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') { ev.preventDefault();
+      var first = results.querySelector('a');
+      if (first) location.href = first.getAttribute('href'); }
+  });
+  load(function () {
+    var s = new URLSearchParams(location.search).get('q');
+    if (s) { input.value = s; render(s); }
+  });
+})();
+</script>
+<script src="/assets/app.js" defer></script>
+</body>
+</html>
