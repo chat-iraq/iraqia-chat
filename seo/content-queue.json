@@ -1,0 +1,325 @@
+{
+ "site": "iraqia-chat",
+ "generatedAt": "2026-09-18",
+ "states": [
+  "candidate",
+  "researching",
+  "draft",
+  "qa",
+  "review",
+  "approved",
+  "published",
+  "rejected",
+  "merge",
+  "redirect",
+  "update"
+ ],
+ "policy": "لا نشر تلقائي؛ كل عنصر يمر عبر Quality Gate (§50).",
+ "count": 38,
+ "queue": [
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/adab-al-sual-wal-radd-fi-al-ghuraf.html",
+   "title": "أدب السؤال والرد في غرف الدردشة - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/ahkam-tawqit-almulahazat-fi-al-ghuraf.html",
+   "title": "أفضل أوقات النشاط في غرف الدردشة - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/akhtaa-shaia-fi-ghuraf-al-shat.html",
+   "title": "أخطاء شائعة في غرف الشات وكيف تتجنبها - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/alamat-ghurfat-al-dardasha-al-jayidah.html",
+   "title": "علامات غرفة الدردشة الجيدة - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/atanashr-min-dun-mukhatir.html",
+   "title": "التعارف من دون مخاطر: دليل الخصوصية في الشات - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/awqat-alghuraf-alarabiya.html",
+   "title": "أفضل الأوقات للدخول إلى غرف الدردشة العربية - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/funun-kitabat-arabiya.html",
+   "title": "فنون الكتابة في الشات: لغة واضحة وذوق رفيع - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/ijaddat-al-khilafat.html",
+   "title": "إدارة الخلافات والعودة لأجواء الإخاء - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/kayf-tabni-sadqa-aminah-ala-al-internet.html",
+   "title": "كيف تبني صداقة آمنة على الإنترنت؟ - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/kayf-tadamin-khususiyatak-fi-al-shat.html",
+   "title": "كيف تضمن خصوصيتك في الشات؟ - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/kayf-tahmi-hsabak-fi-ghurfat-al-dardasha.html",
+   "title": "كيف تحمي حسابك داخل غرفة الدردشة؟ - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/kayf-takhtar-ghurfat-al-dardasha-al-munasibah.html",
+   "title": "كيف تختار غرفة الدردشة المناسبة لك؟ - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/kayf-tataamal-maa-al-mutaharrishin.html",
+   "title": "كيف تتعامل مع المتحرشين في الشات؟ - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/lughat-al-khawafir.html",
+   "title": "لغة الخواطر والكلام الروحاني داخل الغرفة - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/maana-al-rumuz-wal-taabirat-fi-al-shat.html",
+   "title": "معاني الرموز والتعبيرات في الشات - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "published",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/shat-al-jawal.html",
+   "title": "تجربة الشات من الجوال: مميزات ومزايا - شات درر العرب للجوال",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "qualityScore": 100
+  },
+  {
+   "state": "candidate",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/kayf-talab-al-musaeadah-dakhil-al-ghuraf.html",
+   "title": "كيف تطلب المساعدة داخل غرف الدردشة",
+   "keyword": "طلب المساعدة في الشات",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "priority": "منخفضة"
+  },
+  {
+   "state": "candidate",
+   "type": "Article",
+   "url": "https://www.iraqia-chat.com/articles/al-farq-bayn-al-mubtadi-wal-muhtarif-fi-al-shat.html",
+   "title": "الفرق بين المبتدئ والمحترف في استخدام الشات",
+   "keyword": "احتراف استخدام الشات",
+   "intent": "Informational",
+   "cluster": "المقالات",
+   "priority": "منخفضة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/aaraq-alnbla.html",
+   "title": "عراق النبلاء",
+   "reason": "دمج/تحديث أو إعادة توجيه"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/oman.html",
+   "title": "عمان",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/algeria.html",
+   "title": "الجزائر",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/syria.html",
+   "title": "سوريا",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/qatar.html",
+   "title": "قطر",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/lebanon.html",
+   "title": "لبنان",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/bnwth-aamry.html",
+   "title": "بنوتة عمري",
+   "reason": "دمج/تحديث أو إعادة توجيه"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/tunnis.html",
+   "title": "تونس",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/palestine.html",
+   "title": "فلسطين",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "update",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/morocco.html",
+   "title": "المغرب",
+   "reason": "مقبولة إذا اختلفت النية والقيمة"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/tunnis.html",
+   "title": "https://www.iraqia-chat.com/tunnis.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/palestine.html",
+   "title": "https://www.iraqia-chat.com/palestine.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/kuwait.html",
+   "title": "https://www.iraqia-chat.com/kuwait.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/yemen.html",
+   "title": "https://www.iraqia-chat.com/yemen.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/lebanon.html",
+   "title": "https://www.iraqia-chat.com/lebanon.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/iraqienaa.html",
+   "title": "https://www.iraqia-chat.com/iraqienaa.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/morocco.html",
+   "title": "https://www.iraqia-chat.com/morocco.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/aaman.html",
+   "title": "https://www.iraqia-chat.com/aaman.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/algeria.html",
+   "title": "https://www.iraqia-chat.com/algeria.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  },
+  {
+   "state": "merge",
+   "type": "Review",
+   "url": "https://www.iraqia-chat.com/libya.html",
+   "title": "https://www.iraqia-chat.com/libya.html",
+   "reason": "مراجعة دلالية قبل أي محتوى مشابه"
+  }
+ ]
+}

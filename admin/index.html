@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة التحكم (محلية) - شات درر العرب</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<style>
+:root{--acc:#c98a2d;--ink:#1c1a17;--mut:#5c554b;--bg:#fdfbf6;--line:#ece4d4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',Tahoma,sans-serif;padding:1.2rem}
+h1{font-size:1.3rem}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1rem}
+.k{color:var(--mut);font-size:.85rem}.v{font-size:1.6rem;font-weight:700;color:var(--acc)}
+table{width:100%;border-collapse:collapse;margin-top:1rem}td,th{border:1px solid var(--line);padding:.4rem .6rem;text-align:start;font-size:.9rem}
+.note{color:var(--mut);font-size:.85rem;margin-top:1rem}
+</style>
+</head>
+<body>
+<h1>لوحة التحكم المحلية — شات درر العرب</h1>
+<p class="k">صفحة معزولة (noindex، غير مرتبطة بالتنقل العام). تقرأ ملفات seo/*.json محلياً. لا تعرض أي مفاتيح أو أسرار.</p>
+<div class="grid" id="cards"></div>
+<div id="tables"></div>
+<p class="note" id="err"></p>
+<script>
+var FILES=['/seo/DASHBOARD.json','/seo/CONTENT_STATISTICS.json','/seo/CONTENT_REFRESH_SYSTEM.json'];
+var LABELS={totalPages:'إجمالي الصفحات',published:'منشور',draft:'مسودّة',needsReview:'يحتاج مراجعة',articles:'مقالات',questions:'أسئلة',clusters:'عناقيد',duplicateRiskMedium:'تكرار متوسط',cannibalizationRiskMedium:'كنبالة متوسطة',orphanPages:'صفحات يتيمة',brokenLinks:'روابط مكسورة'};
+function card(k,v){return '<div class="card"><div class="k">'+(LABELS[k]||k)+'</div><div class="v">'+v+'</div></div>';}
+Promise.all(FILES.map(function(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}))
+.then(function(res){var d=res[0]||{};var h='';for(var k in LABELS){if(d[k]!==undefined&&d[k]!==null)h+=card(k,d[k]);}
+  document.getElementById('cards').innerHTML=h||'<div class="card">لا تتوفر بيانات DASHBOARD.json (شغّل مولّد التقارير).</div>';
+  var st=res[1];if(st){var t='<table><tr><th>النوع</th><th>العدد</th></tr>';for(var x in (st.byType||{})){t+='<tr><td>'+x+'</td><td>'+st.byType[x]+'</td></tr>';}t+='</table>';document.getElementById('tables').innerHTML=t;}})
+.catch(function(e){document.getElementById('err').textContent='تعذّر التحميل: افتح الصفحة عبر خادم ويب محلي.';});
+</script>
+</body>
+</html>

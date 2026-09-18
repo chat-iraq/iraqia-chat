@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /seo/
+Disallow: /scripts/
+Disallow: /admin/
 Sitemap: https://www.iraqia-chat.com/sitemap.xml
 Sitemap: https://www.iraqia-chat.com/sitemape.xml
 Sitemap: https://www.iraqia-chat.com/sitemap.txt

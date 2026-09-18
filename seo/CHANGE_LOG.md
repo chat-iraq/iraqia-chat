@@ -11,3 +11,12 @@
 | 2026-09-18 | نظام المؤلف (Person/byline/صندوق/صفحة /author/kaz-alwadi/) | المقالات + كل الفوترات | نعم (Git) |
 | 2026-09-18 | nav/footer + sitemap.html/xml/txt + image sitemap | التنقل والخرائط | نعم (Git) |
 | 2026-09-18 | أنظمة المحتوى والتوثيق في seo/ | seo/ | نعم (Git) |
+| 2026-09-18 | توثيق معماري وقراري (ARCHITECTURE/TECHNOLOGY_DECISION/MIGRATION/PERFORMANCE/SECURITY/CONTENT_ENGINE/AUTOMATION/ADMIN) | seo/ | نعم (Git) |
+| 2026-09-18 | بيانات كيانات المحادثة + طابور المحتوى | seo/chat-entities.json + seo/content-queue.json | نعم (Git) |
+| 2026-09-18 | نظام بحث ثابت + صفحة نتائج | search.html + assets/ | نعم (Git) |
+| 2026-09-18 | نظام أسئلة/أجوبة أولي (FAQPage) | questions/ + questions.html | نعم (Git) |
+| 2026-09-18 | لوحة إدارة ثابتة معزولة (noindex) | admin/ | نعم (Git) |
+| 2026-09-18 | أتمتة GitHub Actions + سكربتات تحقق | .github/workflows + scripts/ | نعم (Git) |
+| 2026-09-18 | إدراج صفحات الأسئلة/البحث في الخرائط والفوتر والـ robots | التنقل + الخرائط | نعم (Git) |
+| 2026-09-18 | Batch 2: مقالان جديدان (إجمالي 18 مقالاً) | articles/ + img/ + articles.html | نعم (Git) |
+| 2026-09-18 | قياس التوسّع §64 + تحديث اللوحة والسجل والتقارير | seo/ + _audit/ | نعم (Git) |

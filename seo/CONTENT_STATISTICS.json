@@ -1,1 +1,45 @@
-{"site":"iraqia-chat","generatedAt":"2026-09-18","total":831,"byType":{"Service":7,"ChatRoom":747,"Hub":25,"RoomSubpage":35,"Article":16,"Author":1},"byCluster":{"خدمات الموقع":7,"رومانسية ومشاعر":44,"أسماء غرف وبراندات":486,"مقهى/تايم/سهر":15,"الخليج":11,"دول عربية":141,"العراق - مدن":39,"صفحات الهبوط":25,"تعارف وبنات/شباب":46,"المقالات":16,"المؤلف":1},"byIntent":{"Navigational":8,"Navigational/Transactional":782,"Commercial/Navigational":25,"Informational":16},"words":{"avg":595.9,"min":180,"max":2223},"images":1659,"imagesMissingAlt":0,"internalLinks":110167,"articles":16,"questions":0,"hubs":25}
+{
+ "site": "iraqia-chat",
+ "generatedAt": "2026-09-18",
+ "total": 840,
+ "byType": {
+  "Service": 7,
+  "ChatRoom": 747,
+  "Hub": 26,
+  "Search": 1,
+  "RoomSubpage": 35,
+  "Article": 18,
+  "Author": 1,
+  "Question": 5
+ },
+ "byCluster": {
+  "خدمات الموقع": 7,
+  "رومانسية ومشاعر": 44,
+  "أسماء غرف وبراندات": 493,
+  "مقهى/تايم/سهر": 15,
+  "الخليج": 11,
+  "دول عربية": 141,
+  "العراق - مدن": 39,
+  "صفحات الهبوط": 25,
+  "تعارف وبنات/شباب": 46,
+  "المقالات": 18,
+  "المؤلف": 1
+ },
+ "byIntent": {
+  "Navigational": 8,
+  "Navigational/Transactional": 789,
+  "Commercial/Navigational": 25,
+  "Informational": 18
+ },
+ "words": {
+  "avg": 595.8,
+  "min": 150,
+  "max": 2225
+ },
+ "images": 1674,
+ "imagesMissingAlt": 0,
+ "internalLinks": 113644,
+ "articles": 18,
+ "questions": 5,
+ "hubs": 25
+}

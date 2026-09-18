@@ -9,17 +9,17 @@
 ## توزيع الملفات
 | الامتداد | العدد |
 |---|---|
-| .jpg | 955 |
-| .html | 850 |
+| .jpg | 957 |
+| .html | 860 |
 | .png | 99 |
 | .css | 74 |
 | .gif | 37 |
+| .md | 28 |
 | .ico | 27 |
-| .js | 21 |
-| .md | 19 |
-| .json | 14 |
-| .scss | 9 |
+| .js | 22 |
+| .json | 18 |
 | .ttf | 9 |
+| .scss | 9 |
 | .svg | 4 |
 
 ## ملفات JS (أول 15)
@@ -31,10 +31,10 @@
 - `alwadi/tqnyah-files/js/jquery.skitter.min.js`
 - `alwadi/tqnyah-files/js/sexy-bookmarks-public.js`
 - `alwadi/tqnyah-files/js/tqnyah.com.eg.js`
+- `assets/search.js`
 - `chat/template/js/bootstrap.min.js`
 - `m/base.js`
 - `news/js/main.js`
 - `news/lib/easing/easing.js`
 - `news/lib/easing/easing.min.js`
 - `news/lib/slick/slick.js`
-- `news/lib/slick/slick.min.js`

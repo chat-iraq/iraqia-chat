@@ -1,0 +1,34 @@
+{
+ "site": "iraqia-chat",
+ "generatedAt": "2026-09-18",
+ "note": "Discover only. No automatic publishing; goes to Quality Gate (s.txt 16/50).",
+ "counts": {
+  "entities": 782,
+  "queue": 38,
+  "clusters": 11,
+  "candidates": 3
+ },
+ "candidates": [
+  {
+   "kind": "queued-candidate",
+   "title": "كيف تطلب المساعدة داخل غرف الدردشة",
+   "url": "https://www.iraqia-chat.com/articles/kayf-talab-al-musaeadah-dakhil-al-ghuraf.html",
+   "keyword": "طلب المساعدة في الشات",
+   "cluster": "المقالات"
+  },
+  {
+   "kind": "queued-candidate",
+   "title": "الفرق بين المبتدئ والمحترف في استخدام الشات",
+   "url": "https://www.iraqia-chat.com/articles/al-farq-bayn-al-mubtadi-wal-muhtarif-fi-al-shat.html",
+   "keyword": "احتراف استخدام الشات",
+   "cluster": "المقالات"
+  },
+  {
+   "kind": "thin-cluster",
+   "cluster": "المؤلف",
+   "pages": [
+    "https://www.iraqia-chat.com/author/kaz-alwadi/"
+   ]
+  }
+ ]
+}
