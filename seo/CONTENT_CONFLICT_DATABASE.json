@@ -1,0 +1,22 @@
+{
+  "site": "iraqia-chat",
+  "generatedAt": "2026-09-18",
+  "rule": "لا تُنشأ صفحة جديدة إذا تطابق نفس الموضوع + نفس نية البحث + نفس القيمة، حتى لو اختلفت الكلمات.",
+  "totalConflicts": 14,
+  "conflicts": [
+    {"kind":"keyword","key":"عراق النبلاء","count":2,"pages":["https://www.iraqia-chat.com/aaraq-alnbla.html","https://www.iraqia-chat.com/iraq/"]},
+    {"kind":"keyword","key":"عمان","count":2,"pages":["https://www.iraqia-chat.com/oman.html","https://www.iraqia-chat.com/oman-chat/"]},
+    {"kind":"keyword","key":"الجزائر","count":2,"pages":["https://www.iraqia-chat.com/algeria.html","https://www.iraqia-chat.com/algeria-chat/"]},
+    {"kind":"keyword","key":"سوريا","count":2,"pages":["https://www.iraqia-chat.com/syria.html","https://www.iraqia-chat.com/syria-chat/"]},
+    {"kind":"keyword","key":"قطر","count":2,"pages":["https://www.iraqia-chat.com/qatar.html","https://www.iraqia-chat.com/qatar-chat/"]},
+    {"kind":"keyword","key":"لبنان","count":2,"pages":["https://www.iraqia-chat.com/lebanon.html","https://www.iraqia-chat.com/lebanon-chat/"]},
+    {"kind":"keyword","key":"بنوتة عمري","count":2,"pages":["https://www.iraqia-chat.com/bnwth-aamry.html","https://www.iraqia-chat.com/banotah/"]},
+    {"kind":"keyword","key":"تونس","count":2,"pages":["https://www.iraqia-chat.com/tunnis.html","https://www.iraqia-chat.com/tunis-chat/"]},
+    {"kind":"keyword","key":"فلسطين","count":2,"pages":["https://www.iraqia-chat.com/palestine.html","https://www.iraqia-chat.com/palestine-chat/"]},
+    {"kind":"keyword","key":"المغرب","count":2,"pages":["https://www.iraqia-chat.com/morocco.html","https://www.iraqia-chat.com/maroc-chat/"]},
+    {"kind":"keyword","key":"عراقنا","count":3,"pages":["https://www.iraqia-chat.com/iraqienaa.html","https://www.iraqia-chat.com/iraqna.html","https://www.iraqia-chat.com/iraqya/"]},
+    {"kind":"keyword","key":"ليبيا","count":2,"pages":["https://www.iraqia-chat.com/libya.html","https://www.iraqia-chat.com/libya-chat/"]},
+    {"kind":"keyword","key":"اليمن","count":2,"pages":["https://www.iraqia-chat.com/yemen.html","https://www.iraqia-chat.com/yemen-chat/"]},
+    {"kind":"keyword","key":"الكويت","count":2,"pages":["https://www.iraqia-chat.com/kuwait.html","https://www.iraqia-chat.com/kuwait-chat/"]}
+  ]
+}

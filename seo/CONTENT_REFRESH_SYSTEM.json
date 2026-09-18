@@ -1,0 +1,14 @@
+{
+  "site": "iraqia-chat",
+  "generatedAt": "2026-09-18",
+  "triggers": ["انخفاض الزيارات","انخفاض CTR","تغير المعلومات","قدم المحتوى","أسئلة جديدة","منافسون جدد","تغير نية البحث"],
+  "rules": ["كل صفحة معلوماتية (المقالات) تُراجَع كل 90 يوماً","صفحات الخدمات/القوانين تُراجَع كل 180 يوماً","صفحات الغرف تُراجَع عند تغيّر العلامة أو البنية","لا يُغيّر تاريخ التحديث دون تعديل حقيقي"],
+  "watchlist": [
+    {"url":"https://www.iraqia-chat.com/articles/atanashr-min-dun-mukhatir.html","type":"Article","lastReview":"2026-09-18","nextReview":"2026-12-17","status":"active"},
+    {"url":"https://www.iraqia-chat.com/articles/awqat-alghuraf-alarabiya.html","type":"Article","lastReview":"2026-09-18","nextReview":"2026-12-17","status":"active"},
+    {"url":"https://www.iraqia-chat.com/articles/funun-kitabat-arabiya.html","type":"Article","lastReview":"2026-09-18","nextReview":"2026-12-17","status":"active"},
+    {"url":"https://www.iraqia-chat.com/articles/ijaddat-al-khilafat.html","type":"Article","lastReview":"2026-09-18","nextReview":"2026-12-17","status":"active"},
+    {"url":"https://www.iraqia-chat.com/articles/lughat-al-khawafir.html","type":"Article","lastReview":"2026-09-18","nextReview":"2026-12-17","status":"active"},
+    {"url":"https://www.iraqia-chat.com/articles/shat-al-jawal.html","type":"Article","lastReview":"2026-09-18","nextReview":"2026-12-17","status":"active"}
+  ]
+}
