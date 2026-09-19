@@ -22,3 +22,5 @@
 | 2026-09-18 | قياس التوسّع §64 + تحديث اللوحة والسجل والتقارير | seo/ + _audit/ | نعم (Git) |
 
 | 2026-09-19 | Design System v2: ds.css (21759B) + app.js (5875B) + styleguide + prototypes (preview/) + Node tooling (lint/build/serve + CI) + docs DESIGN_SYSTEM/COMPONENTS/DEPLOYMENT/BROWSER_SUPPORT | جذر الموقع + assets/ + seo/ | نعم (Git) |
+
+| 2026-09-19 | DS shell: swap px-nav/px-foot -> ds-header/ds-drawer/ds-footer (850 pages) + ds.css link + app.js + v1 body reskin (section 10) | كل الصفحات المدارة | نعم (Git) |
