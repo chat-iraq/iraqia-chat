@@ -5614,4 +5614,18 @@
 <priority>0.6</priority>
 <image:image><image:loc>https://www.iraqia-chat.com/img/article-adab-al-sual-wal-radd-fi-al-ghuraf.jpg</image:loc><image:caption>أدب السؤال والرد في غرف الدردشة</image:caption></image:image>
 </url>
+<url>
+<loc>https://www.iraqia-chat.com/Forum/</loc>
+<lastmod>2026-09-13</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.7</priority>
+<image:image><image:loc>https://www.iraqia-chat.com/img/rooms/Forum-index.jpg</image:loc><image:caption>منتدى شات درر العرب</image:caption></image:image>
+</url>
+<url>
+<loc>https://www.iraqia-chat.com/zwar/</loc>
+<lastmod>2026-09-13</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.7</priority>
+<image:image><image:loc>https://www.iraqia-chat.com/img/rooms/zwar-index.jpg</image:loc><image:caption>دردشة الزوار – شات درر العرب</image:caption></image:image>
+</url>
 </urlset>

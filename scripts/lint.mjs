@@ -3,7 +3,7 @@ import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
 const ROOT = process.cwd();
-const SKIP = new Set(['.git', 'node_modules', 'seo', 'scripts', 'preview']);
+const SKIP = new Set(['.git', 'node_modules', 'seo', 'scripts', 'preview', 'admin', 'results']);
 const files = [];
 
 function walk(dir) {
