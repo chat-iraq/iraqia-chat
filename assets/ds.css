@@ -386,3 +386,17 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 @media (prefers-reduced-motion:reduce){
   :is(.px-cta,.cta):hover{transform:none}
 }
+/* ---------- 10b. FORMS + BREADCRUMB RESKIN (dark-mode safe) ---------- */
+:where(input[type=search],input[type=text],input[type=email],input[type=tel],input[type=url],textarea,select){
+  background:var(--ds-surface);color:var(--ds-ink);border:1px solid var(--ds-line);
+  border-radius:var(--ds-r-sm);
+}
+:where(input,textarea,select):focus{outline:none;border-color:var(--ds-primary);box-shadow:var(--ds-ring)}
+:where(.breadcrumb){
+  display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;color:var(--ds-mut);
+  font-size:var(--ds-fs-sm);margin:var(--ds-s-3) 0;
+}
+:where(.breadcrumb) a{color:var(--ds-mut);text-decoration:none}
+:where(.breadcrumb) a:hover{color:var(--ds-primary)}
+:where(.breadcrumb) span{color:var(--ds-ink-2)}
+:where(#res) a{color:var(--ds-primary)}
