@@ -24,3 +24,4 @@
 | 2026-09-19 | Design System v2: ds.css (21759B) + app.js (5875B) + styleguide + prototypes (preview/) + Node tooling (lint/build/serve + CI) + docs DESIGN_SYSTEM/COMPONENTS/DEPLOYMENT/BROWSER_SUPPORT | جذر الموقع + assets/ + seo/ | نعم (Git) |
 
 | 2026-09-19 | DS shell: swap px-nav/px-foot -> ds-header/ds-drawer/ds-footer (850 pages) + ds.css link + app.js + v1 body reskin (section 10) | كل الصفحات المدارة | نعم (Git) |
+| 2026-09-19 | DS v2 اكتمال: homepage bespoke + search v2 + كل الصفحات داخل ds-main/ds-container (764 غرفة + 153 محتوى) + تنمية legacy (8) + og:image | كل الصفحات | نعم (Git) |
