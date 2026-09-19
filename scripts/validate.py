@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Automated QA per s.txt 51. Stdlib only. Exits non-zero on critical issues."""
-import os, sys, re, io, json, glob, html
+import os, sys, re, io, json, glob, html, urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STRICT = '--strict' in sys.argv
@@ -129,6 +129,7 @@ for p in managed:
             cand = ref.lstrip('/')
         else:
             cand = resolve(d, ref)
+        cand = urllib.parse.unquote(cand)
         full = os.path.join(ROOT, cand.replace('/', os.sep))
         if not os.path.exists(full):
             broken += 1

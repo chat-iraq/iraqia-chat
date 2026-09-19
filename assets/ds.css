@@ -400,3 +400,24 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 :where(.breadcrumb) a:hover{color:var(--ds-primary)}
 :where(.breadcrumb) span{color:var(--ds-ink-2)}
 :where(#res) a{color:var(--ds-primary)}
+
+/* ---------- 11. BLOG CARDS (3-col, image-top) ---------- */
+:where(.art-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ds-s-4);margin:var(--ds-s-4) 0;align-items:stretch}
+:where(.art-grid) > .card{padding:0;overflow:hidden;display:flex;flex-direction:column}
+:where(.art-card){display:flex;flex-direction:column;height:100%;text-decoration:none !important;color:var(--ds-ink)}
+:where(.art-card) img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;margin:0;border-radius:0;background:var(--ds-surface-2)}
+:where(.art-card) h2{font-size:var(--ds-fs-lg);line-height:1.45;margin:var(--ds-s-3) var(--ds-s-4) .35rem;color:var(--ds-ink)}
+:where(.art-card) p{color:var(--ds-mut);font-size:var(--ds-fs-sm);line-height:1.7;margin:0 var(--ds-s-4) .6rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+:where(.art-card) .art-date{color:var(--ds-mut-2);font-size:var(--ds-fs-xs);margin:auto var(--ds-s-4) var(--ds-s-4)}
+:where(.art-grid) > .card:hover{transform:translateY(-3px);box-shadow:var(--ds-shadow-2);border-color:var(--ds-primary)}
+:where(.art-grid) > .card:hover .art-card h2{color:var(--ds-primary)}
+@media (max-width:960px){:where(.art-grid){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){:where(.art-grid){grid-template-columns:1fr}}
+
+/* ---------- 12. HEADER SEARCH + CTA ---------- */
+.ds-search-mini{display:flex;align-items:center;gap:.35rem;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-full);padding:.25rem .6rem;margin-inline-start:.5rem}
+.ds-search-mini svg{width:1rem;height:1rem;color:var(--ds-mut);flex:none}
+.ds-search-mini input{border:0;background:transparent;outline:0;width:7rem;font-size:var(--ds-fs-sm);color:var(--ds-ink)}
+.ds-cta-mini{display:inline-flex;align-items:center;justify-content:center;background:var(--ds-grad);color:#fff !important;text-decoration:none !important;font-weight:800;border-radius:var(--ds-r-full);padding:.45rem 1rem;font-size:var(--ds-fs-sm);box-shadow:var(--ds-shadow-1);white-space:nowrap;margin-inline-start:.4rem}
+.ds-cta-mini:hover{filter:brightness(1.05)}
+@media (max-width:860px){.ds-search-mini{display:none}}
