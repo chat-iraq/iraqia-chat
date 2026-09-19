@@ -7,6 +7,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STRICT = '--strict' in sys.argv
 DOMAIN = 'https://www.iraqia-chat.com'
 SKIP_DIRS = ('.git', 'seo', 'admin', 'scripts', '.github')
+# Legacy standalone vanity chat-app folders: kept in the DS shell for consistency,
+# but excluded from the managed content-set checks (their inline legacy markup is not part of the content system).
+LEGACY_PREFIXES = ('baghdady', 'banota', 'chatf2', 'hams0', 'jawal', 'ksa-3', 'l7n',
+                   'baghdad', 'broq', 'insta', 'kaz')
 
 def read(p):
     try:
@@ -26,6 +30,12 @@ for dp, dn, fn in os.walk(ROOT):
     for n in fn:
         if n.lower().endswith(('.html', '.htm')):
             html_files.append(os.path.join(dp, n))
+
+def _legacy_relpath(p):
+    r = os.path.relpath(p, ROOT).replace('\\', '/')
+    return any(r == d + '/index.html' or r.startswith(d + '/') for d in LEGACY_PREFIXES)
+
+html_files = [p for p in html_files if not _legacy_relpath(p)]
 
 managed = [p for p in html_files if 'premium.min.css' in read(p)]
 
