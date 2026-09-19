@@ -30,7 +30,7 @@
 3. **التخطيط (Layout)** — `ds-container` بسلالة `clamp()`, `ds-stack`, `ds-row`, `ds-grid-2/3/4`, `ds-bento`, `ds-hero` (عمودان: نص + إجراءات) , `ds-sec` (عناوين الفصول), `ds-meta`.
 4. **المكوّنات (Components)** — `ds-header/ds-nav/ds-menu/ds-drawer/ds-scrim/ds-brand/ds-burger/ds-theme-btn`، `ds-btn` (primary/secondary/ghost/sm)، `ds-searchbar`، `ds-card`، `ds-chat-card`، `ds-stat`، `ds-author-card`، `ds-badge` (new/hot)، `ds-pill`، `ds-crumbs`، `ds-list`، `ds-steps`، `ds-faq`، `ds-tabs/ds-tab`، `ds-table`، `ds-dialog`، `ds-toast`، `ds-tip` (أداة تلميح)، `ds-empty`، `ds-404`، `ds-related`، `ds-footer/ds-footgrid/ds-copy`، `ds-palette` (لوحة الأوامر).
 5. **الأدوات (Utilities)** — `ds-muted`, `ds-muted-2`, `ds-skip` (رابط التخطي), تعديلات مخصّصة.
-6. **الحركة والحالات (Motion/States)** — `ds-reveal` (يظهر عند التمرير عبر IntersectionObserver ويقع على عناصر `ds-*` للنقرات/التمرير), تنقّل الصفحات عبر `@view-transition { navigation: auto }`؛ يُعطَّل تلقائياً عند `prefers-reduced-motion`.
+6. **الحركة والحالات (Motion/States)** — `ds-reveal` (يظهر عند التمرير عبر IntersectionObserver وتُبطَّأ عند `prefers-reduced-motion`): يُطبَّق على العناصر بتدرّج عند النقر/التمرير, تنقّل الصفحات عبر `@view-transition { navigation: auto }`؛ يُعطَّل تلقائياً عند `prefers-reduced-motion`.
 7. **الوضع الداكن (Dark)** — عبر `@media(prefers-color-scheme:dark)` و `[data-theme=dark]` يدوياً (نضبط السمة بـ `[data-theme]` الذي يضبطه `app.js` من زر التبديل).
 8. **الاستجابة (Responsive)** — نقاط حذف: `≤640px` (رزمة الأعمدة، قائمة الجوال، إخفاء الهيرو الثانوي) و `≤420px` (هوامش وأبعاد أكبر).
 9. **الطباعة (Print)** — صفحة نظيفة بلا أعمدة أو حركة.

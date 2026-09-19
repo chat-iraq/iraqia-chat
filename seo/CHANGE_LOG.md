@@ -20,3 +20,5 @@
 | 2026-09-18 | إدراج صفحات الأسئلة/البحث في الخرائط والفوتر والـ robots | التنقل + الخرائط | نعم (Git) |
 | 2026-09-18 | Batch 2: مقالان جديدان (إجمالي 18 مقالاً) | articles/ + img/ + articles.html | نعم (Git) |
 | 2026-09-18 | قياس التوسّع §64 + تحديث اللوحة والسجل والتقارير | seo/ + _audit/ | نعم (Git) |
+
+| 2026-09-19 | Design System v2: ds.css (21759B) + app.js (5875B) + styleguide + prototypes (preview/) + Node tooling (lint/build/serve + CI) + docs DESIGN_SYSTEM/COMPONENTS/DEPLOYMENT/BROWSER_SUPPORT | جذر الموقع + assets/ + seo/ | نعم (Git) |
