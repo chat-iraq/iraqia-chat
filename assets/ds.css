@@ -1,12 +1,12 @@
 /* ============================================================
-   ds.css — Design System v2 · شات درر العرب (iraqia-chat · khamsat-editorial)
-   Editorial "blog.khamsat.com"-inspired layer · loads AFTER premium.min.css
+   ds.css — Design System v2 · شات درر العرب (iraqia-chat · editorial)
+   Editorial-inspired layer · loads AFTER premium.min.css
    Clean white canvas, content-first cards, subtle borders, amber honey brand.
    Anatomy: Tokens → Base → Layout → Components → Patterns →
              Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
    ============================================================ */
 
-/* ---------- 0. KHAMSAT FONTS (self-hosted from hsoub CDN) ---------- */
+/* ---------- 0. CRITICAL FONTS (self-hosted من CDN hsoub) ---------- */
 @font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
 @font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
 @font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-weight:400;src:url(/assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
@@ -22,7 +22,7 @@
   --ds-brand-50:#fdf6e7; --ds-brand-100:#faecd1; --ds-brand-200:#f3dca7;
   --ds-brand-500:#e8a33d; --ds-brand-600:#c98a2d; --ds-brand-700:#a86f1e; --ds-brand-800:#8a5a17;
 
-  /* semantic surfaces (khamsat-editorial: clean white + warm greys) */
+   /* semantic surfaces (editorial: clean white + warm greys) */
   --ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
   --ds-line:#e7eae3; --ds-line-2:#d6dbcf;
   --ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
@@ -47,7 +47,7 @@
   --ds-s-5:1.5rem; --ds-s-6:2rem; --ds-s-7:3rem; --ds-s-8:4rem;
   --ds-container:min(72rem,calc(100% - 2rem));
 
-  /* radius / shadow / border (khamsat keeps radius moderate, borders crisp) */
+   /* radius / shadow / border (keeps radius moderate, borders crisp) */
   --ds-r-xs:.375rem; --ds-r-sm:.625rem; --ds-r-md:.8rem; --ds-r-lg:1.1rem;
   --ds-r-xl:1.5rem; --ds-r-full:999px;
   --ds-shadow-1:0 1px 2px rgba(26,28,23,.05);
@@ -198,7 +198,7 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-table th{background:var(--ds-ink);color:#fff;font-weight:var(--ds-w-700)}
 .ds-table tr:nth-child(even) td{background:var(--ds-surface-2)}
 
-/* related / footer (light editorial footer, khamsat-style) */
+   /* related / footer (light editorial footer) */
 .ds-related{display:flex;flex-wrap:wrap;gap:.5rem}
 .ds-footer{background:var(--ds-surface-2);border-block-start:1px solid var(--ds-line);color:var(--ds-mut);margin-top:auto}
 .ds-footer .ds-container{padding-block:var(--ds-s-7) var(--ds-s-5)}
@@ -410,7 +410,7 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 :where(.breadcrumb) span{color:var(--ds-ink-2)}
 :where(#res) a{color:var(--ds-primary)}
 
-/* ---------- 11. BLOG CARDS (3-col, image-top, khamsat-blog style) ---------- */
+   /* ---------- 11. BLOG CARDS (3-col, image-top, editorial-blog style) ---------- */
 :where(.art-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ds-s-4);margin:var(--ds-s-4) 0;align-items:stretch}
 :where(.art-grid) > .card{padding:0;overflow:hidden;display:flex;flex-direction:column;background:var(--ds-surface)}
 :where(.art-card){display:flex;flex-direction:column;height:100%;text-decoration:none !important;color:var(--ds-ink)}
@@ -431,7 +431,7 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-cta-mini{display:inline-flex;align-items:center;justify-content:center;background:var(--ds-grad);color:#fff !important;text-decoration:none !important;font-weight:800;border-radius:var(--ds-r-full);padding:.45rem 1rem;font-size:var(--ds-fs-sm);box-shadow:var(--ds-shadow-1);white-space:nowrap;margin-inline-start:.4rem}
 .ds-cta-mini:hover{filter:brightness(1.05)}
 @media (max-width:860px){.ds-search-mini{display:none}}
-/* ===== توسيط العناوين مثل كتابة مدونة خمسات (blog.khamsat.com) ===== */
+/* ===== توسيط العناوين مثل كتابة مدونة تحريرية ===== */
 .ds-hero{text-align:center}
 .ds-hero h1{text-align:center}
 .ds-hero p{text-align:center;margin-inline:auto}
