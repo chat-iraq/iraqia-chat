@@ -371,6 +371,14 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
   content:"✓";position:absolute;inset-inline-start:0;color:var(--ds-primary);font-weight:900;
 }
 :is(.px-copy){color:var(--ds-mut);font-size:var(--ds-fs-sm);text-align:center;margin:0}
+:is(.grid-2,.grid-4,.px-grid) > a{
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--ds-line);background:var(--ds-bg);color:var(--ds-ink);
+  border-radius:var(--ds-r-full);padding:.5rem .95rem;text-decoration:none !important;
+  font-size:var(--ds-fs-sm);font-weight:600;transition:border-color var(--ds-t-fast),color var(--ds-t-fast),transform var(--ds-t-fast);
+}
+:is(.grid-2,.grid-4,.px-grid) > a:hover{border-color:var(--ds-primary);color:var(--ds-primary);transform:translateY(-1px)}
+:is(.grid-2,.grid-4,.px-grid) > a:focus-visible{outline:3px solid var(--ds-primary);outline-offset:2px}
 :is(main.m,.m){max-width:72rem}
 @media (max-width:640px){
   :is(.px-band,.px-grid,.grid,.grid-2,.grid-4){grid-template-columns:1fr}
