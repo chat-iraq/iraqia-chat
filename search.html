@@ -32,24 +32,27 @@
 <header class="ds-header"><div class="ds-container ds-nav"><a class="ds-brand" href="https://www.iraqia-chat.com/"><img src="https://www.iraqia-chat.com/chat-iraq.jpg" alt="شات درر العرب" width="34" height="34" loading="lazy">شات درر العرب</a><nav class="ds-menu" aria-label="القائمة الرئيسية"><a href="https://www.iraqia-chat.com/">الرئيسية</a><a href="https://www.iraqia-chat.com/rules.html">القوانين</a><a href="https://www.iraqia-chat.com/articles.html">المقالات</a><a href="https://www.iraqia-chat.com/questions.html">الأسئلة</a><a href="https://www.iraqia-chat.com/search.html" class="is-active" aria-current="page">بحث</a><a href="https://www.iraqia-chat.com/sub.html">الاشتراكات</a><a href="https://www.iraqia-chat.com/contact.html">اتصل بنا</a></nav><button class="ds-theme-btn" type="button" aria-label="تبديل السمة">◐</button><button class="ds-burger" type="button" aria-label="فتح القائمة" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></button></div></header>
 <aside class="ds-drawer" aria-hidden="true"><a href="https://www.iraqia-chat.com/">الرئيسية</a><a href="https://www.iraqia-chat.com/rules.html">القوانين</a><a href="https://www.iraqia-chat.com/articles.html">المقالات</a><a href="https://www.iraqia-chat.com/questions.html">الأسئلة</a><a href="https://www.iraqia-chat.com/search.html" class="is-active" aria-current="page">بحث</a><a href="https://www.iraqia-chat.com/sub.html">الاشتراكات</a><a href="https://www.iraqia-chat.com/contact.html">اتصل بنا</a></aside>
 <div class="ds-scrim"></div>
-<main class="container">
-<nav class="breadcrumb" aria-label="مسار الصفحة"><a href="https://www.iraqia-chat.com/">الرئيسية</a> &raquo; <span>بحث</span></nav>
-<header class="hero"><h1>بحث في الموقع</h1><p>ابحث في غرف الدردشة والمقالات والأسئلة.</p></header>
-<form id="f" role="search" class="card" style="display:flex;gap:.5rem;flex-wrap:wrap">
-<label for="q" style="flex:1 1 220px"><span class="visually-hidden">كلمة البحث</span><input id="q" name="q" type="search" inputmode="search" autocomplete="off" placeholder="اكتب كلمة… (مثال: شات العراق)" style="width:100%;padding:.7rem .9rem;border:1px solid var(--line);border-radius:10px;font:inherit"></label>
-<button class="cta" type="submit" style="border:0;cursor:pointer">ابحث</button></form>
-<p id="meta" aria-live="polite"></p>
-<div id="res"></div>
-<section class="card article-body">
-<h2>كيف تستخدم البحث؟</h2>
-<p>اكتب كلمة أو أكثر في الخانة أعلاه ثم اضغط «ابحث». يعرض الموقع النتائج من صفحات الغرف والمقالات والأسئلة مباشرة، ويطابق البحث الكلمات العربية دون حساسية للتشكيل أو فروق الألف والياء والتاء المربوطة، حتى تصل إلى ما تريد بسرعة.</p>
-<ul><li>اكتب كلمة واحدة للتوسّع، أو كلمتين للتدقيق.</li><li>النقاط تُهمَل تلقائياً أثناء المطابقة.</li><li>إن لم تظهر نتائج، جرّب مرادفاً أعم.</li></ul>
-<h2>بحث شائع</h2>
-<p>أكثر ما يبحث عنه الزوار:</p>
-<ul><li><a href="https://www.iraqia-chat.com/iraq.html">شات العراق</a></li><li><a href="https://www.iraqia-chat.com/saudi.html">شات السعودية</a></li><li><a href="https://www.iraqia-chat.com/egypt.html">شات مصر</a></li><li><a href="https://www.iraqia-chat.com/articles.html">مقالات الشات العربي</a></li><li><a href="https://www.iraqia-chat.com/questions.html">الأسئلة الشائعة</a></li></ul>
+<main class="ds-main"><div class="ds-container">
+<nav class="ds-crumbs" aria-label="مسار الصفحة"><a href="https://www.iraqia-chat.com/">الرئيسية</a><span>/</span><span aria-current="page">بحث</span></nav>
+<section class="ds-hero ds-reveal">
+<span class="ds-hero__kicker">بحث فوري</span>
+<h1>بحث في الموقع</h1>
+<p>ابحث في غرف الدردشة والمقالات والأسئلة — مطابقة عربية تتجاوز التشكيل وفروق الألف والياء والتاء المربوطة.</p>
+<form id="f" role="search" class="ds-searchbar" style="margin-top:1rem"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><label for="q" style="flex:1"><span class="visually-hidden">كلمة البحث</span><input id="q" name="q" type="search" inputmode="search" autocomplete="off" placeholder="اكتب كلمة… (مثال: شات العراق)"></label>
+<button class="ds-btn ds-btn--primary" type="submit">ابحث</button>
+</form>
 </section>
-<noscript><p class="card">البحث يحتاج JavaScript. تصفّح <a href="https://www.iraqia-chat.com/sitemap.html">خريطة الموقع</a>.</p></noscript>
-</main>
+<p id="meta" aria-live="polite" class="ds-muted" style="margin:1rem 0"></p>
+<div id="res" class="ds-grid-2"></div>
+<section class="ds-card ds-reveal" style="margin-top:1.5rem">
+<h2>كيف تستخدم البحث؟</h2>
+<p>اكتب كلمة أو أكثر في الخانة أعلاه ثم اضغط «ابحث». يعرض الموقع النتائج من صفحات الغرف والمقالات والأسئلة مباشرة، ويطابق البحث الكلمات العربية دون حساسية للتشكيل أو فروق الألف والياء والتاء المربوطة.</p>
+<ul class="ds-list"><li>اكتب كلمة واحدة للتوسّع، أو كلمتين للتدقيق.</li><li>النقاط تُهمَل تلقائياً أثناء المطابقة.</li><li>إن لم تظهر نتائج، جرّب مرادفاً أعم.</li></ul>
+<h2>بحث شائع</h2>
+<div class="ds-related"><a class="ds-pill" href="https://www.iraqia-chat.com/iraq.html">شات العراق</a><a class="ds-pill" href="https://www.iraqia-chat.com/saudi.html">شات السعودية</a><a class="ds-pill" href="https://www.iraqia-chat.com/egypt.html">شات مصر</a><a class="ds-pill" href="https://www.iraqia-chat.com/articles.html">مقالات الشات العربي</a><a class="ds-pill" href="https://www.iraqia-chat.com/questions.html">الأسئلة الشائعة</a></div>
+</section>
+<noscript><p class="ds-card">البحث يحتاج JavaScript. تصفّح <a href="https://www.iraqia-chat.com/sitemap.html">خريطة الموقع</a>.</p></noscript>
+</div></main>
 <script src="/assets/search.js" defer></script>
 <footer class="ds-footer"><div class="ds-container"><div class="ds-footgrid"><nav><h3>روابط رئيسية</h3><a href="https://www.iraqia-chat.com/">الرئيسية</a><a href="https://www.iraqia-chat.com/rules.html">القوانين</a><a href="https://www.iraqia-chat.com/articles.html">المقالات</a><a href="https://www.iraqia-chat.com/questions.html">الأسئلة</a><a href="https://www.iraqia-chat.com/search.html">بحث</a><a href="https://www.iraqia-chat.com/sitemap.html">خريطة الموقع</a></nav><nav><h3>دردشات عربية</h3><a href="https://www.iraqia-chat.com/iraq.html">شات العراق</a><a href="https://www.iraqia-chat.com/saudi.html">شات السعودية</a><a href="https://www.iraqia-chat.com/egypt.html">شات مصر</a><a href="https://www.iraqia-chat.com/aaman.html">شات الأردن</a></nav><nav><h3>شات درر العرب</h3><p>شات عربي مجاني من المتصفح لجميع الدول العربية، كتابي وصوتي مباشر، يدخل الأعضاء مباشرة من الجوال أو الكمبيوتر دون تسجيل أو تحميل برامج، مع أجواء عائلية وإشراف دائم.</p></nav></div><p class="ds-copy">© 2026 شات درر العرب — جميع الحقوق محفوظة</p></div></footer>
 <script src="/assets/app.js" defer></script>
