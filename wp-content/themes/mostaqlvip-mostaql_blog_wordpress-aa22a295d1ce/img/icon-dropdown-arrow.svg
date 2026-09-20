@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="9px" height="6px" viewBox="0 0 9 6" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-dropdown-arrow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="global-header--default--tablet" transform="translate(-751.000000, -57.000000)" fill="#999999">
+            <g id="HEADER">
+                <g id="Ecosystem---NAV" transform="translate(651.000000, 49.000000)">
+                    <path d="M108.509719,9.41308578 L104.406048,13.0716222 C104.319654,13.1490519 104.240461,13.1490519 104.168467,13.0716222 L100.064795,9.41308578 C99.9784016,9.33565605 99.9784016,9.25822748 100.064795,9.18079775 L101.317495,8.0580723 C101.403888,7.98064257 101.490281,7.98064257 101.576674,8.0580723 L104.298056,10.4970966 L106.99784,8.0580723 C107.084234,7.98064257 107.170626,7.98064257 107.25702,8.0580723 L108.509719,9.18079775 C108.538517,9.23241757 108.552916,9.27113185 108.552916,9.29694176 C108.552916,9.33565663 108.538517,9.37437091 108.509719,9.41308578 L108.509719,9.41308578 Z" id="arrow"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
