@@ -92,7 +92,7 @@
     .navbar-brand {
         margin-right: 60px !important;
     }
-    #MostaqlMenu {
+    #mainMenu {
         border-radius: 3px;
     }
     .navbar-nav {
@@ -140,7 +140,7 @@
         height: auto !important;
     }
   
-    #MostaqlMenu ul li {
+    #mainMenu ul li {
         margin-bottom: 10px;
     }
     .mt-sm-3{
@@ -469,7 +469,7 @@ padding-right: 50px !important;
     padding: 6px;
     margin-bottom: 6px;
 }
-.brand-hsoub, .brand-khamsat, .brand-mostaql, .brand-academy, .brand-io, .brand-suar, .brand-wiki {
+.brand-.brand-academy, .brand-io, .brand-suar, .brand-wiki {
     height: 48px;
     width: 48px;
     margin: 0 auto;
@@ -477,12 +477,6 @@ padding-right: 50px !important;
     background-size: cover;
     background-image: url('https://static.hsoubcdn.com/footer/img/brands-colors.svg?v2');
     outline: none;
-}
-.brand-mostaql {
-    background-position: left -125px;
-}
-.brand-khamsat {
-    background-position: left -249px;
 }
 .brand-academy {
     background-position: left -499px;
@@ -855,10 +849,10 @@ padding-right: 50px !important;
 .clear {clear:both}
 
 /* First Level */
-#MostaqlMenu ul li {
+#mainMenu ul li {
     position:relative;
 }
-#MostaqlMenu ul li a {
+#mainMenu ul li a {
     display:block;
 }
 
@@ -878,7 +872,7 @@ padding-right: 50px !important;
     width: 220px;
     text-align: right;
 }
-#MostaqlMenu ul li {
+#mainMenu ul li {
     display: block;
 }
 .sub-menu:before {
