@@ -130,8 +130,19 @@ for p in managed:
         else:
             cand = resolve(d, ref)
         cand = urllib.parse.unquote(cand)
-        full = os.path.join(ROOT, cand.replace('/', os.sep))
-        if not os.path.exists(full):
+        if cand.endswith(('.html', '.htm')):
+            cands = [cand]
+        else:
+            cands = [cand, cand + '.html']
+            if not cand.endswith('/'):
+                cands.append(cand + '/index.html')
+        found = None
+        for c2 in cands:
+            fp = os.path.join(ROOT, c2.replace('/', os.sep))
+            if os.path.exists(fp):
+                found = fp
+                break
+        if found is None:
             broken += 1
             add_err('%s :: broken-link(%s)' % (r, raw))
 
@@ -150,11 +161,21 @@ if os.path.exists(smp):
     smlocs = re.findall(r'<loc>\s*([^<]+?)\s*</loc>', c)
     for loc in smlocs:
         if loc.startswith(DOMAIN):
-            local = loc[len(DOMAIN):].lstrip('/')
-            if local and os.path.exists(os.path.join(ROOT, local.replace('/', os.sep))):
-                lc = read(os.path.join(ROOT, local.replace('/', os.sep)))
-                if re.search(r'name=["\']robots["\'][^>]+noindex', lc, re.I):
-                    add_warn('sitemap-noindex :: ' + loc)
+            local = loc[len(DOMAIN):].lstrip('/') or 'index.html'
+            cands = [local]
+            if not local.endswith(('.html', '.htm')):
+                cands.append(local + '.html')
+                cands.append(local.rstrip('/') + '/index.html')
+            locfile = None
+            for c2 in cands:
+                if not c2:
+                    continue
+                fp = os.path.join(ROOT, c2.replace('/', os.sep))
+                if os.path.exists(fp):
+                    locfile = fp
+                    break
+            if locfile and re.search(r'name=["\']robots["\'][^>]+noindex', read(locfile), re.I):
+                add_warn('sitemap-noindex :: ' + loc)
     if c.count('<loc>') != c.count('</loc>'):
         add_err('sitemap.xml :: unbalanced-loc')
 else:

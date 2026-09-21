@@ -1,0 +1,25 @@
+# شات درر العرب — Iraqia Chat
+
+> منصة دردشة عربية مجانية (شات كتابي وصوتي) تعمل مباشرة من المتصفح على الجوال والكمبيوتر، بلا تسجيل، بغرف للعراق والخليج والعالم العربي، بأجواء عائلية راقية تشرف عليها إدارة دائمة.
+
+## Important URLs
+
+- [الرئيسية](https://iraqia-chat.com/)
+- [دخول الشات الآن](https://iraqia-chat.com/)
+- [منتدى الدردشة](https://iraqia-chat.com/Forum/)
+- [المقالات](https://iraqia-chat.com/articles)
+- [الأسئلة الشائعة](https://iraqia-chat.com/questions)
+- [دليل البحث](https://iraqia-chat.com/search)
+- [الاشتراكات](https://iraqia-chat.com/sub)
+- [قوانين الموقع](https://iraqia-chat.com/rules)
+- [شروط الاستخدام](https://iraqia-chat.com/terms)
+- [سياسة الخصوصية](https://iraqia-chat.com/privacy)
+- [اتصل بنا](https://iraqia-chat.com/contact)
+- [خريطة الموقع XML](https://iraqia-chat.com/sitemap.xml)
+
+## Optional: Site overview
+
+- الموقع ثابت مُصدَّر من ووردبريس ويُستضاف على GitHub Pages بدون قاعدة بيانات.
+- المسارات نظيفة بدون امتداد `.html` (الملفات الفعلية تبقى بصيغة `.html` على القرص).
+- كل صفحة غرفة تتبع قالبًا موحّدًا: LCP صورة بانر + عنوان h1 + اقتباس + شرائح مميزات.
+- الأنماط في `/assets/ds.css` و`/assets/premium.min.css`، والخطوط مذكّرة ذاتيًا في `/assets/fonts/`.

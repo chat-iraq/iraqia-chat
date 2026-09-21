@@ -7,12 +7,12 @@
    ============================================================ */
 
 /* ---------- 0. CRITICAL FONTS (self-hosted من CDN hsoub) ---------- */
-@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
-@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
-@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-weight:400;src:url(/assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
-@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-weight:700;src:url(/assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
-@font-face{font-family:'Open Sans';font-style:normal;font-weight:400;src:url(/assets/fonts/OpenSans-Regular-latin.woff2) format('woff2')}
-@font-face{font-family:'Open Sans';font-style:normal;font-weight:700;src:url(/assets/fonts/OpenSans-Bold-latin.woff2) format('woff2')}
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/OpenSans-Regular-latin.woff2) format('woff2')}
+@font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/OpenSans-Bold-latin.woff2) format('woff2')}
 
 /* ---------- 1. TOKENS ---------- */
 :root {
@@ -108,6 +108,8 @@ img{background:color-mix(in srgb,var(--ds-surface-2) 55%,transparent)}
 html[dir="rtl"] .ds-drawer{transform:translateX(-115%)}
 html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-drawer.is-open{transform:translateX(0) !important}
+.ds-drawer[hidden]{display:none !important}
+.ds-drawer[hidden].is-open{display:flex !important}
 .ds-drawer a{padding:.7rem .9rem;border-radius:var(--ds-r-sm);color:var(--ds-ink-2);font-weight:var(--ds-w-600)}
 .ds-drawer a:hover{background:var(--ds-surface-2);text-decoration:none}
 .ds-scrim{position:fixed;inset:0;background:rgba(24,26,21,.42);opacity:0;pointer-events:none;transition:opacity var(--ds-t-mid);z-index:var(--ds-z-drawer)}

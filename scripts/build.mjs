@@ -20,7 +20,11 @@ let missing = [];
 const check = (url) => {
   const path = new URL(url).pathname.replace(/^\//, '');
   const file = path || 'index.html';
-  if (!existsSync(join(ROOT, file)) && !existsSync(join(ROOT, file.replace(/\/$/, '') + 'index.html'))) {
+  const variants = [file];
+  if (path && !/\.(html?|xml|jpg|jpeg|png|webp|avif|gif|svg|css|js|woff2?|txt|json|py|mjs)$/.test(path)) {
+    variants.push(path + '.html', path.replace(/\/$/, '') + '/index.html');
+  }
+  if (!variants.some((v) => existsSync(join(ROOT, v)))) {
     missing.push(`${url} -> ${file}`);
   }
 };

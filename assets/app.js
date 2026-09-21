@@ -120,6 +120,8 @@
   if (burger && drawer) {
     function toggleOpen(on) {
       drawer.classList.toggle('is-open', on);
+      drawer.hidden = !on;
+      drawer.setAttribute('aria-hidden', on ? 'false' : 'true');
       if (scrim) scrim.classList.toggle('is-open', on);
       burger.setAttribute('aria-expanded', on ? 'true' : 'false');
     }
