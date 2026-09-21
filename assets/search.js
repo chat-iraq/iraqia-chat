@@ -9,7 +9,7 @@
     .replace(/\s+/g,' ').trim();}
   function esc(s){return (s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function render(items,qs){
-    if(!items.length){out.innerHTML='<p class="card">لا توجد نتائج مطابقة. جرّب كلمة أعم، أو تصفّح <a href="/sitemap.html">خريطة الموقع</a>.</p>';meta.textContent='';return;}
+    if(!items.length){out.innerHTML='<p class="card">لا توجد نتائج مطابقة. جرّب كلمة أعم، أو تصفّح <a href="/sitemap">خريطة الموقع</a>.</p>';meta.textContent='';return;}
     var h='';for(var i=0;i<items.length;i++){var it=items[i];
       h+='<article class="card"><h2><a href="'+esc(it.u)+'">'+esc(it.t)+'</a></h2><p>'+esc(it.d)+'</p></article>';}
     out.innerHTML=h;meta.textContent='نتائج: '+items.length;

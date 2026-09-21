@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-/* optimize.mjs — WordPress-cruft + Lighthouse fixer for statically exported pages.
+/* optimize.mjs — WordPress-cruft + Lighthouse + SEO fixer for statically exported pages.
    Usage: node scripts/optimize.mjs            (runs against the repo root / current dir)
-   Idempotent: safe to re-run; all transforms are straight text rewrites. */
-import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+   Idempotent: safe to re-run; all transforms are idempotent text rewrites. */
+import { readdirSync, readFileSync, writeFileSync, statSync, rmSync } from 'node:fs';
 import { join, extname, relative } from 'node:path';
 
 const ROOT = process.cwd();
@@ -32,6 +32,13 @@ function cleanUrl(u) {
 
 function esc(s) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function stripTags(s) {
+  return s.replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;|&#160;/g, ' ')
+    .replace(/&[a-zA-Z#0-9]{1,8};/g, ' ')
+    .replace(/\s+/g, ' ').trim();
 }
 
 /* ---------- removal patterns ---------- */
@@ -79,18 +86,66 @@ const DEAD = [
   /<script type="module">[\s\S]*?wp-emoji-loader\.min\.js\s*<\/script>/g,
   /<script[^>]*\/wp-includes\/js\/[^>]*><\/script>/g,
   /<script[^>]*\/wp-content\/themes\/blog-theme\/js\/[^>]*><\/script>/g,
-  /<script type="text\/javascript">\s*\$\(function\(\)\{[\s\S]*?\}<\/script>/g,
 ];
+
+function removeDeadScroll(html) {
+  /* bootstrap-core-javascript comment + the jQuery scroll $(function(){...} block that used it */
+  html = html.replace(/<!-- Bootstrap core JavaScript[\s\S]*?<\/script>\s*/g, '');
+  /* safeguard: any inline <script> whose body is the old scroll handler */
+  html = html.replace(/<script type="text\/javascript">([\s\S]*?)<\/script>/g, (m, body) => /\$\s*\(function\s*\(\s*\)\s*\{[\s\S]*?didScroll[\s\S]*?\}\)\s*;?\s*$/.test(body) ? '' : m);
+  return html;
+}
 
 const FB_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.91v-7.01H7.9v-2.9h2.54V9.86c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7.01C13.56 21.2 22 17.06 22 12.06z"/></svg>';
 const X_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>';
 
+/* ---------- SEO helpers ---------- */
+function metaDesc(html) {
+  const m = html.match(/<meta name="description" content="([^"]*)"/);
+  return m ? m[1] : '';
+}
+
+function descFromQuote(html) {
+  const q = html.match(/<section class="px-quote">[\s\S]*?<\/section>/);
+  if (q) {
+    const t = stripTags(q[0]).replace(/^إجابة\s*سريعة:/, '').trim();
+    if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + '…' : t;
+  }
+  const hero = html.match(/<section class="px-hero[^"]*">([\s\S]*?)<\/section>/);
+  if (hero) {
+    const p = hero[1].match(/<p>([\s\S]*?)<\/p>/);
+    if (p) {
+      const t = stripTags(p[1]);
+      if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + '…' : t;
+    }
+  }
+  const main = html.match(/<main[\s\S]*?<\/main>/);
+  if (main) {
+    for (const mm of main[0].matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)) {
+      if (/footer_description/.test(mm[0])) continue;
+      const t = stripTags(mm[1]).replace(/&nbsp;/g, ' ').trim();
+      if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + '…' : t;
+    }
+  }
+  return null;
+}
+
 /* ---------- page transform ---------- */
-function fixHtml(html) {
+function fixHtml(html, rel, genericTitles) {
   const start = html.length;
+  const relp = rel.replace(/\\/g, '/');
+  const isHome = relp === 'index.html';
+
   for (const re of CRUFT) html = html.replace(re, '');
   for (const re of GOOGLE) html = html.replace(re, '');
   for (const re of DEAD) html = html.replace(re, '');
+  html = removeDeadScroll(html);
+
+  const brand =
+    (html.match(/<meta property="og:site_name" content="([^"]+)"/) || [])[1] ||
+    (html.match(/<a class="ds-brand"[^>]*>[\s\S]*?alt="([^"]+)"[\s\S]*?<\/a>/) || [])[1] ||
+    (html.match(/<img[^>]*class="[^"]*footer-brand[^"]*"[^>]*alt="([^"]+)"/) || [])[1] || '';
+  const host = (html.match(/rel="canonical" href="(https:\/\/[^\/"]+)/) || [])[1] || '';
 
   if (!html.includes('/assets/favicon-64.png')) {
     html = html.replace(
@@ -145,33 +200,126 @@ function fixHtml(html) {
 
   html = html.replace(/(href|action)="([^"]*\.html)"/g, (m, a, u) => a + '="' + cleanUrl(u) + '"');
   html = html.replace(/content="([^"]*\.html)"/g, (m, u) => 'content="' + cleanUrl(u) + '"');
+  html = html.replace(/(onclick="location\.href=')(index\.html)('")/g, (m, a) => a + "'/'" + (isHome ? '' : relp.replace(/index\.html$/, '')) + "'");
+  html = html.replace(/([a-z-]+=")%[^"]+\.html(")/g, (m, a, b) => a + b);
+  html = html.replace(/(?:^|\n)\s*<a onclick="location\.href=['"]\.[\s\S]*?<\/a>\s*/g, '');
+
+  /* --- SEO: unique per-page title --- */
+  const curTitle = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+  const generic = genericTitles.size === 0 || genericTitles.has(curTitle);
+  if (generic && !isHome && brand) {
+    const h1Raw = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1] || '';
+    const h1 = stripTags(h1Raw);
+    if (h1 && h1 !== brand && h1.length > 2) {
+      let t = h1 + ' | ' + brand;
+      if (t.length > 62) t = h1.slice(0, 62 - (' | ' + brand).length - 1) + '… | ' + brand;
+      html = html.replace(/<title>[\s\S]*?<\/title>/, '<title>' + t + '</title>');
+    }
+  }
+
+  /* --- SEO: rich meta description where short --- */
+  const desc = metaDesc(html);
+  if (brand && desc.length < 70) {
+    const d2 = descFromQuote(html);
+    if (d2) {
+      html = html.replace(/<meta name="description" content="[^"]*"/, '<meta name="description" content="' + esc(d2) + '"');
+    }
+  }
+
+  /* --- SEO: Open Graph + Twitter Card --- */
+  if (!html.includes('property="og:title"') && brand) {
+    const t = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+    const d3 = metaDesc(html);
+    let img = (html.match(/<figure class="px-banner"><img src="([^"]+)"/) || [])[1] || '';
+    const isBanner = !!img;
+    if (!img && host) img = host + '/assets/brand-logo.webp';
+    let ogBlock =
+      '<meta property="og:locale" content="ar_AR" />' +
+      '<meta property="og:title" content="' + esc(t) + '" />' +
+      '<meta property="og:description" content="' + esc(d3) + '" />' +
+      '<meta property="og:image" content="' + img + '" />' +
+      (isBanner ? '<meta property="og:image:width" content="1280" /><meta property="og:image:height" content="630" />' : '') +
+      '<meta name="twitter:card" content="summary_large_image" />' +
+      '<meta name="twitter:title" content="' + esc(t) + '" />' +
+      '<meta name="twitter:description" content="' + esc(d3) + '" />' +
+      '<meta name="twitter:image" content="' + img + '" />';
+    if (!html.includes('property="og:site_name"')) {
+      ogBlock = '<meta property="og:site_name" content="' + brand + '">' + ogBlock;
+    }
+    const anchor = html.match(/<meta property="og:url"[^>]*>/);
+    if (anchor) html = html.replace(anchor[0], anchor[0] + '\n    ' + ogBlock);
+    else html = html.replace('</head>', ogBlock + '\n    </head>');
+  }
+
+  /* --- SEO: JSON-LD (Organization + WebSite + WebPage / DiscussionForumPage) --- */
+  if (!html.includes('application/ld+json') && brand && host) {
+    const t = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+    const d = metaDesc(html);
+    const isRoom = html.includes('class="px-quote"') || html.includes('class="room_content"');
+    const canon = (html.match(/rel="canonical" href="([^"]+)"/) || [])[1] || host;
+    const graph = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'Organization', '@id': host + '/#organization', name: brand, url: host + '/',
+          logo: { '@type': 'ImageObject', url: host + '/assets/brand-logo.webp' } },
+        { '@type': 'WebSite', '@id': host + '/#website', url: host + '/', name: brand, inLanguage: 'ar',
+          publisher: { '@id': host + '/#organization' },
+          potentialAction: { '@type': 'SearchAction', target: host + '/search?q={search_term_string}', 'query-input': 'required name=search_term_string' } },
+        { '@type': isRoom ? 'DiscussionForumPage' : 'WebPage', '@id': canon + '#webpage', url: canon,
+          name: t, description: d || undefined, inLanguage: 'ar', isPartOf: { '@id': host + '/#website' } },
+      ],
+    };
+    const block = '<script type="application/ld+json">' + JSON.stringify(graph) + '</script>';
+    html = html.replace('</head>', block + '</head>');
+  }
+
+  /* --- SEO: strip .html inside any legacy JSON-LD blocks --- */
+  html = html.replace(/(<script[^>]*application\/ld\+json[^>]*>)([\s\S]*?)(<\/script>)/g,
+    (m, a, b, c) => a + b.replace(/\.html/g, '') + c);
+
+  /* --- lazy-load images (banner keeps loading="eager") --- */
+  html = html.replace(/<img(?![^>]*loading=)([^>]*?)>/g, (m, a) => '<img loading="lazy" decoding="async"' + a + '>');
 
   return { html, saved: start - html.length };
 }
 
 /* ---------- run ---------- */
+const filesList = walk(ROOT);
+
+/* pass 1: count titles to find duplicated generic <title> */
+const titleCount = new Map();
+function curTitle(f) {
+  try {
+    const h = readFileSync(f, 'utf8');
+    return (h.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+  } catch { return ''; }
+}
+for (const f of filesList) {
+  const t = curTitle(f);
+  titleCount.set(t, (titleCount.get(t) || 0) + 1);
+}
+const genericTitles = new Set();
+for (const [t, n] of titleCount) if (n > 5) genericTitles.add(t);
+
 let totalSaved = 0;
 let files = 0;
 let changed = 0;
-for (const f of walk(ROOT)) {
+for (const f of filesList) {
   files++;
   let html;
   try { html = readFileSync(f, 'utf8'); } catch { continue; }
-  const { html: out, saved } = fixHtml(html);
   const rel = relative(ROOT, f);
-  if (saved && out !== html) {
+  const { html: out, saved } = fixHtml(html, rel, genericTitles);
+  if (out !== html) {
     writeFileSync(f, out, 'utf8');
     changed++;
     totalSaved += saved;
-    console.log('ok  %-48s -%8d B', rel, saved);
-  } else if (out !== html) {
-    writeFileSync(f, out, 'utf8');
-    changed++;
-    console.log('ok  %s (no size change)', rel);
+    if (saved) console.log('ok  %-48s -%8d B', rel, saved);
+    else console.log('ok  %s (no size change)', rel);
   }
 }
 
-for (const name of ['sitemap.xml', 'sitemap.txt', 'sitemape.xml', 'sitemaplog.txt', 'sitemaplog.xml', 'sitemap.log.xml', 'sitemap.log.txt']) {
+for (const name of ['sitemap.xml', 'sitemap.txt', 'sitemape.xml', 'sitemapk.xml', 'sitemaplog.txt', 'sitemaplog.xml', 'sitemap.log.xml', 'sitemap.log.txt']) {
   const p = join(ROOT, name);
   try {
     let c = readFileSync(p, 'utf8');
@@ -195,5 +343,41 @@ try {
     console.log('ok  assets/search-index.json (cleaned)');
   }
 } catch {}
+
+/* assets/search.js — clean sitemap link */
+const sjP = join(ROOT, 'assets', 'search.js');
+try {
+  let c = readFileSync(sjP, 'utf8');
+  const n = c.replace(/https?:\/\/[^"']*\/sitemap\.html/g, '/sitemap').replace(/"\/sitemap\.html"/g, '"/sitemap"');
+  if (n !== c) {
+    writeFileSync(sjP, n, 'utf8');
+    console.log('ok  assets/search.js (sitemap link cleaned)');
+  }
+} catch {}
+
+/* robots.txt — real, non-www sitemap files only */
+const robotsP = join(ROOT, 'robots.txt');
+try {
+  const rc = readFileSync(robotsP, 'utf8');
+  const nrc = rc
+    .split('\n')
+    .filter(l => !/Sitemap:/i.test(l) || /sitemap\.(xml|txt)/i.test(l))
+    .join('\n')
+    .replace(/https:\/\/www\./g, 'https://');
+  if (nrc !== rc) {
+    writeFileSync(robotsP, nrc, 'utf8');
+    console.log('ok  robots.txt (cleaned sitemap refs)');
+  }
+} catch {}
+
+/* delete stale, half-broken sitemap leftovers that robots no longer references */
+for (const name of ['sitemape.xml', 'sitemapk.xml', 'report-sitemap.html', 'sitemap.log.txt', 'sitemaplog.txt', 'sitemaplog.xml', 'sitemap.log.xml']) {
+  const p = join(ROOT, name);
+  try {
+    statSync(p);
+    rmSync(p);
+    console.log('del %s (stale sitemap artifact)', name);
+  } catch {}
+}
 
 console.log('\n%d files scanned, %d changed, ~%d K chars removed', files, changed, Math.round(totalSaved / 1024));
