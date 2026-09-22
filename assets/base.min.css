@@ -211,7 +211,7 @@
 body{
     color: #3d4957;
     font-size: 18px;
-    font-family: 'Noto Naskh Arabic','Helvetica Neue',Helvetica,Arial,sans-seri;
+    font-family: 'Noto Kufi Arabic','Helvetica Neue',Helvetica,Arial,sans-seri;
     line-height: 1.8;
 }
 .body-content{
@@ -220,7 +220,7 @@ body{
 }
 h1,h2,h3,h4,h5,h6{
     color: #3c4859;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
 }
 h1{
@@ -282,7 +282,7 @@ padding-right: 50px !important;
     border: none;
     border-radius: 5px;
     background: #2285c7;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     color: #ffffff;
     text-decoration: none;
     width: 200px;
@@ -297,7 +297,7 @@ padding-right: 50px !important;
 
 .navbar-nav a,.navbar-nav a:hover {
     color: #4c4c4c !important;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-size: 16px;
     text-decoration: none;
 }
@@ -351,7 +351,7 @@ padding-right: 50px !important;
 .newsletter_title {
     float: right;
     color: #ffffff;
-    font-family: 'Noto Naskh Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Kufi Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-size: 20px;
 }
 
@@ -376,7 +376,7 @@ padding-right: 50px !important;
     border-bottom-left-radius: 3px;
     width: 100%;
     border-right: 0;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 .article_img {
     width: 100%;
@@ -526,7 +526,7 @@ padding-right: 50px !important;
 
 .post-content strong {
     color: #3c4859;
-    font-family: 'Noto Naskh Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Kufi Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
 }
 .post-content img{
@@ -593,7 +593,7 @@ padding-right: 50px !important;
 }
 .fn {
     color: #3c4859;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
     font-size: 1.25rem;
     font-style: normal;
@@ -648,7 +648,7 @@ padding-right: 50px !important;
     color: #ffffff !important;
     border-radius: 5px;
     text-decoration: none !important;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     height: 45px;
     width: 150px;
     display: block;
@@ -661,7 +661,7 @@ padding-right: 50px !important;
     color: #ffffff !important;
     border-radius: 5px;
     text-decoration: none !important;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     height: 45px;
     width: 150px;
     display: block;
@@ -693,7 +693,7 @@ padding-right: 50px !important;
     line-height: 1.4;
     color: #3c4859;
     text-decoration: none;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
     margin-bottom: 20px;
 }
@@ -714,7 +714,7 @@ padding-right: 50px !important;
     color: #6c809a;
 }
 .middle_menu{
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     padding-right: 0;
 
 }
@@ -729,7 +729,7 @@ padding-right: 50px !important;
     color: #3c4859;
     display: inline-block;
     text-decoration: none;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
     margin: 8px 0 3px 0;
 }
@@ -784,12 +784,12 @@ padding-right: 50px !important;
 .since_hour{
     color: #9facbd;
     font-size: 16px;
-    font-family: 'Noto Naskh Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Kufi Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 .comment_reply_text,.comment_reply_text:hover{
     color: #6c809a;
     font-size: 18px;
-    font-family: 'Noto Naskh Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Kufi Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
     text-decoration: none;
 }
 .fscoial{
@@ -823,14 +823,14 @@ padding-right: 50px !important;
 }
 .comment_author a,.comment_author a:hover{
     color: #3c4859;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
     text-decoration: none;
 }
 .comment-reply-link,.comment-reply-link:hover{
     color: #6c809a;
     font-size: 18px;
-    font-family: 'Noto Naskh Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Kufi Arabic','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
     text-decoration: none;
 }
@@ -902,7 +902,7 @@ padding-right: 50px !important;
 
 #misha_loadmore {
 
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     text-align: center;
     margin: auto;
     background: #2285c7;
@@ -921,7 +921,7 @@ margin-left: auto;
 
 [type="submit"]{
     cursor: pointer;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
 .container800{
     max-width: 800px;
@@ -957,7 +957,7 @@ margin-left: auto;
     display: block;
     font-size: 25px;
     margin-bottom: 12px;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     font-weight: bold;
     text-decoration: none;
 
@@ -1014,7 +1014,7 @@ margin-left: auto;
     border: none;
     border-radius: 5px;
     background: #2285c7;
-    font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     color: #ffffff;
     text-decoration: none;
     text-align: center;
@@ -1043,7 +1043,7 @@ p img.aligncenter {
 
 .pagination .prev a,
 .pagination .next a {
-	font-family: 'Noto Kufi Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+	font-family: 'Noto Naskh Arabic','Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
     background-color: #D8D8D8;
 	color: #5F4D61;
     padding: 10px 40px; /* Spacing inside the button */
