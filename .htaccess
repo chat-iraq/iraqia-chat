@@ -1,0 +1,31 @@
+# ==========================================================
+# clean-url & SEO hardening  (.htaccess - Apache 2.4)
+# ==========================================================
+Options -Indexes +FollowSymLinks
+DirectoryIndex index.html
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # remove trailing ".html" from the final segment -> canonical clean path
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)\.html$ $1 [R=301,L]
+
+  # "/dir/index" -> "/dir/"  and  "/dir/index.html" -> "/dir/"
+  RewriteRule ^(.*)/index\.html?$ $1/ [R=301,L,QSA]
+  RewriteRule ^(.*)/index$ $1/ [R=301,L,QSA]
+
+  # add trailing slash to directories (only when they exist)
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^(.*[^/])$ $1/ [R=301,L]
+
+  # serve directory index when folder requested with slash
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^(.*?/?)([^/]+)/$ $1$2/index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

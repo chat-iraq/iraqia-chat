@@ -1,0 +1,2 @@
+.articleimg{position:relative;overflow:hidden}
+.articleimg::before{content:"";position:absolute;inset:0;background:url('/assets/brand-logo.webp') center/56px no-repeat;opacity:.5;pointer-events:none;z-index:2}

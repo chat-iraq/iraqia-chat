@@ -1,21 +1,10 @@
-﻿﻿<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-	
-
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png" />
-    <link rel="preload" href="/assets/fonts/NotoKufiArabic-Bold.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/assets/fonts/NotoNaskhArabic-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <style>/* ============================================================
-   ds.css — Design System v2 · شات درر العرب (iraqia-chat · editorial)
-   Editorial-inspired layer · loads AFTER premium.min.css
-   Clean white canvas, content-first cards, subtle borders, amber honey brand.
-   Anatomy: Tokens → Base → Layout → Components → Patterns →
-             Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
-   ============================================================ */
-
+/* ============================================================
+ds.css — Design System v2 · شات درر العرب (iraqia-chat · editorial)
+Editorial-inspired layer · loads AFTER premium.min.css
+Clean white canvas, content-first cards, subtle borders, amber honey brand.
+Anatomy: Tokens → Base → Layout → Components → Patterns →
+Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
+============================================================ */
 /* ---------- 0. CRITICAL FONTS (self-hosted من CDN hsoub) ---------- */
 @font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
 @font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
@@ -23,57 +12,47 @@
 @font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
 @font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/OpenSans-Regular-latin.woff2) format('woff2')}
 @font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/OpenSans-Bold-latin.woff2) format('woff2')}
-
 /* ---------- 1. TOKENS ---------- */
 :root {
-  /* brand (honey / amber identity of the whole platform) */
-  --acc:#c98a2d; --acc2:#e8a33d;
-  --ds-primary:#c98a2d; --ds-primary-2:#e8a33d; --ds-on-primary:#fffdf5;
-  --ds-brand-50:#fdf6e7; --ds-brand-100:#faecd1; --ds-brand-200:#f3dca7;
-  --ds-brand-500:#e8a33d; --ds-brand-600:#c98a2d; --ds-brand-700:#a86f1e; --ds-brand-800:#8a5a17;
-
-   /* semantic surfaces (editorial: clean white + warm greys) */
-  --ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
-  --ds-line:#e7eae3; --ds-line-2:#d6dbcf;
-  --ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
-  --ds-good:#15803d; --ds-bad:#b91c1c; --ds-info:#0e7490; --ds-warn:#b45309;
-
-  --ds-grad:linear-gradient(135deg,var(--ds-primary),var(--ds-primary-2));
-
-  /* compatible legacy tokens (premium.min.css) */
-  --acc:#c98a2d; --acc2:#e8a33d; --ink:#1a1c17; --mut:#5f6359;
-  --bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --grad:var(--ds-grad);
-
-  /* typography */
-  --ds-font:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,-apple-system,Arial,sans-serif;
-  --ds-font-display:"Noto Kufi Arabic","Open Sans","Noto Naskh Arabic",Tahoma,system-ui,sans-serif;
-  --ds-fs-xs:.75rem; --ds-fs-sm:.875rem; --ds-fs-md:1rem; --ds-fs-lg:1.125rem;
-  --ds-fs-xl:1.375rem; --ds-fs-2xl:clamp(1.5rem,3.2vw,2rem); --ds-fs-3xl:clamp(2rem,5vw,2.9rem);
-  --ds-lh-tight:1.35; --ds-lh-base:1.75; --ds-lh-loose:1.9;
-  --ds-w-400:400; --ds-w-600:600; --ds-w-700:700; --ds-w-800:800;
-
-  /* spacing (fluid-aware scale) */
-  --ds-s-1:.25rem; --ds-s-2:.5rem; --ds-s-3:.75rem; --ds-s-4:1rem;
-  --ds-s-5:1.5rem; --ds-s-6:2rem; --ds-s-7:3rem; --ds-s-8:4rem;
-  --ds-container:min(72rem,calc(100% - 2rem));
-
-   /* radius / shadow / border (keeps radius moderate, borders crisp) */
-  --ds-r-xs:.375rem; --ds-r-sm:.625rem; --ds-r-md:.8rem; --ds-r-lg:1.1rem;
-  --ds-r-xl:1.5rem; --ds-r-full:999px;
-  --ds-shadow-1:0 1px 2px rgba(26,28,23,.05);
-  --ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16);
-  --ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
-  --ds-ring:0 0 0 .2rem color-mix(in srgb,var(--ds-primary) 22%,transparent);
-
-  /* motion & elevation */
-  --ds-t-fast:140ms; --ds-t-mid:240ms; --ds-t-slow:420ms;
-  --ds-ease:cubic-bezier(.25,.6,.3,1);
-  --ds-z-nav:60; --ds-z-drawer:80; --ds-z-dialog:90; --ds-z-palette:95; --ds-z-toast:100;
-
-  /* icon/touch */
-  --ds-tap:44px;
+/* brand (honey / amber identity of the whole platform) */
+--acc:#c98a2d; --acc2:#e8a33d;
+--ds-primary:#c98a2d; --ds-primary-2:#e8a33d; --ds-on-primary:#fffdf5;
+--ds-brand-50:#fdf6e7; --ds-brand-100:#faecd1; --ds-brand-200:#f3dca7;
+--ds-brand-500:#e8a33d; --ds-brand-600:#c98a2d; --ds-brand-700:#a86f1e; --ds-brand-800:#8a5a17;
+/* semantic surfaces (editorial: clean white + warm greys) */
+--ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
+--ds-line:#e7eae3; --ds-line-2:#d6dbcf;
+--ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
+--ds-good:#15803d; --ds-bad:#b91c1c; --ds-info:#0e7490; --ds-warn:#b45309;
+--ds-grad:linear-gradient(135deg,var(--ds-primary),var(--ds-primary-2));
+/* compatible legacy tokens (premium.min.css) */
+--acc:#c98a2d; --acc2:#e8a33d; --ink:#1a1c17; --mut:#5f6359;
+--bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --grad:var(--ds-grad);
+/* typography */
+--ds-font:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,-apple-system,Arial,sans-serif;
+--ds-font-display:"Noto Kufi Arabic","Open Sans","Noto Naskh Arabic",Tahoma,system-ui,sans-serif;
+--ds-fs-xs:.75rem; --ds-fs-sm:.875rem; --ds-fs-md:1rem; --ds-fs-lg:1.125rem;
+--ds-fs-xl:1.375rem; --ds-fs-2xl:clamp(1.5rem,3.2vw,2rem); --ds-fs-3xl:clamp(2rem,5vw,2.9rem);
+--ds-lh-tight:1.35; --ds-lh-base:1.75; --ds-lh-loose:1.9;
+--ds-w-400:400; --ds-w-600:600; --ds-w-700:700; --ds-w-800:800;
+/* spacing (fluid-aware scale) */
+--ds-s-1:.25rem; --ds-s-2:.5rem; --ds-s-3:.75rem; --ds-s-4:1rem;
+--ds-s-5:1.5rem; --ds-s-6:2rem; --ds-s-7:3rem; --ds-s-8:4rem;
+--ds-container:min(72rem,calc(100% - 2rem));
+/* radius / shadow / border (keeps radius moderate, borders crisp) */
+--ds-r-xs:.375rem; --ds-r-sm:.625rem; --ds-r-md:.8rem; --ds-r-lg:1.1rem;
+--ds-r-xl:1.5rem; --ds-r-full:999px;
+--ds-shadow-1:0 1px 2px rgba(26,28,23,.05);
+--ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16);
+--ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
+--ds-ring:0 0 0 .2rem color-mix(in srgb,var(--ds-primary) 22%,transparent);
+/* motion & elevation */
+--ds-t-fast:140ms; --ds-t-mid:240ms; --ds-t-slow:420ms;
+--ds-ease:cubic-bezier(.25,.6,.3,1);
+--ds-z-nav:60; --ds-z-drawer:80; --ds-z-dialog:90; --ds-z-palette:95; --ds-z-toast:100;
+/* icon/touch */
+--ds-tap:44px;
 }
-
 /* ---------- 2. BASE ---------- */
 .ds-shell{display:flex;flex-direction:column;min-height:100vh}
 .ds-shell > *{flex:none}
@@ -86,7 +65,6 @@ html:has(.ds-shell){scroll-behavior:smooth}
 body{font-family:var(--ds-font) !important;line-height:var(--ds-lh-base);-webkit-tap-highlight-color:transparent}
 img{background:color-mix(in srgb,var(--ds-surface-2) 55%,transparent)}
 ::selection{background:color-mix(in srgb,var(--ds-primary) 24%,transparent)}
-
 /* ---------- 3. LAYOUT ---------- */
 .ds-container{width:var(--ds-container);margin-inline:auto;padding-inline:1rem}
 .ds-stack{display:flex;flex-direction:column;gap:var(--ds-s-4)}
@@ -99,7 +77,6 @@ img{background:color-mix(in srgb,var(--ds-surface-2) 55%,transparent)}
 .ds-grid-4{grid-template-columns:repeat(auto-fill,minmax(min(100%,11.5rem),1fr))}
 .ds-bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(9rem,auto);gap:var(--ds-s-4)}
 .ds-bento > *{min-width:0}
-
 /* ---------- 4. COMPONENTS ---------- */
 /* header / nav */
 .ds-header{position:sticky;top:0;z-index:var(--ds-z-nav);background:color-mix(in srgb,var(--ds-surface) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-block-end:1px solid var(--ds-line)}
@@ -124,7 +101,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-drawer a:hover{background:var(--ds-surface-2);text-decoration:none}
 .ds-scrim{position:fixed;inset:0;background:rgba(24,26,21,.42);opacity:0;pointer-events:none;transition:opacity var(--ds-t-mid);z-index:var(--ds-z-drawer)}
 .ds-scrim.is-open{opacity:1;pointer-events:auto}
-
 /* buttons */
 .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.65rem 1.4rem;border-radius:var(--ds-r-full);font-weight:var(--ds-w-700);font-size:var(--ds-fs-md);border:1px solid transparent;text-decoration:none !important;cursor:pointer;transition:transform var(--ds-t-fast) var(--ds-ease),box-shadow var(--ds-t-fast),filter var(--ds-t-fast)}
 .ds-btn--primary{background:var(--ds-grad);color:#fff;box-shadow:0 10px 22px -10px color-mix(in srgb,var(--ds-primary) 70%,transparent)}
@@ -135,7 +111,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-btn--ghost:hover{background:var(--ds-surface-2)}
 .ds-btn--sm{min-height:2.25rem;padding:.4rem 1rem;font-size:var(--ds-fs-sm)}
 .ds-btn:active{transform:scale(.985)}
-
 /* hero (editorial: crisp surface, faint warm tint, no heavy glow) */
 .ds-hero{position:relative;overflow:hidden;border-radius:var(--ds-r-lg);padding:clamp(2rem,6vw,3.25rem);background:var(--ds-surface);border:1px solid var(--ds-line)}
 .ds-hero::before{content:"";position:absolute;inset:-30% -20% auto auto;width:min(52vw,28rem);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ds-primary) 12%,transparent),transparent 66%);pointer-events:none}
@@ -143,7 +118,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-hero h1{font-family:var(--ds-font-display);font-size:var(--ds-fs-3xl);line-height:var(--ds-lh-tight);margin-block:.9rem 0;color:var(--ds-ink)}
 .ds-hero p{color:var(--ds-mut);max-width:34rem;font-size:var(--ds-fs-lg);margin-top:.6rem}
 .ds-hero__actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.4rem}
-
 /* search */
 .ds-searchbar{position:relative;display:flex;align-items:center;gap:.5rem;background:var(--ds-surface);border:1.5px solid var(--ds-line);border-radius:var(--ds-r-full);padding:.4rem .9rem .4rem .4rem;transition:border-color var(--ds-t-fast),box-shadow var(--ds-t-fast)}
 .ds-searchbar:focus-within{border-color:var(--ds-primary);box-shadow:var(--ds-ring)}
@@ -151,27 +125,22 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-searchbar input{flex:1;min-width:0;border:0;background:transparent;font-size:var(--ds-fs-md);color:var(--ds-ink);padding:.55rem .2rem;outline:0}
 .ds-searchbar input::placeholder{color:var(--ds-mut-2)}
 .ds-searchbar kbd{font-family:inherit;font-size:var(--ds-fs-xs);color:var(--ds-mut);border:1px solid var(--ds-line);border-radius:var(--ds-r-xs);padding:.1rem .45rem}
-
 /* cards */
 .ds-card{background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);padding:var(--ds-s-5);box-shadow:var(--ds-shadow-1);transition:transform var(--ds-t-mid) var(--ds-ease),box-shadow var(--ds-t-mid),border-color var(--ds-t-mid)}
 .ds-card:hover{transform:translateY(-2px);box-shadow:var(--ds-shadow-2);border-color:var(--ds-line-2)}
 .ds-card h2,.ds-card h3{color:var(--ds-ink);line-height:var(--ds-lh-tight)}
 .ds-card p{color:var(--ds-mut)}
-
 .ds-chat-card{display:flex;flex-direction:column;gap:.7rem;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);padding:var(--ds-s-4);text-decoration:none !important;box-shadow:var(--ds-shadow-1);transition:transform var(--ds-t-mid) var(--ds-ease),box-shadow var(--ds-t-mid),border-color var(--ds-t-mid)}
 .ds-chat-card:hover{transform:translateY(-3px);box-shadow:var(--ds-shadow-2);border-color:color-mix(in srgb,var(--ds-primary) 40%,var(--ds-line))}
 .ds-chat-card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--ds-r-md)}
 .ds-chat-card h3{font-size:var(--ds-fs-lg);color:var(--ds-ink)}
 .ds-chat-card p{font-size:var(--ds-fs-sm);color:var(--ds-mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ds-chat-card .ds-meta{margin-top:auto}
-
 .ds-stat{background:var(--ds-grad);color:#fff;border-radius:var(--ds-r-lg);padding:var(--ds-s-4);text-align:center}
 .ds-stat b{display:block;font-size:var(--ds-fs-xl);font-weight:var(--ds-w-800);line-height:1.2}
 .ds-stat span{font-size:var(--ds-fs-xs);opacity:.92}
-
 .ds-author-card{display:flex;gap:1rem;align-items:flex-start;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);padding:var(--ds-s-5)}
 .ds-author-card img{width:4.5rem;height:4.5rem;border-radius:var(--ds-r-md);object-fit:cover;box-shadow:var(--ds-shadow-2)}
-
 /* pills / badges / crumbs */
 .ds-pill{display:inline-flex;align-items:center;gap:.35rem;font-size:var(--ds-fs-sm);font-weight:var(--ds-w-600);color:var(--ds-ink-2);background:var(--ds-surface);border:1px solid var(--ds-line);padding:.4rem .9rem;border-radius:var(--ds-r-full);text-decoration:none !important}
 .ds-pill:hover{border-color:var(--ds-primary);color:var(--ds-primary)}
@@ -183,7 +152,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-crumbs a{color:var(--ds-mut-2)}
 .ds-crumbs a:hover{color:var(--ds-primary)}
 .ds-crumbs [aria-current]{color:var(--ds-ink);font-weight:var(--ds-w-600)}
-
 /* lists / steps / faq / tabs / table */
 .ds-list{list-style:none;padding:0;margin:0}
 .ds-list li{position:relative;padding:.45rem 0 .45rem 1.7rem;color:var(--ds-ink-2)}
@@ -198,19 +166,16 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-faq summary::after{content:"+";font-size:1.2rem;color:var(--ds-primary);transition:transform var(--ds-t-fast)}
 .ds-faq details[open] summary::after{transform:rotate(45deg)}
 .ds-faq p{margin-top:.7rem;color:var(--ds-mut)}
-
 .ds-tabs{display:flex;gap:.25rem;flex-wrap:wrap;border-block-end:1px solid var(--ds-line);padding-block-end:0}
 .ds-tab{position:relative;padding:.6rem 1.1rem;border-radius:var(--ds-r-sm) var(--ds-r-sm) 0 0;color:var(--ds-mut);font-weight:var(--ds-w-600);cursor:pointer;border:0;background:transparent}
 .ds-tab[aria-selected="true"]{color:var(--ds-primary)}
 .ds-tab[aria-selected="true"]::after{content:"";position:absolute;inset-inline:1rem;bottom:-1px;height:2px;border-radius:2px;background:var(--ds-grad)}
-
 .ds-table-wrap{overflow-x:auto;border:1px solid var(--ds-line);border-radius:var(--ds-r-md);background:var(--ds-surface)}
 .ds-table{width:100%;border-collapse:collapse;font-size:var(--ds-fs-sm)}
 .ds-table th,.ds-table td{padding:.7rem 1rem;text-align:start;border-block-end:1px solid var(--ds-line)}
 .ds-table th{background:var(--ds-ink);color:#fff;font-weight:var(--ds-w-700)}
 .ds-table tr:nth-child(even) td{background:var(--ds-surface-2)}
-
-   /* related / footer (light editorial footer) */
+/* related / footer (light editorial footer) */
 .ds-related{display:flex;flex-wrap:wrap;gap:.5rem}
 .ds-footer{background:var(--ds-surface-2);border-block-start:1px solid var(--ds-line);color:var(--ds-mut);margin-top:auto}
 .ds-footer .ds-container{padding-block:var(--ds-s-7) var(--ds-s-5)}
@@ -220,7 +185,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:var(--ds-s-5)}
 .ds-footgrid nav{display:flex;flex-direction:column;gap:.15rem}
 .ds-copy{border-block-start:1px solid var(--ds-line);margin-top:var(--ds-s-5);padding-top:var(--ds-s-4);font-size:var(--ds-fs-xs);color:var(--ds-mut-2)}
-
 /* dialog / toast / tooltip */
 .ds-dialog{border:0;border-radius:var(--ds-r-lg);padding:0;max-width:min(34rem,92vw);box-shadow:var(--ds-shadow-3);color:var(--ds-ink);background:var(--ds-surface)}
 .ds-dialog::backdrop{background:rgba(24,26,21,.4);backdrop-filter:blur(2px)}
@@ -232,7 +196,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-tip{position:relative}
 .ds-tip::after{content:attr(data-tip);position:absolute;inset-block-start:calc(100% + .5rem);inset-inline-start:50%;transform:translateX(-50%) translateY(-2px);background:var(--ds-ink);color:#fff;font-size:var(--ds-fs-xs);padding:.3rem .6rem;border-radius:var(--ds-r-xs);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity var(--ds-t-fast),transform var(--ds-t-fast);z-index:var(--ds-z-toast)}
 .ds-tip:hover::after{opacity:1;transform:translateX(-50%)}
-
 /* command palette */
 .ds-palette{position:fixed;top:18%;inset-inline-start:50%;transform:translateX(-50%);width:min(36rem,92vw);background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);box-shadow:var(--ds-shadow-3);z-index:var(--ds-z-palette);overflow:hidden;opacity:0;pointer-events:none;transition:opacity var(--ds-t-mid)}
 .ds-palette.is-open{opacity:1;pointer-events:auto}
@@ -241,15 +204,12 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-palette a{display:flex;gap:.7rem;align-items:center;padding:.65rem .9rem;border-radius:var(--ds-r-sm);color:var(--ds-ink-2);font-size:var(--ds-fs-md);text-decoration:none !important}
 .ds-palette a:hover,.ds-palette a[aria-selected="true"]{background:var(--ds-grad);color:#fff}
 .ds-palette__hint{padding:.6rem 1.2rem;font-size:var(--ds-fs-xs);color:var(--ds-mut);border-block-start:1px solid var(--ds-line)}
-
 /* 404 / empty */
 .ds-empty{text-align:center;padding:var(--ds-s-8) var(--ds-s-5);color:var(--ds-mut)}
 .ds-empty h1{font-size:var(--ds-fs-3xl);color:var(--ds-ink)}
-
 /* reveal (progressive) */
 .ds-reveal{opacity:0;transform:translateY(10px);transition:opacity var(--ds-t-slow) var(--ds-ease),transform var(--ds-t-slow) var(--ds-ease)}
 .ds-reveal.is-visible{opacity:1;transform:none}
-
 /* ---------- 5. UTILITIES ---------- */
 .ds-muted{color:var(--ds-mut)}
 .ds-muted-2{color:var(--ds-mut-2)}
@@ -260,108 +220,102 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 .ds-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:var(--ds-fs-xs);color:var(--ds-mut)}
 .ds-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .ds-spacer{flex:1 1 auto}
-
 /* ---------- 6. MOTION / STATES ---------- */
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;scroll-behavior:auto !important}
-  .ds-reveal{opacity:1;transform:none}
+*,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;scroll-behavior:auto !important}
+.ds-reveal{opacity:1;transform:none}
 }
-
 /* cross-document view transitions (progressive, MPA-safe) */
 @view-transition { navigation: auto; }
 @media (prefers-reduced-motion:reduce){ @view-transition { navigation: none; } }
-
 /* ---------- 7. DARK MODE ---------- */
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
-    --ds-line:#343629; --ds-line-2:#464937;
-    --ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
-    --bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
-    --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
-  }
+:root:not([data-theme="light"]){
+--ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
+--ds-line:#343629; --ds-line-2:#464937;
+--ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
+--bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
+--ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
+}
 }
 :root[data-theme="dark"]{
-  --ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
-  --ds-line:#343629; --ds-line-2:#464937;
-  --ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
-  --bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
-  --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
+--ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
+--ds-line:#343629; --ds-line-2:#464937;
+--ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
+--bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
+--ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
 }
 :root[data-theme="light"]{
-  --ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
-  --ds-line:#e7eae3; --ds-line-2:#d6dbcf;
-  --ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
-  --bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --ink:#1a1c17; --mut:#5f6359;
-  --ds-shadow-1:0 1px 2px rgba(26,28,23,.05); --ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16); --ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
+--ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
+--ds-line:#e7eae3; --ds-line-2:#d6dbcf;
+--ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
+--bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --ink:#1a1c17; --mut:#5f6359;
+--ds-shadow-1:0 1px 2px rgba(26,28,23,.05); --ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16); --ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
 }
 .color-scheme{color-scheme:dark}
 :root[data-theme="light"]{color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme]){color-scheme:dark}}
 :root[data-theme="dark"] .color-scheme{color-scheme:dark}
-
 /* ---------- 8. RESPONSIVE ---------- */
 @media (max-width:640px){
-  .ds-burger{display:inline-grid;place-items:center}
-  .ds-menu{display:none}
-  .ds-bento{grid-template-columns:repeat(2,1fr)}
-  .ds-hero{padding:var(--ds-s-5)}
-  .ds-searchbar kbd{display:none}
-  .ds-nav{height:3.4rem}
+.ds-burger{display:inline-grid;place-items:center}
+.ds-menu{display:none}
+.ds-bento{grid-template-columns:repeat(2,1fr)}
+.ds-hero{padding:var(--ds-s-5)}
+.ds-searchbar kbd{display:none}
+.ds-nav{height:3.4rem}
 }
 @media (max-width:420px){
-  .ds-bento{grid-template-columns:1fr}
-  .ds-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ds-bento{grid-template-columns:1fr}
+.ds-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-
 /* ---------- 9. PRINT ---------- */
 @media print{
-  .ds-header,.ds-drawer,.ds-scrim,.ds-palette,.ds-toast,.ds-footer{display:none !important}
-  .ds-hero{box-shadow:none}
+.ds-header,.ds-drawer,.ds-scrim,.ds-palette,.ds-toast,.ds-footer{display:none !important}
+.ds-hero{box-shadow:none}
 }
-
 /* ---------- 10. V1 BODY RESKIN (progressive: old content blocks get the editorial look) ---------- */
 .px-top{display:none}
 :is(.px-hero,.hero){
-  position:relative;overflow:hidden;
-  background:radial-gradient(46rem 22rem at 100% -30%,color-mix(in srgb,var(--ds-primary) 10%,transparent),transparent 60%),
-    var(--ds-surface);
-  border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);
-  padding:var(--ds-s-6) var(--ds-s-5);margin:var(--ds-s-4) 0;
-  box-shadow:var(--ds-shadow-1);
+position:relative;overflow:hidden;
+background:radial-gradient(46rem 22rem at 100% -30%,color-mix(in srgb,var(--ds-primary) 10%,transparent),transparent 60%),
+var(--ds-surface);
+border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);
+padding:var(--ds-s-6) var(--ds-s-5);margin:var(--ds-s-4) 0;
+box-shadow:var(--ds-shadow-1);
 }
 :is(.px-hero,.hero) h1{font-size:var(--ds-fs-2xl);line-height:1.25;margin:0 0 .5rem}
 :is(.px-hero,.hero) p{color:var(--ds-mut);margin:0 0 1rem;max-width:60ch}
 :is(.px-kicker){
-  display:inline-block;background:color-mix(in srgb,var(--ds-primary) 12%,transparent);color:var(--ds-primary);
-  border-radius:var(--ds-r-full);padding:.2rem .8rem;font-size:var(--ds-fs-xs);
-  font-weight:700;margin-bottom:.7rem;
+display:inline-block;background:color-mix(in srgb,var(--ds-primary) 12%,transparent);color:var(--ds-primary);
+border-radius:var(--ds-r-full);padding:.2rem .8rem;font-size:var(--ds-fs-xs);
+font-weight:700;margin-bottom:.7rem;
 }
 :is(.px-chips){display:flex;flex-wrap:wrap;gap:.45rem;margin:0 0 1rem}
 :is(.px-chip){
-  display:inline-flex;align-items:center;gap:.3rem;border:1px solid var(--ds-line);
-  background:var(--ds-bg);border-radius:var(--ds-r-full);padding:.28rem .75rem;
-  font-size:var(--ds-fs-xs);color:var(--ds-mut);white-space:nowrap;
+display:inline-flex;align-items:center;gap:.3rem;border:1px solid var(--ds-line);
+background:var(--ds-bg);border-radius:var(--ds-r-full);padding:.28rem .75rem;
+font-size:var(--ds-fs-xs);color:var(--ds-mut);white-space:nowrap;
 }
 :is(.px-cta,.cta){
-  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
-  background:var(--ds-grad);color:#fff;text-decoration:none;font-weight:800;
-  border-radius:var(--ds-r-full);padding:.7rem 1.35rem;box-shadow:color-mix(in srgb,var(--ds-primary) 40%,transparent) 0 10px 22px -10px;
-  transition:transform var(--ds-t-fast),box-shadow var(--ds-t-fast);
+display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+background:var(--ds-grad);color:#fff;text-decoration:none;font-weight:800;
+border-radius:var(--ds-r-full);padding:.7rem 1.35rem;box-shadow:color-mix(in srgb,var(--ds-primary) 40%,transparent) 0 10px 22px -10px;
+transition:transform var(--ds-t-fast),box-shadow var(--ds-t-fast);
 }
 :is(.px-cta,.cta):hover{transform:translateY(-2px)}
 :is(.px-cta,.cta):focus-visible{outline:3px solid var(--ds-primary);outline-offset:2px}
 :is(.px-band){display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--ds-s-3);margin:var(--ds-s-5) 0}
 :is(.px-stat){
-  background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-md);
-  padding:var(--ds-s-4);text-align:center;
+background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-md);
+padding:var(--ds-s-4);text-align:center;
 }
 :is(.px-stat) b{display:block;color:var(--ds-ink);font-size:var(--ds-fs-lg)}
 :is(.px-stat) span{color:var(--ds-mut);font-size:var(--ds-fs-sm)}
 :is(.px-quote,.answer){
-  background:var(--ds-surface);border:1px solid var(--ds-line);border-inline-start:4px solid var(--ds-primary);
-  border-radius:var(--ds-r-md);padding:var(--ds-s-4) var(--ds-s-5);margin:var(--ds-s-4) 0;
-  color:var(--ds-ink);
+background:var(--ds-surface);border:1px solid var(--ds-line);border-inline-start:4px solid var(--ds-primary);
+border-radius:var(--ds-r-md);padding:var(--ds-s-4) var(--ds-s-5);margin:var(--ds-s-4) 0;
+color:var(--ds-ink);
 }
 :is(.px-quote,.answer) strong{color:var(--ds-primary)}
 :is(.px-grid,.grid){display:grid;gap:var(--ds-s-4);margin:var(--ds-s-4) 0}
@@ -369,60 +323,59 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 :is(.grid-2){grid-template-columns:repeat(2,minmax(0,1fr))}
 :is(.grid-4){grid-template-columns:repeat(4,minmax(0,1fr))}
 :is(.px-card,.card){
-  background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);
-  padding:var(--ds-s-5);box-shadow:var(--ds-shadow-1);
-  transition:transform var(--ds-t-mid),box-shadow var(--ds-t-mid);
+background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);
+padding:var(--ds-s-5);box-shadow:var(--ds-shadow-1);
+transition:transform var(--ds-t-mid),box-shadow var(--ds-t-mid);
 }
 :is(.px-card,.card) h2{margin:0 0 .6rem;font-size:var(--ds-fs-lg)}
 :is(.px-card,.card) a{color:var(--ds-primary);text-decoration:none}
 :is(.px-card,.card) a:hover{text-decoration:underline}
 :is(.px-steps,.steps){list-style:none;counter-reset:dsstep;padding:0;margin:0}
 :is(.px-steps,.steps) li{
-  counter-increment:dsstep;position:relative;padding-inline-start:2.2rem;
-  margin-bottom:.7rem;color:var(--ds-mut);
+counter-increment:dsstep;position:relative;padding-inline-start:2.2rem;
+margin-bottom:.7rem;color:var(--ds-mut);
 }
 :is(.px-steps,.steps) li::before{
-  content:counter(dsstep);position:absolute;inset-inline-start:0;top:0;
-  width:1.6rem;height:1.6rem;border-radius:50%;background:color-mix(in srgb,var(--ds-primary) 14%,transparent);
-  color:var(--ds-primary);font-weight:800;display:grid;place-items:center;font-size:var(--ds-fs-xs);
+content:counter(dsstep);position:absolute;inset-inline-start:0;top:0;
+width:1.6rem;height:1.6rem;border-radius:50%;background:color-mix(in srgb,var(--ds-primary) 14%,transparent);
+color:var(--ds-primary);font-weight:800;display:grid;place-items:center;font-size:var(--ds-fs-xs);
 }
 :is(.ticks){list-style:none;padding:0;margin:0}
 :is(.ticks) li{position:relative;padding-inline-start:1.6rem;margin-bottom:.55rem;color:var(--ds-mut)}
 :is(.ticks) li::before{
-  content:"✓";position:absolute;inset-inline-start:0;color:var(--ds-primary);font-weight:900;
+content:"✓";position:absolute;inset-inline-start:0;color:var(--ds-primary);font-weight:900;
 }
 :is(.px-copy){color:var(--ds-mut);font-size:var(--ds-fs-sm);text-align:center;margin:0}
 :is(.grid-2,.grid-4,.px-grid) > a{
-  display:inline-flex;align-items:center;justify-content:center;
-  border:1px solid var(--ds-line);background:var(--ds-surface);color:var(--ds-ink);
-  border-radius:var(--ds-r-full);padding:.5rem .95rem;text-decoration:none !important;
-  font-size:var(--ds-fs-sm);font-weight:600;transition:border-color var(--ds-t-fast),color var(--ds-t-fast),transform var(--ds-t-fast);
+display:inline-flex;align-items:center;justify-content:center;
+border:1px solid var(--ds-line);background:var(--ds-surface);color:var(--ds-ink);
+border-radius:var(--ds-r-full);padding:.5rem .95rem;text-decoration:none !important;
+font-size:var(--ds-fs-sm);font-weight:600;transition:border-color var(--ds-t-fast),color var(--ds-t-fast),transform var(--ds-t-fast);
 }
 :is(.grid-2,.grid-4,.px-grid) > a:hover{border-color:var(--ds-primary);color:var(--ds-primary);transform:translateY(-1px)}
 :is(.grid-2,.grid-4,.px-grid) > a:focus-visible{outline:3px solid var(--ds-primary);outline-offset:2px}
 :is(main.m,.m){max-width:72rem}
 @media (max-width:640px){
-  :is(.px-band,.px-grid,.grid,.grid-2,.grid-4){grid-template-columns:1fr}
+:is(.px-band,.px-grid,.grid,.grid-2,.grid-4){grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
-  :is(.px-cta,.cta):hover{transform:none}
+:is(.px-cta,.cta):hover{transform:none}
 }
 /* ---------- 10b. FORMS + BREADCRUMB RESKIN (dark-mode safe) ---------- */
 :where(input[type=search],input[type=text],input[type=email],input[type=tel],input[type=url],textarea,select){
-  background:var(--ds-surface);color:var(--ds-ink);border:1px solid var(--ds-line);
-  border-radius:var(--ds-r-sm);
+background:var(--ds-surface);color:var(--ds-ink);border:1px solid var(--ds-line);
+border-radius:var(--ds-r-sm);
 }
 :where(input,textarea,select):focus{outline:none;border-color:var(--ds-primary);box-shadow:var(--ds-ring)}
 :where(.breadcrumb){
-  display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;color:var(--ds-mut);
-  font-size:var(--ds-fs-sm);margin:var(--ds-s-3) 0;
+display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;color:var(--ds-mut);
+font-size:var(--ds-fs-sm);margin:var(--ds-s-3) 0;
 }
 :where(.breadcrumb) a{color:var(--ds-mut);text-decoration:none}
 :where(.breadcrumb) a:hover{color:var(--ds-primary)}
 :where(.breadcrumb) span{color:var(--ds-ink-2)}
 :where(#res) a{color:var(--ds-primary)}
-
-   /* ---------- 11. BLOG CARDS (3-col, image-top, editorial-blog style) ---------- */
+/* ---------- 11. BLOG CARDS (3-col, image-top, editorial-blog style) ---------- */
 :where(.art-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ds-s-4);margin:var(--ds-s-4) 0;align-items:stretch}
 :where(.art-grid) > .card{padding:0;overflow:hidden;display:flex;flex-direction:column;background:var(--ds-surface)}
 :where(.art-card){display:flex;flex-direction:column;height:100%;text-decoration:none !important;color:var(--ds-ink)}
@@ -434,7 +387,6 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 :where(.art-grid) > .card:hover .art-card h2{color:var(--ds-primary)}
 @media (max-width:960px){:where(.art-grid){grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){:where(.art-grid){grid-template-columns:1fr}}
-
 /* ---------- 12. HEADER SEARCH + CTA ---------- */
 .ds-search-mini{display:flex;align-items:center;gap:.35rem;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-full);padding:.25rem .6rem;margin-inline-start:.5rem}
 .ds-search-mini svg{width:1rem;height:1rem;color:var(--ds-mut);flex:none}
@@ -565,127 +517,4 @@ code{background:var(--soft);border:1px solid var(--line);padding:.15rem .5rem;bo
 @media(max-width:360px){.grid-4{grid-template-columns:repeat(2,1fr);gap:.6rem}.footer-links{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media print{.px-top,.px-nav,.px-cta,.px-band{display:none}.px-hero{border-radius:0}}
-.px-banner{margin:0 0 14px}.px-banner img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 2px 12px rgba(0,0,0,.10)}</style>
-    <meta name="description" content="عذرا الصفحة التي تبحث عنها غير موجودة أو تم نقلها. عد إلى الرئيسية واختر غرفة دردشة عربية مجانية تناسبك في شات درر العرب للجوال والكمبيوتر.">
-    
-	
-	
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <title>الصفحة غير موجودة | شات درر العرب</title>
-    <meta name="twitter:url" content="https://iraqia-chat.com/404">
-
-    <!-- Bootstrap core CSS -->
-    <link href="/wp-content/themes/blog-theme/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Fontawsome CSS -->
-    
-
-    <!-- fonts CSS -->
-    
-    
-
-    <!-- Custom styles for this template -->
-    <link href="/wp-content/themes/blog-theme/css/style.css" rel="stylesheet">
-    
-    
-    
-    
-
-
-<style>
-
-.articleimg{position:relative;overflow:hidden}
-.articleimg::before{content:"";position:absolute;inset:0;background:url('/assets/brand-logo.webp') center/56px no-repeat;opacity:.5;pointer-events:none;z-index:2}</style>
-    <link rel="canonical" href="https://iraqia-chat.com/404">
-    <meta property="og:url" content="https://iraqia-chat.com/404">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="شات درر العرب">
-    <meta property="og:locale" content="ar_AR" /><meta property="og:title" content="الصفحة غير موجودة | شات درر العرب" /><meta property="og:description" content="عذرا الصفحة التي تبحث عنها غير موجودة أو تم نقلها. عد إلى الرئيسية واختر غرفة دردشة عربية مجانية تناسبك في شات درر العرب للجوال والكمبيوتر." /><meta property="og:image" content="https://iraqia-chat.com/assets/brand-logo.webp" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="الصفحة غير موجودة | شات درر العرب" /><meta name="twitter:description" content="عذرا الصفحة التي تبحث عنها غير موجودة أو تم نقلها. عد إلى الرئيسية واختر غرفة دردشة عربية مجانية تناسبك في شات درر العرب للجوال والكمبيوتر." /><meta name="twitter:image" content="https://iraqia-chat.com/assets/brand-logo.webp" />
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://iraqia-chat.com/#organization","name":"شات درر العرب","url":"https://iraqia-chat.com/","logo":{"@type":"ImageObject","url":"https://iraqia-chat.com/assets/brand-logo.webp"}},{"@type":"WebSite","@id":"https://iraqia-chat.com/#website","url":"https://iraqia-chat.com/","name":"شات درر العرب","inLanguage":"ar","publisher":{"@id":"https://iraqia-chat.com/#organization"},"potentialAction":{"@type":"SearchAction","target":"https://iraqia-chat.com/search?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"DiscussionForumPage","@id":"https://iraqia-chat.com/404#webpage","url":"https://iraqia-chat.com/404","name":"الصفحة غير موجودة | شات درر العرب","description":"الصفحة غير موجودة","inLanguage":"ar","isPartOf":{"@id":"https://iraqia-chat.com/#website"}}]}</script><script>(()=>{const m=window.modelContext||(window.navigator&&navigator.modelContext);if(!m)return;m.registerTool({name:"search_site",description:"Search chat rooms and pages on this site",inputSchema:{type:"object",properties:{q:{type:"string",description:"Search keywords"}},required:["q"]},execute:({q})=>{location.assign("/search/?q="+encodeURIComponent(q));}});})();</script></head><body>
-<header class="ds-header"><div class="ds-container ds-nav"><a class="ds-brand" href="https://iraqia-chat.com/"><img src="/assets/brand-logo.webp" srcset="/assets/brand-logo-40.webp 40w, /assets/brand-logo.webp 1024w" sizes="34px" alt="" width="34" height="34" loading="lazy">شات درر العرب</a><nav class="ds-menu" aria-label="القائمة الرئيسية"><a href="https://iraqia-chat.com/" class="is-active" aria-current="page">الرئيسية</a><a href="https://iraqia-chat.com/rules/">القوانين</a><a href="https://iraqia-chat.com/articles/">المقالات</a><a href="https://iraqia-chat.com/questions/">الأسئلة</a><a href="https://iraqia-chat.com/search/">بحث</a><a href="https://iraqia-chat.com/sub/">الاشتراكات</a><a href="https://iraqia-chat.com/contact/">اتصل بنا</a></nav><form class="ds-search-mini" role="search" action="https://iraqia-chat.com/search/" method="get" toolname="search_chat" tooldescription="البحث في غرف الدردشة وصفحات الموقع" toolautosubmit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="search" name="q" placeholder="ابحث" aria-label="بحث" toolparamdescription="كلمات البحث"></form><a class="ds-cta-mini" href="https://iraqia-chat.com/">دخول</a><button class="ds-theme-btn" type="button" aria-label="تبديل السمة">◐</button><button class="ds-burger" type="button" aria-label="فتح القائمة" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></button></div></header>
-<aside class="ds-drawer" hidden><a href="https://iraqia-chat.com/" class="is-active" aria-current="page">الرئيسية</a><a href="https://iraqia-chat.com/rules/">القوانين</a><a href="https://iraqia-chat.com/articles/">المقالات</a><a href="https://iraqia-chat.com/questions/">الأسئلة</a><a href="https://iraqia-chat.com/search/">بحث</a><a href="https://iraqia-chat.com/sub/">الاشتراكات</a><a href="https://iraqia-chat.com/contact/">اتصل بنا</a></aside>
-<div class="ds-scrim"></div>
-
-<main class="body-content"><div class="container"><div class="row"><div class="col-12 p-0"><div class="room_content" style="background:#fff;border-radius:10px;padding:16px;margin:20px auto;"><article class='recipe-article'><div class="ds-container"><section class="hero ds-reveal"><h1>الصفحة غير موجودة</h1><p>عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.</p><p><a class="cta" href="https://iraqia-chat.com/">العودة إلى الرئيسية</a></p></section><section class="card"><h2>غرف الدردشة الشهيرة</h2><div class="grid grid-4"><a href="https://iraqia-chat.com/iraq/">شات العراق</a><a href="https://iraqia-chat.com/saudi/">شات السعودية</a><a href="https://iraqia-chat.com/egypt/">شات مصري</a><a href="https://iraqia-chat.com/algeria/">شات الجزائر</a><a href="https://iraqia-chat.com/bahrain/">شات البحرين</a><a href="https://iraqia-chat.com/emirates/">شات الإمارات</a><a href="https://iraqia-chat.com/jordan/">شات الأردن</a><a href="https://iraqia-chat.com/kuwait/">شات الكويت</a><a href="https://iraqia-chat.com/lebanon/">شات لبنان</a><a href="https://iraqia-chat.com/libya/">شات ليبيا</a><a href="https://iraqia-chat.com/morocco/">شات المغرب</a><a href="https://iraqia-chat.com/oman/">شات عمان</a><a href="https://iraqia-chat.com/palestine/">شات فلسطين</a><a href="https://iraqia-chat.com/qatar/">شات قطر</a><a href="https://iraqia-chat.com/sudan/">شات السودان</a><a href="https://iraqia-chat.com/syria/">شات سوريا</a><a href="https://iraqia-chat.com/tunnis/">شات تونس</a><a href="https://iraqia-chat.com/yemen/">شات اليمن</a><a href="https://iraqia-chat.com/aden/">شات عدن</a></div></section></div></article></div></div></div></div></main>
-<footer class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-6 text-right">
-                <img loading="lazy" decoding="async" class="img-fluid footer-brand" src="/assets/brand-logo.webp" alt="شات درر العرب" width="497" height="501">
-                <p class="footer_description">شات درر العرب غرفة دردشة عربية مجانية تجمع شباب وبنات العراق والخليج للشات الكتابي والصوتي، تعمل من الجوال مباشرة دون تسجيل، بأجواء عائلية راقية على مدار الساعة.</p>
-                <div class="footer-social" >
-                    <a class="social_h_icon fscoial header_social1" href="https://iraqia-chat.com/" aria-label="فيسبوك"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.91v-7.01H7.9v-2.9h2.54V9.86c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7.01C13.56 21.2 22 17.06 22 12.06z"/></svg></a>
-                    <a class="social_h_icon fscoial header_social1" href="https://iraqia-chat.com/" aria-label="تويتر"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg></a>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-6 mt-sm-3">
-                <h2 class="menu_title">درر العرب</h2>
-                <ul class="footer-menu pr-3"><li><a href="https://iraqia-chat.com/">الرئيسية</a></li>
-<li><a href="https://iraqia-chat.com/Forum/">منتدى الدردشة</a></li>
-<li><a href="https://iraqia-chat.com/blog/">المدونة</a></li>
-<li><a href="https://iraqia-chat.com/news/">أخبار الشات</a></li>
-</ul>
-            </div>
-            <div class="col-lg-2 col-md-3 col-6 mt-sm-3">
-                <h2 class="menu_title">معلومات الموقع</h2>
-                <ul class="footer-menu pr-2"><li><a href="https://iraqia-chat.com/questions/">الأسئلة الشائعة</a></li>
-<li><a href="https://iraqia-chat.com/terms/">شروط الاستخدام</a></li>
-<li><a href="https://iraqia-chat.com/privacy/">سياسة الخصوصية</a></li>
-<li><a href="https://iraqia-chat.com/rules/">قوانين الموقع</a></li>
-</ul>            </div>
-
-        </div>
-
-    </div>
-    <div class="middle_footer">
-        <div class="container">
-            <ul class="middle_menu"><li><a href="https://iraqia-chat.com/">الرئيسية</a></li>
-<li><a href="https://iraqia-chat.com/questions/">الأسئلة الشائعة</a></li>
-<li><a href="https://iraqia-chat.com/terms/">شروط الاستخدام</a></li>
-<li><a href="https://iraqia-chat.com/privacy/">سياسة الخصوصية</a></li>
-</ul>            <p class="copyrights">&copy; 2026 شات درر العرب &#183; جميع الحقوق محفوظة</p>
-        </div>
-    </div>
-
-
-	
-</footer>
-
-
-
-
-<script src="/assets/app.js" defer></script>
-</body>
-</html>
+.px-banner{margin:0 0 14px}.px-banner img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 2px 12px rgba(0,0,0,.10)}
