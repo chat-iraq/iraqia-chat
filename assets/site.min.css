@@ -15,19 +15,19 @@ Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
 /* ---------- 1. TOKENS ---------- */
 :root {
 /* brand (honey / amber identity of the whole platform) */
---acc:#c98a2d; --acc2:#e8a33d;
---ds-primary:#c98a2d; --ds-primary-2:#e8a33d; --ds-on-primary:#fffdf5;
---ds-brand-50:#fdf6e7; --ds-brand-100:#faecd1; --ds-brand-200:#f3dca7;
---ds-brand-500:#e8a33d; --ds-brand-600:#c98a2d; --ds-brand-700:#a86f1e; --ds-brand-800:#8a5a17;
+--acc:#0369a1; --acc2:#06b6d4;
+--ds-primary:#0369a1; --ds-primary-2:#06b6d4; --ds-on-primary:#f0f9ff;
+--ds-brand-50:#ecfeff; --ds-brand-100:#cffafe; --ds-brand-200:#a5f3fc;
+--ds-brand-500:#06b6d4; --ds-brand-600:#0369a1; --ds-brand-700:#155e75; --ds-brand-800:#164e63;
 /* semantic surfaces (editorial: clean white + warm greys) */
---ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
---ds-line:#e7eae3; --ds-line-2:#d6dbcf;
---ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
---ds-good:#15803d; --ds-bad:#b91c1c; --ds-info:#0e7490; --ds-warn:#b45309;
+--ds-bg:#f0f9ff; --ds-surface:#ffffff; --ds-surface-2:#ecfeff;
+--ds-line:#e0f2fe; --ds-line-2:#bae6fd;
+--ds-ink:#0f172a; --ds-ink-2:#1e293b; --ds-mut:#334155; --ds-mut-2:#64748b;
+--ds-good:#0f766e; --ds-bad:#b91c1c; --ds-info:#0369a1; --ds-warn:#d97706;
 --ds-grad:linear-gradient(135deg,var(--ds-primary),var(--ds-primary-2));
 /* compatible legacy tokens (premium.min.css) */
---acc:#c98a2d; --acc2:#e8a33d; --ink:#1a1c17; --mut:#5f6359;
---bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --grad:var(--ds-grad);
+--acc:#0369a1; --acc2:#06b6d4; --ink:#0f172a; --mut:#334155;
+--bg:#f0f9ff; --soft:#ffffff; --line:#e0f2fe; --grad:var(--ds-grad);
 /* typography */
 --ds-font:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,-apple-system,Arial,sans-serif;
 --ds-font-display:"Noto Kufi Arabic","Open Sans","Noto Naskh Arabic",Tahoma,system-ui,sans-serif;
@@ -246,10 +246,10 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
 }
 :root[data-theme="light"]{
---ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
---ds-line:#e7eae3; --ds-line-2:#d6dbcf;
---ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
---bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --ink:#1a1c17; --mut:#5f6359;
+--ds-bg:#f0f9ff; --ds-surface:#ffffff; --ds-surface-2:#ecfeff;
+--ds-line:#e0f2fe; --ds-line-2:#bae6fd;
+--ds-ink:#0f172a; --ds-ink-2:#1e293b; --ds-mut:#334155; --ds-mut-2:#64748b;
+--bg:#f0f9ff; --soft:#ffffff; --line:#e0f2fe; --ink:#0f172a; --mut:#334155;
 --ds-shadow-1:0 1px 2px rgba(26,28,23,.05); --ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16); --ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
 }
 .color-scheme{color-scheme:dark}
@@ -402,7 +402,7 @@ font-size:var(--ds-fs-sm);margin:var(--ds-s-3) 0;
 :where(.ds-card,section.card,div.card)>h2,.ds-h2{text-align:center;margin-inline:auto}
 /* premium.min.css - unique premium design for branded chat pages */
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;--acc:#c98a2d;--acc2:#e8a33d;--ink:#1c1a17;--mut:#5c554b;--bg:#fdfbf6;--soft:#fffdef;--line:#ece4d4;--grad:linear-gradient(135deg,var(--acc),var(--acc2))}
+html{scroll-behavior:smooth;--acc:#0369a1;--acc2:#06b6d4;--ink:#1c1a17;--mut:#5c554b;--bg:#fdfbf6;--soft:#fffdef;--line:#ece4d4;--grad:linear-gradient(135deg,var(--acc),var(--acc2))}
 body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
 img{max-width:100%;height:auto;border:0}
 a{color:var(--acc);text-decoration:none}
