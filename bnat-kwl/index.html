@@ -1,0 +1,690 @@
+﻿﻿<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+	
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png" />
+    <link rel="preload" href="/assets/fonts/NotoKufiArabic-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/NotoNaskhArabic-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <style>/* ============================================================
+   ds.css — Design System v2 · شات درر العرب (iraqia-chat · editorial)
+   Editorial-inspired layer · loads AFTER premium.min.css
+   Clean white canvas, content-first cards, subtle borders, amber honey brand.
+   Anatomy: Tokens → Base → Layout → Components → Patterns →
+             Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
+   ============================================================ */
+
+/* ---------- 0. CRITICAL FONTS (self-hosted من CDN hsoub) ---------- */
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/OpenSans-Regular-latin.woff2) format('woff2')}
+@font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/OpenSans-Bold-latin.woff2) format('woff2')}
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+  /* brand (honey / amber identity of the whole platform) */
+  --acc:#c98a2d; --acc2:#e8a33d;
+  --ds-primary:#c98a2d; --ds-primary-2:#e8a33d; --ds-on-primary:#fffdf5;
+  --ds-brand-50:#fdf6e7; --ds-brand-100:#faecd1; --ds-brand-200:#f3dca7;
+  --ds-brand-500:#e8a33d; --ds-brand-600:#c98a2d; --ds-brand-700:#a86f1e; --ds-brand-800:#8a5a17;
+
+   /* semantic surfaces (editorial: clean white + warm greys) */
+  --ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
+  --ds-line:#e7eae3; --ds-line-2:#d6dbcf;
+  --ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
+  --ds-good:#15803d; --ds-bad:#b91c1c; --ds-info:#0e7490; --ds-warn:#b45309;
+
+  --ds-grad:linear-gradient(135deg,var(--ds-primary),var(--ds-primary-2));
+
+  /* compatible legacy tokens (premium.min.css) */
+  --acc:#c98a2d; --acc2:#e8a33d; --ink:#1a1c17; --mut:#5f6359;
+  --bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --grad:var(--ds-grad);
+
+  /* typography */
+  --ds-font:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,-apple-system,Arial,sans-serif;
+  --ds-font-display:"Noto Kufi Arabic","Open Sans","Noto Naskh Arabic",Tahoma,system-ui,sans-serif;
+  --ds-fs-xs:.75rem; --ds-fs-sm:.875rem; --ds-fs-md:1rem; --ds-fs-lg:1.125rem;
+  --ds-fs-xl:1.375rem; --ds-fs-2xl:clamp(1.5rem,3.2vw,2rem); --ds-fs-3xl:clamp(2rem,5vw,2.9rem);
+  --ds-lh-tight:1.35; --ds-lh-base:1.75; --ds-lh-loose:1.9;
+  --ds-w-400:400; --ds-w-600:600; --ds-w-700:700; --ds-w-800:800;
+
+  /* spacing (fluid-aware scale) */
+  --ds-s-1:.25rem; --ds-s-2:.5rem; --ds-s-3:.75rem; --ds-s-4:1rem;
+  --ds-s-5:1.5rem; --ds-s-6:2rem; --ds-s-7:3rem; --ds-s-8:4rem;
+  --ds-container:min(72rem,calc(100% - 2rem));
+
+   /* radius / shadow / border (keeps radius moderate, borders crisp) */
+  --ds-r-xs:.375rem; --ds-r-sm:.625rem; --ds-r-md:.8rem; --ds-r-lg:1.1rem;
+  --ds-r-xl:1.5rem; --ds-r-full:999px;
+  --ds-shadow-1:0 1px 2px rgba(26,28,23,.05);
+  --ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16);
+  --ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
+  --ds-ring:0 0 0 .2rem color-mix(in srgb,var(--ds-primary) 22%,transparent);
+
+  /* motion & elevation */
+  --ds-t-fast:140ms; --ds-t-mid:240ms; --ds-t-slow:420ms;
+  --ds-ease:cubic-bezier(.25,.6,.3,1);
+  --ds-z-nav:60; --ds-z-drawer:80; --ds-z-dialog:90; --ds-z-palette:95; --ds-z-toast:100;
+
+  /* icon/touch */
+  --ds-tap:44px;
+}
+
+/* ---------- 2. BASE ---------- */
+.ds-shell{display:flex;flex-direction:column;min-height:100vh}
+.ds-shell > *{flex:none}
+.ds-skip{position:absolute;inset-inline-start:-999px;top:0;background:var(--ds-primary);color:#fff;padding:.6rem 1rem;border-radius:0 0 .5rem 0;z-index:200}
+.ds-skip:focus{inset-inline-start:0}
+:where(.ds-main){flex:1 1 auto}
+html:has(.ds-shell){scroll-behavior:smooth}
+[id]{scroll-margin-top:4.75rem}
+:focus-visible{outline:2px solid var(--ds-primary);outline-offset:2px;border-radius:.25rem}
+body{font-family:var(--ds-font) !important;line-height:var(--ds-lh-base);-webkit-tap-highlight-color:transparent}
+img{background:color-mix(in srgb,var(--ds-surface-2) 55%,transparent)}
+::selection{background:color-mix(in srgb,var(--ds-primary) 24%,transparent)}
+
+/* ---------- 3. LAYOUT ---------- */
+.ds-container{width:var(--ds-container);margin-inline:auto;padding-inline:1rem}
+.ds-stack{display:flex;flex-direction:column;gap:var(--ds-s-4)}
+.ds-stack--lg{gap:var(--ds-s-5)}
+.ds-row{display:flex;align-items:center;gap:var(--ds-s-3);flex-wrap:wrap}
+.ds-row--between{justify-content:space-between}
+.ds-grid{display:grid;gap:var(--ds-s-4)}
+.ds-grid-2{grid-template-columns:repeat(auto-fill,minmax(min(100%,17rem),1fr))}
+.ds-grid-3{grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr))}
+.ds-grid-4{grid-template-columns:repeat(auto-fill,minmax(min(100%,11.5rem),1fr))}
+.ds-bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(9rem,auto);gap:var(--ds-s-4)}
+.ds-bento > *{min-width:0}
+
+/* ---------- 4. COMPONENTS ---------- */
+/* header / nav */
+.ds-header{position:sticky;top:0;z-index:var(--ds-z-nav);background:color-mix(in srgb,var(--ds-surface) 88%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-block-end:1px solid var(--ds-line)}
+.ds-nav{display:flex;align-items:center;gap:var(--ds-s-4);height:3.75rem}
+.ds-brand{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--ds-font-display);font-weight:var(--ds-w-800);font-size:1.2rem;color:var(--ds-ink);text-decoration:none !important}
+.ds-brand img{border-radius:var(--ds-r-sm);box-shadow:var(--ds-shadow-1)}
+.ds-menu{display:flex;align-items:center;gap:.25rem;margin-inline-start:auto;list-style:none;padding:0}
+.ds-menu a{padding:.5rem .85rem;border-radius:var(--ds-r-full);color:var(--ds-ink-2);font-weight:var(--ds-w-600);font-size:var(--ds-fs-sm);transition:background var(--ds-t-fast),color var(--ds-t-fast)}
+.ds-menu a:hover{background:var(--ds-surface-2);text-decoration:none;color:var(--ds-ink)}
+.ds-menu a[aria-current="page"],.ds-menu a.is-active{background:var(--ds-grad);color:#fff;box-shadow:var(--ds-shadow-1)}
+.ds-theme-btn{display:inline-grid;place-items:center;width:var(--ds-tap);height:var(--ds-tap);border-radius:var(--ds-r-full);border:1px solid var(--ds-line);background:var(--ds-surface);color:var(--ds-ink-2);cursor:pointer}
+.ds-theme-btn:hover{border-color:var(--ds-line-2);color:var(--ds-primary)}
+.ds-burger{display:none;width:var(--ds-tap);height:var(--ds-tap);border:0;background:transparent;color:var(--ds-ink);cursor:pointer}
+.ds-burger svg{width:1.4rem;height:1.4rem}
+.ds-drawer{position:fixed;inset-block:0;inset-inline-end:0;width:min(20rem,84vw);background:var(--ds-surface);box-shadow:var(--ds-shadow-3);transform:translateX(0);transition:transform var(--ds-t-mid) var(--ds-ease);z-index:var(--ds-z-drawer);padding:var(--ds-s-5);display:flex;flex-direction:column;gap:var(--ds-s-2)}
+html[dir="rtl"] .ds-drawer{transform:translateX(-115%)}
+html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
+.ds-drawer.is-open{transform:translateX(0) !important}
+.ds-drawer[hidden]{display:none !important}
+.ds-drawer[hidden].is-open{display:flex !important}
+.ds-drawer a{padding:.7rem .9rem;border-radius:var(--ds-r-sm);color:var(--ds-ink-2);font-weight:var(--ds-w-600)}
+.ds-drawer a:hover{background:var(--ds-surface-2);text-decoration:none}
+.ds-scrim{position:fixed;inset:0;background:rgba(24,26,21,.42);opacity:0;pointer-events:none;transition:opacity var(--ds-t-mid);z-index:var(--ds-z-drawer)}
+.ds-scrim.is-open{opacity:1;pointer-events:auto}
+
+/* buttons */
+.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.65rem 1.4rem;border-radius:var(--ds-r-full);font-weight:var(--ds-w-700);font-size:var(--ds-fs-md);border:1px solid transparent;text-decoration:none !important;cursor:pointer;transition:transform var(--ds-t-fast) var(--ds-ease),box-shadow var(--ds-t-fast),filter var(--ds-t-fast)}
+.ds-btn--primary{background:var(--ds-grad);color:#fff;box-shadow:0 10px 22px -10px color-mix(in srgb,var(--ds-primary) 70%,transparent)}
+.ds-btn--primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.ds-btn--secondary{background:var(--ds-surface);color:var(--ds-ink);border-color:var(--ds-line)}
+.ds-btn--secondary:hover{border-color:var(--ds-primary);color:var(--ds-primary)}
+.ds-btn--ghost{background:transparent;color:var(--ds-ink-2)}
+.ds-btn--ghost:hover{background:var(--ds-surface-2)}
+.ds-btn--sm{min-height:2.25rem;padding:.4rem 1rem;font-size:var(--ds-fs-sm)}
+.ds-btn:active{transform:scale(.985)}
+
+/* hero (editorial: crisp surface, faint warm tint, no heavy glow) */
+.ds-hero{position:relative;overflow:hidden;border-radius:var(--ds-r-lg);padding:clamp(2rem,6vw,3.25rem);background:var(--ds-surface);border:1px solid var(--ds-line)}
+.ds-hero::before{content:"";position:absolute;inset:-30% -20% auto auto;width:min(52vw,28rem);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ds-primary) 12%,transparent),transparent 66%);pointer-events:none}
+.ds-hero__kicker{display:inline-flex;align-items:center;gap:.4rem;background:var(--ds-grad);color:#fff;font-size:var(--ds-fs-xs);font-weight:var(--ds-w-700);padding:.35rem .9rem;border-radius:var(--ds-r-full);letter-spacing:.3px}
+.ds-hero h1{font-family:var(--ds-font-display);font-size:var(--ds-fs-3xl);line-height:var(--ds-lh-tight);margin-block:.9rem 0;color:var(--ds-ink)}
+.ds-hero p{color:var(--ds-mut);max-width:34rem;font-size:var(--ds-fs-lg);margin-top:.6rem}
+.ds-hero__actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.4rem}
+
+/* search */
+.ds-searchbar{position:relative;display:flex;align-items:center;gap:.5rem;background:var(--ds-surface);border:1.5px solid var(--ds-line);border-radius:var(--ds-r-full);padding:.4rem .9rem .4rem .4rem;transition:border-color var(--ds-t-fast),box-shadow var(--ds-t-fast)}
+.ds-searchbar:focus-within{border-color:var(--ds-primary);box-shadow:var(--ds-ring)}
+.ds-searchbar svg{width:1.15rem;height:1.15rem;color:var(--ds-mut);flex:none;margin-inline-start:.4rem}
+.ds-searchbar input{flex:1;min-width:0;border:0;background:transparent;font-size:var(--ds-fs-md);color:var(--ds-ink);padding:.55rem .2rem;outline:0}
+.ds-searchbar input::placeholder{color:var(--ds-mut-2)}
+.ds-searchbar kbd{font-family:inherit;font-size:var(--ds-fs-xs);color:var(--ds-mut);border:1px solid var(--ds-line);border-radius:var(--ds-r-xs);padding:.1rem .45rem}
+
+/* cards */
+.ds-card{background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);padding:var(--ds-s-5);box-shadow:var(--ds-shadow-1);transition:transform var(--ds-t-mid) var(--ds-ease),box-shadow var(--ds-t-mid),border-color var(--ds-t-mid)}
+.ds-card:hover{transform:translateY(-2px);box-shadow:var(--ds-shadow-2);border-color:var(--ds-line-2)}
+.ds-card h2,.ds-card h3{color:var(--ds-ink);line-height:var(--ds-lh-tight)}
+.ds-card p{color:var(--ds-mut)}
+
+.ds-chat-card{display:flex;flex-direction:column;gap:.7rem;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);padding:var(--ds-s-4);text-decoration:none !important;box-shadow:var(--ds-shadow-1);transition:transform var(--ds-t-mid) var(--ds-ease),box-shadow var(--ds-t-mid),border-color var(--ds-t-mid)}
+.ds-chat-card:hover{transform:translateY(-3px);box-shadow:var(--ds-shadow-2);border-color:color-mix(in srgb,var(--ds-primary) 40%,var(--ds-line))}
+.ds-chat-card img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--ds-r-md)}
+.ds-chat-card h3{font-size:var(--ds-fs-lg);color:var(--ds-ink)}
+.ds-chat-card p{font-size:var(--ds-fs-sm);color:var(--ds-mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ds-chat-card .ds-meta{margin-top:auto}
+
+.ds-stat{background:var(--ds-grad);color:#fff;border-radius:var(--ds-r-lg);padding:var(--ds-s-4);text-align:center}
+.ds-stat b{display:block;font-size:var(--ds-fs-xl);font-weight:var(--ds-w-800);line-height:1.2}
+.ds-stat span{font-size:var(--ds-fs-xs);opacity:.92}
+
+.ds-author-card{display:flex;gap:1rem;align-items:flex-start;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);padding:var(--ds-s-5)}
+.ds-author-card img{width:4.5rem;height:4.5rem;border-radius:var(--ds-r-md);object-fit:cover;box-shadow:var(--ds-shadow-2)}
+
+/* pills / badges / crumbs */
+.ds-pill{display:inline-flex;align-items:center;gap:.35rem;font-size:var(--ds-fs-sm);font-weight:var(--ds-w-600);color:var(--ds-ink-2);background:var(--ds-surface);border:1px solid var(--ds-line);padding:.4rem .9rem;border-radius:var(--ds-r-full);text-decoration:none !important}
+.ds-pill:hover{border-color:var(--ds-primary);color:var(--ds-primary)}
+.ds-pill--brand{background:color-mix(in srgb,var(--ds-primary) 10%,var(--ds-surface));border-color:color-mix(in srgb,var(--ds-primary) 30%,var(--ds-line));color:var(--ds-primary)}
+.ds-badge{display:inline-flex;align-items:center;font-size:var(--ds-fs-xs);font-weight:var(--ds-w-700);padding:.22rem .65rem;border-radius:var(--ds-r-full)}
+.ds-badge--new{background:#dcfce7;color:#166534}
+.ds-badge--hot{background:#fee2e2;color:#991b1b}
+.ds-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;font-size:var(--ds-fs-sm);color:var(--ds-mut)}
+.ds-crumbs a{color:var(--ds-mut-2)}
+.ds-crumbs a:hover{color:var(--ds-primary)}
+.ds-crumbs [aria-current]{color:var(--ds-ink);font-weight:var(--ds-w-600)}
+
+/* lists / steps / faq / tabs / table */
+.ds-list{list-style:none;padding:0;margin:0}
+.ds-list li{position:relative;padding:.45rem 0 .45rem 1.7rem;color:var(--ds-ink-2)}
+.ds-list li::before{content:"✦";position:absolute;inset-inline-start:0;color:var(--ds-primary)}
+.ds-steps{list-style:none;counter-reset:ds-step;padding:0;margin:0}
+.ds-steps li{position:relative;counter-increment:ds-step;padding:.5rem 2.6rem .8rem 0}
+.ds-steps li::before{content:counter(ds-step);position:absolute;inset-inline-start:0;top:.3rem;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--ds-grad);color:#fff;font-weight:var(--ds-w-700);font-size:var(--ds-fs-sm);display:grid;place-items:center}
+.ds-faq details{background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-md);padding:var(--ds-s-4);margin-block:.5rem;transition:border-color var(--ds-t-fast)}
+.ds-faq details[open]{border-color:var(--ds-line-2)}
+.ds-faq summary{cursor:pointer;font-weight:var(--ds-w-700);color:var(--ds-ink);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.ds-faq summary::-webkit-details-marker{display:none}
+.ds-faq summary::after{content:"+";font-size:1.2rem;color:var(--ds-primary);transition:transform var(--ds-t-fast)}
+.ds-faq details[open] summary::after{transform:rotate(45deg)}
+.ds-faq p{margin-top:.7rem;color:var(--ds-mut)}
+
+.ds-tabs{display:flex;gap:.25rem;flex-wrap:wrap;border-block-end:1px solid var(--ds-line);padding-block-end:0}
+.ds-tab{position:relative;padding:.6rem 1.1rem;border-radius:var(--ds-r-sm) var(--ds-r-sm) 0 0;color:var(--ds-mut);font-weight:var(--ds-w-600);cursor:pointer;border:0;background:transparent}
+.ds-tab[aria-selected="true"]{color:var(--ds-primary)}
+.ds-tab[aria-selected="true"]::after{content:"";position:absolute;inset-inline:1rem;bottom:-1px;height:2px;border-radius:2px;background:var(--ds-grad)}
+
+.ds-table-wrap{overflow-x:auto;border:1px solid var(--ds-line);border-radius:var(--ds-r-md);background:var(--ds-surface)}
+.ds-table{width:100%;border-collapse:collapse;font-size:var(--ds-fs-sm)}
+.ds-table th,.ds-table td{padding:.7rem 1rem;text-align:start;border-block-end:1px solid var(--ds-line)}
+.ds-table th{background:var(--ds-ink);color:#fff;font-weight:var(--ds-w-700)}
+.ds-table tr:nth-child(even) td{background:var(--ds-surface-2)}
+
+   /* related / footer (light editorial footer) */
+.ds-related{display:flex;flex-wrap:wrap;gap:.5rem}
+.ds-footer{background:var(--ds-surface-2);border-block-start:1px solid var(--ds-line);color:var(--ds-mut);margin-top:auto}
+.ds-footer .ds-container{padding-block:var(--ds-s-7) var(--ds-s-5)}
+.ds-footer h3{color:var(--ds-ink);font-size:var(--ds-fs-md);margin-block-end:.7rem}
+.ds-footer a{color:var(--ds-ink-2);text-decoration:none;display:inline-flex;padding:.22rem 0}
+.ds-footer a:hover{color:var(--ds-primary);text-decoration:underline}
+.ds-footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:var(--ds-s-5)}
+.ds-footgrid nav{display:flex;flex-direction:column;gap:.15rem}
+.ds-copy{border-block-start:1px solid var(--ds-line);margin-top:var(--ds-s-5);padding-top:var(--ds-s-4);font-size:var(--ds-fs-xs);color:var(--ds-mut-2)}
+
+/* dialog / toast / tooltip */
+.ds-dialog{border:0;border-radius:var(--ds-r-lg);padding:0;max-width:min(34rem,92vw);box-shadow:var(--ds-shadow-3);color:var(--ds-ink);background:var(--ds-surface)}
+.ds-dialog::backdrop{background:rgba(24,26,21,.4);backdrop-filter:blur(2px)}
+.ds-dialog__in{padding:var(--ds-s-5)}
+.ds-dialog[open]{animation:ds-pop var(--ds-t-mid) var(--ds-ease)}
+@keyframes ds-pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.ds-toast{position:fixed;inset-block-end:1.5rem;inset-inline-start:50%;transform:translateX(-50%);background:var(--ds-ink);color:#fff;padding:.8rem 1.4rem;border-radius:var(--ds-r-full);font-size:var(--ds-fs-sm);box-shadow:var(--ds-shadow-3);z-index:var(--ds-z-toast);opacity:0;pointer-events:none;transition:opacity var(--ds-t-mid)}
+.ds-toast.is-show{opacity:1}
+.ds-tip{position:relative}
+.ds-tip::after{content:attr(data-tip);position:absolute;inset-block-start:calc(100% + .5rem);inset-inline-start:50%;transform:translateX(-50%) translateY(-2px);background:var(--ds-ink);color:#fff;font-size:var(--ds-fs-xs);padding:.3rem .6rem;border-radius:var(--ds-r-xs);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity var(--ds-t-fast),transform var(--ds-t-fast);z-index:var(--ds-z-toast)}
+.ds-tip:hover::after{opacity:1;transform:translateX(-50%)}
+
+/* command palette */
+.ds-palette{position:fixed;top:18%;inset-inline-start:50%;transform:translateX(-50%);width:min(36rem,92vw);background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);box-shadow:var(--ds-shadow-3);z-index:var(--ds-z-palette);overflow:hidden;opacity:0;pointer-events:none;transition:opacity var(--ds-t-mid)}
+.ds-palette.is-open{opacity:1;pointer-events:auto}
+.ds-palette input{width:100%;border:0;border-block-end:1px solid var(--ds-line);padding:1rem 1.2rem;font-size:var(--ds-fs-lg);background:transparent;color:var(--ds-ink);outline:0}
+.ds-palette__list{max-height:min(22rem,60vh);overflow:auto;padding:.4rem}
+.ds-palette a{display:flex;gap:.7rem;align-items:center;padding:.65rem .9rem;border-radius:var(--ds-r-sm);color:var(--ds-ink-2);font-size:var(--ds-fs-md);text-decoration:none !important}
+.ds-palette a:hover,.ds-palette a[aria-selected="true"]{background:var(--ds-grad);color:#fff}
+.ds-palette__hint{padding:.6rem 1.2rem;font-size:var(--ds-fs-xs);color:var(--ds-mut);border-block-start:1px solid var(--ds-line)}
+
+/* 404 / empty */
+.ds-empty{text-align:center;padding:var(--ds-s-8) var(--ds-s-5);color:var(--ds-mut)}
+.ds-empty h1{font-size:var(--ds-fs-3xl);color:var(--ds-ink)}
+
+/* reveal (progressive) */
+.ds-reveal{opacity:0;transform:translateY(10px);transition:opacity var(--ds-t-slow) var(--ds-ease),transform var(--ds-t-slow) var(--ds-ease)}
+.ds-reveal.is-visible{opacity:1;transform:none}
+
+/* ---------- 5. UTILITIES ---------- */
+.ds-muted{color:var(--ds-mut)}
+.ds-muted-2{color:var(--ds-mut-2)}
+.ds-center{text-align:center}
+.ds-h2{font-family:var(--ds-font-display);font-size:var(--ds-fs-2xl);color:var(--ds-ink);line-height:var(--ds-lh-tight);margin:0 0 .6rem}
+.ds-sec{display:flex;align-items:center;gap:.7rem;margin-block:var(--ds-s-6) var(--ds-s-3);color:var(--ds-ink)}
+.ds-sec::before{content:"";width:1.6rem;height:.28rem;border-radius:4px;background:var(--ds-grad)}
+.ds-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;font-size:var(--ds-fs-xs);color:var(--ds-mut)}
+.ds-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.ds-spacer{flex:1 1 auto}
+
+/* ---------- 6. MOTION / STATES ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;scroll-behavior:auto !important}
+  .ds-reveal{opacity:1;transform:none}
+}
+
+/* cross-document view transitions (progressive, MPA-safe) */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion:reduce){ @view-transition { navigation: none; } }
+
+/* ---------- 7. DARK MODE ---------- */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
+    --ds-line:#343629; --ds-line-2:#464937;
+    --ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
+    --bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
+    --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
+  --ds-line:#343629; --ds-line-2:#464937;
+  --ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
+  --bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
+  --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
+}
+:root[data-theme="light"]{
+  --ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
+  --ds-line:#e7eae3; --ds-line-2:#d6dbcf;
+  --ds-ink:#1a1c17; --ds-ink-2:#33362f; --ds-mut:#5f6359; --ds-mut-2:#8f9588;
+  --bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --ink:#1a1c17; --mut:#5f6359;
+  --ds-shadow-1:0 1px 2px rgba(26,28,23,.05); --ds-shadow-2:0 10px 30px -16px rgba(26,28,23,.16); --ds-shadow-3:0 26px 55px -22px rgba(26,28,23,.26);
+}
+.color-scheme{color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){color-scheme:dark}}
+:root[data-theme="dark"] .color-scheme{color-scheme:dark}
+
+/* ---------- 8. RESPONSIVE ---------- */
+@media (max-width:640px){
+  .ds-burger{display:inline-grid;place-items:center}
+  .ds-menu{display:none}
+  .ds-bento{grid-template-columns:repeat(2,1fr)}
+  .ds-hero{padding:var(--ds-s-5)}
+  .ds-searchbar kbd{display:none}
+  .ds-nav{height:3.4rem}
+}
+@media (max-width:420px){
+  .ds-bento{grid-template-columns:1fr}
+  .ds-grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ---------- 9. PRINT ---------- */
+@media print{
+  .ds-header,.ds-drawer,.ds-scrim,.ds-palette,.ds-toast,.ds-footer{display:none !important}
+  .ds-hero{box-shadow:none}
+}
+
+/* ---------- 10. V1 BODY RESKIN (progressive: old content blocks get the editorial look) ---------- */
+.px-top{display:none}
+:is(.px-hero,.hero){
+  position:relative;overflow:hidden;
+  background:radial-gradient(46rem 22rem at 100% -30%,color-mix(in srgb,var(--ds-primary) 10%,transparent),transparent 60%),
+    var(--ds-surface);
+  border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);
+  padding:var(--ds-s-6) var(--ds-s-5);margin:var(--ds-s-4) 0;
+  box-shadow:var(--ds-shadow-1);
+}
+:is(.px-hero,.hero) h1{font-size:var(--ds-fs-2xl);line-height:1.25;margin:0 0 .5rem}
+:is(.px-hero,.hero) p{color:var(--ds-mut);margin:0 0 1rem;max-width:60ch}
+:is(.px-kicker){
+  display:inline-block;background:color-mix(in srgb,var(--ds-primary) 12%,transparent);color:var(--ds-primary);
+  border-radius:var(--ds-r-full);padding:.2rem .8rem;font-size:var(--ds-fs-xs);
+  font-weight:700;margin-bottom:.7rem;
+}
+:is(.px-chips){display:flex;flex-wrap:wrap;gap:.45rem;margin:0 0 1rem}
+:is(.px-chip){
+  display:inline-flex;align-items:center;gap:.3rem;border:1px solid var(--ds-line);
+  background:var(--ds-bg);border-radius:var(--ds-r-full);padding:.28rem .75rem;
+  font-size:var(--ds-fs-xs);color:var(--ds-mut);white-space:nowrap;
+}
+:is(.px-cta,.cta){
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  background:var(--ds-grad);color:#fff;text-decoration:none;font-weight:800;
+  border-radius:var(--ds-r-full);padding:.7rem 1.35rem;box-shadow:color-mix(in srgb,var(--ds-primary) 40%,transparent) 0 10px 22px -10px;
+  transition:transform var(--ds-t-fast),box-shadow var(--ds-t-fast);
+}
+:is(.px-cta,.cta):hover{transform:translateY(-2px)}
+:is(.px-cta,.cta):focus-visible{outline:3px solid var(--ds-primary);outline-offset:2px}
+:is(.px-band){display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--ds-s-3);margin:var(--ds-s-5) 0}
+:is(.px-stat){
+  background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-md);
+  padding:var(--ds-s-4);text-align:center;
+}
+:is(.px-stat) b{display:block;color:var(--ds-ink);font-size:var(--ds-fs-lg)}
+:is(.px-stat) span{color:var(--ds-mut);font-size:var(--ds-fs-sm)}
+:is(.px-quote,.answer){
+  background:var(--ds-surface);border:1px solid var(--ds-line);border-inline-start:4px solid var(--ds-primary);
+  border-radius:var(--ds-r-md);padding:var(--ds-s-4) var(--ds-s-5);margin:var(--ds-s-4) 0;
+  color:var(--ds-ink);
+}
+:is(.px-quote,.answer) strong{color:var(--ds-primary)}
+:is(.px-grid,.grid){display:grid;gap:var(--ds-s-4);margin:var(--ds-s-4) 0}
+:is(.px-grid){grid-template-columns:repeat(2,minmax(0,1fr))}
+:is(.grid-2){grid-template-columns:repeat(2,minmax(0,1fr))}
+:is(.grid-4){grid-template-columns:repeat(4,minmax(0,1fr))}
+:is(.px-card,.card){
+  background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-lg);
+  padding:var(--ds-s-5);box-shadow:var(--ds-shadow-1);
+  transition:transform var(--ds-t-mid),box-shadow var(--ds-t-mid);
+}
+:is(.px-card,.card) h2{margin:0 0 .6rem;font-size:var(--ds-fs-lg)}
+:is(.px-card,.card) a{color:var(--ds-primary);text-decoration:none}
+:is(.px-card,.card) a:hover{text-decoration:underline}
+:is(.px-steps,.steps){list-style:none;counter-reset:dsstep;padding:0;margin:0}
+:is(.px-steps,.steps) li{
+  counter-increment:dsstep;position:relative;padding-inline-start:2.2rem;
+  margin-bottom:.7rem;color:var(--ds-mut);
+}
+:is(.px-steps,.steps) li::before{
+  content:counter(dsstep);position:absolute;inset-inline-start:0;top:0;
+  width:1.6rem;height:1.6rem;border-radius:50%;background:color-mix(in srgb,var(--ds-primary) 14%,transparent);
+  color:var(--ds-primary);font-weight:800;display:grid;place-items:center;font-size:var(--ds-fs-xs);
+}
+:is(.ticks){list-style:none;padding:0;margin:0}
+:is(.ticks) li{position:relative;padding-inline-start:1.6rem;margin-bottom:.55rem;color:var(--ds-mut)}
+:is(.ticks) li::before{
+  content:"✓";position:absolute;inset-inline-start:0;color:var(--ds-primary);font-weight:900;
+}
+:is(.px-copy){color:var(--ds-mut);font-size:var(--ds-fs-sm);text-align:center;margin:0}
+:is(.grid-2,.grid-4,.px-grid) > a{
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid var(--ds-line);background:var(--ds-surface);color:var(--ds-ink);
+  border-radius:var(--ds-r-full);padding:.5rem .95rem;text-decoration:none !important;
+  font-size:var(--ds-fs-sm);font-weight:600;transition:border-color var(--ds-t-fast),color var(--ds-t-fast),transform var(--ds-t-fast);
+}
+:is(.grid-2,.grid-4,.px-grid) > a:hover{border-color:var(--ds-primary);color:var(--ds-primary);transform:translateY(-1px)}
+:is(.grid-2,.grid-4,.px-grid) > a:focus-visible{outline:3px solid var(--ds-primary);outline-offset:2px}
+:is(main.m,.m){max-width:72rem}
+@media (max-width:640px){
+  :is(.px-band,.px-grid,.grid,.grid-2,.grid-4){grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  :is(.px-cta,.cta):hover{transform:none}
+}
+/* ---------- 10b. FORMS + BREADCRUMB RESKIN (dark-mode safe) ---------- */
+:where(input[type=search],input[type=text],input[type=email],input[type=tel],input[type=url],textarea,select){
+  background:var(--ds-surface);color:var(--ds-ink);border:1px solid var(--ds-line);
+  border-radius:var(--ds-r-sm);
+}
+:where(input,textarea,select):focus{outline:none;border-color:var(--ds-primary);box-shadow:var(--ds-ring)}
+:where(.breadcrumb){
+  display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;color:var(--ds-mut);
+  font-size:var(--ds-fs-sm);margin:var(--ds-s-3) 0;
+}
+:where(.breadcrumb) a{color:var(--ds-mut);text-decoration:none}
+:where(.breadcrumb) a:hover{color:var(--ds-primary)}
+:where(.breadcrumb) span{color:var(--ds-ink-2)}
+:where(#res) a{color:var(--ds-primary)}
+
+   /* ---------- 11. BLOG CARDS (3-col, image-top, editorial-blog style) ---------- */
+:where(.art-grid){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ds-s-4);margin:var(--ds-s-4) 0;align-items:stretch}
+:where(.art-grid) > .card{padding:0;overflow:hidden;display:flex;flex-direction:column;background:var(--ds-surface)}
+:where(.art-card){display:flex;flex-direction:column;height:100%;text-decoration:none !important;color:var(--ds-ink)}
+:where(.art-card) img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;margin:0;border-radius:0;background:var(--ds-surface-2)}
+:where(.art-card) h2{font-size:var(--ds-fs-lg);line-height:1.45;margin:var(--ds-s-3) var(--ds-s-4) .35rem;color:var(--ds-ink)}
+:where(.art-card) p{color:var(--ds-mut);font-size:var(--ds-fs-sm);line-height:1.7;margin:0 var(--ds-s-4) .6rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+:where(.art-card) .art-date{color:var(--ds-mut-2);font-size:var(--ds-fs-xs);margin:auto var(--ds-s-4) var(--ds-s-4)}
+:where(.art-grid) > .card:hover{transform:translateY(-3px);box-shadow:var(--ds-shadow-2);border-color:var(--ds-primary)}
+:where(.art-grid) > .card:hover .art-card h2{color:var(--ds-primary)}
+@media (max-width:960px){:where(.art-grid){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){:where(.art-grid){grid-template-columns:1fr}}
+
+/* ---------- 12. HEADER SEARCH + CTA ---------- */
+.ds-search-mini{display:flex;align-items:center;gap:.35rem;background:var(--ds-surface);border:1px solid var(--ds-line);border-radius:var(--ds-r-full);padding:.25rem .6rem;margin-inline-start:.5rem}
+.ds-search-mini svg{width:1rem;height:1rem;color:var(--ds-mut);flex:none}
+.ds-search-mini input{border:0;background:transparent;outline:0;width:7rem;font-size:var(--ds-fs-sm);color:var(--ds-ink)}
+.ds-search-mini input:focus{width:9.5rem}
+.ds-cta-mini{display:inline-flex;align-items:center;justify-content:center;background:var(--ds-grad);color:#fff !important;text-decoration:none !important;font-weight:800;border-radius:var(--ds-r-full);padding:.45rem 1rem;font-size:var(--ds-fs-sm);box-shadow:var(--ds-shadow-1);white-space:nowrap;margin-inline-start:.4rem}
+.ds-cta-mini:hover{filter:brightness(1.05)}
+@media (max-width:860px){.ds-search-mini{display:none}}
+/* ===== توسيط العناوين مثل كتابة مدونة تحريرية ===== */
+.ds-hero{text-align:center}
+.ds-hero h1{text-align:center}
+.ds-hero p{text-align:center;margin-inline:auto}
+:where(.ds-card,section.card,div.card)>h2,.ds-h2{text-align:center;margin-inline:auto}
+/* premium.min.css - unique premium design for branded chat pages */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;--acc:#c98a2d;--acc2:#e8a33d;--ink:#1c1a17;--mut:#5c554b;--bg:#fdfbf6;--soft:#fffdef;--line:#ece4d4;--grad:linear-gradient(135deg,var(--acc),var(--acc2))}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;border:0}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+.m{max-width:1080px;margin:0 auto;padding:0 16px}
+.px-top{background:var(--grad);height:5px}
+.px-nav{position:sticky;top:0;z-index:50;background:rgba(253,251,246,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.px-bandrow{display:flex;align-items:center;gap:14px;padding:12px 0;flex-wrap:wrap}
+.px-brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:1.16rem;color:var(--ink)}
+.px-brand img{border-radius:10px}
+.px-navlinks{display:flex;gap:6px;flex-wrap:wrap;margin-inline-start:auto}
+.px-navlinks a{padding:6px 12px;border-radius:999px;font-size:.9rem;color:var(--ink)}
+.px-navlinks a:hover{background:var(--grad);color:#fff;text-decoration:none}
+.px-hero{border-radius:26px;background:radial-gradient(1200px 300px at 15% -10%,rgba(232,163,61,.16),transparent),var(--soft);border:1px solid var(--line);padding:34px 26px 30px;margin-top:22px;position:relative;overflow:hidden}
+.px-hero::after{content:"";position:absolute;inset:auto -60px -90px auto;width:340px;height:340px;background:radial-gradient(circle,rgba(201,138,45,.12),transparent 65%);pointer-events:none}
+.px-kicker{display:inline-block;background:var(--grad);color:#fff;font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.4px;margin-bottom:12px}
+.px-hero h1{font-size:clamp(1.5rem,3.6vw,2.2rem);line-height:1.35;margin-bottom:10px;color:var(--ink)}
+.px-hero p{color:var(--mut);max-width:640px;font-size:1.02rem}
+.px-chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+.px-chip{font-size:.78rem;font-weight:600;color:var(--acc);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.px-cta{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:#fff;font-weight:700;padding:12px 26px;border-radius:999px;box-shadow:0 10px 22px -8px rgba(201,138,45,.55);margin-top:18px}
+.px-cta:hover{filter:brightness(1.05);text-decoration:none;transform:translateY(-1px)}
+.px-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:18px}
+.px-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}
+.px-card h2{font-size:1.06rem;margin-bottom:8px;color:var(--ink)}
+.px-card p{color:var(--mut);font-size:.94rem}
+.px-card ul{list-style:none;margin-top:6px}
+.px-card li{padding:5px 0 5px 22px;position:relative;font-size:.94rem;color:var(--mut)}
+.px-card li::before{content:"✦";position:absolute;inset-inline-start:0;color:var(--acc);font-size:.8rem}
+.px-quote{border-inline-start:4px solid var(--acc);background:var(--soft);border-radius:0 16px 16px 0;padding:16px 18px;margin-top:18px;color:var(--mut);font-size:.98rem}
+.px-quote strong{color:var(--ink);display:block;margin-bottom:4px}
+.px-band{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:18px}
+.px-stat{background:var(--grad);color:#fff;border-radius:16px;padding:14px 10px;text-align:center}
+.px-stat b{display:block;font-size:.86rem}
+.px-stat span{display:block;font-size:.7rem;opacity:.92}
+.px-steps{list-style:none;counter-reset:s;margin-top:10px}
+.px-steps li{counter-increment:s;position:relative;padding:8px 0 8px 40px;color:var(--mut);font-size:.94rem}
+.px-steps li::before{content:counter(s);position:absolute;inset-inline-start:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#fff;font-weight:700;font-size:.82rem;display:grid;place-items:center}
+.px-links{display:flex;flex-wrap:wrap;gap:8px}
+.px-links a{font-size:.85rem;background:var(--soft);border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:var(--ink);font-weight:600}
+.px-links a:hover{background:var(--acc);color:#fff;text-decoration:none;border-color:var(--acc)}
+.px-faq details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-top:10px}
+.px-faq summary{font-weight:700;cursor:pointer;font-size:.96rem}
+.px-faq p{color:var(--mut);font-size:.92rem;margin-top:8px}
+.px-sec-t{font-size:1.25rem;margin:26px 0 4px;color:var(--ink);display:flex;align-items:center;gap:10px}
+.px-sec-t::before{content:"";width:26px;height:4px;border-radius:2px;background:var(--grad)}
+.px-foot{background:#221f1a;color:#cfc8bb;margin-top:34px}
+.px-foot .m{padding-top:20px;padding-bottom:18px}
+.px-foot a{color:#e8c48c}
+.px-copy{font-size:.78rem;color:#a79e8f;text-align:center;margin-top:14px}
+/* --- premium unified components (info hubs / static / related block / footer grid) --- */
+.container{width:min(1080px,94%);margin-inline:auto;padding-inline:1rem}
+.breadcrumb{font-size:.88rem;color:var(--mut);background:#fff;border:1px solid var(--line);display:inline-flex;gap:6px;align-items:center;padding:6px 14px;border-radius:999px;margin:18px 0 0;flex-wrap:wrap}
+.breadcrumb a{color:var(--acc)}
+.hero{border-radius:26px;background:radial-gradient(1200px 300px at 15% -10%,rgba(201,138,45,.14),transparent),var(--soft);border:1px solid var(--line);padding:30px 26px;margin:22px 0;text-align:center;position:relative;overflow:hidden}
+.hero img{display:block;margin:0 auto 1rem;max-height:190px;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.hero h1{color:var(--ink);font-size:clamp(1.5rem,3.6vw,2.2rem);margin-bottom:10px}
+.hero p{color:var(--mut);max-width:660px;margin:0 auto .9rem}
+.cta{display:inline-block;background:var(--grad);color:#fff;font-weight:700;padding:12px 26px;border-radius:999px;box-shadow:0 10px 22px -8px var(--acc)}
+.cta:hover{filter:brightness(1.05);text-decoration:none;transform:translateY(-1px)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+.card h2{font-size:1.06rem;margin-bottom:8px;color:var(--ink)}
+.card h3{font-size:.98rem;margin:10px 0 4px;color:var(--ink)}
+.card p{color:var(--mut);font-size:.94rem}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.grid-4 a{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:center;color:var(--ink);font-weight:600;font-size:.92rem;min-height:40px;display:flex;align-items:center;justify-content:center}
+.grid-4 a:hover{background:var(--acc);color:#fff;border-color:var(--acc);text-decoration:none}
+ul.ticks{list-style:none;margin:0;padding:0}
+ul.ticks li{padding:.4rem 0 .4rem 1.6rem;position:relative;color:var(--mut);font-size:.95rem}
+ul.ticks li::before{content:"\2731";position:absolute;inset-inline-start:0;color:var(--acc);font-size:.8rem}
+.answer{border-inline-start:4px solid var(--acc);background:var(--soft);border-radius:0 16px 16px 0;padding:16px 18px;margin:14px 0;color:var(--mut)}
+.answer strong{color:var(--ink);display:block;margin-bottom:4px}
+.share,.badge-inline{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.3rem .9rem;margin:.2rem;font-size:.85rem;font-weight:600;color:var(--acc)}
+.steps{counter-reset:step}
+.step{position:relative;padding:0 2.6rem 1rem 0;counter-increment:step;color:var(--mut)}
+.step::before{content:counter(step);position:absolute;inset-inline-start:0;top:0;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--grad);color:#fff;font-weight:700;font-size:.8rem;display:grid;place-items:center}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;margin:14px 0;background:#fff}
+table{width:100%;border-collapse:collapse}
+th,td{padding:.65rem .9rem;text-align:right;border-bottom:1px solid var(--line);font-size:.93rem}
+th{background:var(--ink);color:#fff;font-weight:700}
+tr:nth-child(even) td{background:#faf8f3}
+.matrix th,.matrix td{min-width:80px;text-align:center;white-space:nowrap}
+.matrix th:first-child,.matrix td:first-child{text-align:right;min-width:120px;white-space:normal}
+aside ul{list-style:none;margin:0;padding:0}
+aside li{padding:.3rem 0;border-bottom:1px dashed var(--line);font-size:.94rem;color:var(--mut)}
+aside li a{color:var(--acc)}
+code{background:var(--soft);border:1px solid var(--line);padding:.15rem .5rem;border-radius:6px;font-size:.9em}
+.site-footer{background:#221f1a;color:#cfc8bb;margin-top:36px}
+.site-footer a{color:#e8c48c}
+.site-footer h3{color:#fff;font-size:.98rem;margin:.6rem 0}
+.footer-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.2rem;padding:1.4rem 0 .6rem}
+.footer-links nav:first-child h3{margin-top:0}
+.footer-links nav a{color:#cfc8bb;display:block;padding:.3rem 0;font-size:.92rem}
+.footer-links nav a:hover{color:#fff}
+.footer-bottom{border-top:1px solid #3a3a46;margin-top:1rem;padding-top:.9rem;text-align:center;font-size:.82rem;color:#a79e8f}
+.iq-related-rooms{max-width:1080px;margin:26px auto 0;padding:0 16px}
+.iq-related-rooms h2{font-size:1.05rem;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.iq-related-rooms h2::before{content:"";width:24px;height:4px;border-radius:2px;background:var(--grad)}
+.iq-related-rooms ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0}
+.iq-related-rooms li{display:inline-block}
+.iq-related-rooms a{display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.87rem;font-weight:600;color:var(--ink)}
+.iq-related-rooms a:hover{background:var(--grad);color:#fff;border-color:transparent;text-decoration:none}
+.px-footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem;padding:1.2rem 0 .4rem}
+.px-footgrid h3{color:#fff;font-size:.98rem;margin:0 0 .5rem}
+.px-footgrid a{display:block;padding:.25rem 0;font-size:.9rem;color:#cfc8bb}
+.px-footgrid a:hover{color:#e8c48c;text-decoration:none}
+.px-footgrid p{font-size:.85rem;color:#a79e8f;line-height:1.8;margin:0}
+@media(max-width:560px){.px-navlinks{display:none}.grid-2,.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:repeat(2,1fr)}.container{width:100%;padding-inline:.6rem}.hero{padding:1.4rem 1rem;margin:14px 0}.hero h1{font-size:1.4rem}.card{padding:1rem}.iq-related-rooms h2{font-size:1rem}.px-footgrid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}}
+@media(max-width:360px){.grid-4{grid-template-columns:repeat(2,1fr);gap:.6rem}.footer-links{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.px-top,.px-nav,.px-cta,.px-band{display:none}.px-hero{border-radius:0}}
+.px-banner{margin:0 0 14px}.px-banner img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 2px 12px rgba(0,0,0,.10)}</style>
+    <meta name="description" content="شات بنات كول دردشة عربية مجانية تجمع محبي السوالف الراقية من كل الدول العربية للشات الكتابي والصوتي، تعمل من المتصفح على الجوال والكمبيوتر دون تسجيل أو تحم…">
+    
+	
+	
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <title>شات بنات كول | شات درر العرب</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/wp-content/themes/blog-theme/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fontawsome CSS -->
+    
+
+    <!-- fonts CSS -->
+    
+    
+
+    <!-- Custom styles for this template -->
+    <link href="/wp-content/themes/blog-theme/css/style.css" rel="stylesheet">
+    
+    
+    
+    
+
+
+<style>
+
+.articleimg{position:relative;overflow:hidden}
+.articleimg::before{content:"";position:absolute;inset:0;background:url('/assets/brand-logo.webp') center/56px no-repeat;opacity:.5;pointer-events:none;z-index:2}</style>
+    <link rel="canonical" href="https://iraqia-chat.com/bnat-kwl/">
+    <meta property="og:url" content="https://iraqia-chat.com/bnat-kwl/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="شات درر العرب">
+    <meta property="og:locale" content="ar_AR" /><meta property="og:title" content="شات بنات كول | شات درر العرب" /><meta property="og:description" content="شات بنات كول دردشة عربية مجانية تجمع محبي السوالف الراقية من كل الدول العربية للشات الكتابي والصوتي، تعمل من المتصفح على الجوال والكمبيوتر دون تسجيل أو تحم…" /><meta property="og:image" content="https://iraqia-chat.com/img/rooms/bnat-kwl.jpg" /><meta property="og:image:width" content="1280" /><meta property="og:image:height" content="630" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="شات بنات كول | شات درر العرب" /><meta name="twitter:description" content="شات بنات كول دردشة عربية مجانية تجمع محبي السوالف الراقية من كل الدول العربية للشات الكتابي والصوتي، تعمل من المتصفح على الجوال والكمبيوتر دون تسجيل أو تحم…" /><meta name="twitter:image" content="https://iraqia-chat.com/img/rooms/bnat-kwl.jpg" />
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://iraqia-chat.com/#organization","name":"شات درر العرب","url":"https://iraqia-chat.com/bnat-kwl/","logo":{"@type":"ImageObject","url":"https://iraqia-chat.com/bnat-kwl/"}},{"@type":"WebSite","@id":"https://iraqia-chat.com/#website","url":"https://iraqia-chat.com/bnat-kwl/","name":"شات درر العرب","inLanguage":"ar","publisher":{"@id":"https://iraqia-chat.com/#organization"},"potentialAction":{"@type":"SearchAction","target":"https://iraqia-chat.com/search?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"DiscussionForumPage","@id":"https://iraqia-chat.com/bnat-kwl#webpage","url":"https://iraqia-chat.com/bnat-kwl/","name":"شات بنات كول | شات درر العرب","description":"شات بنات كول دردشة عربية مجانية تجمع محبي السوالف الراقية من كل الدول العربية للشات الكتابي والصوتي، تعمل من المتصفح على الجوال والكمبيوتر دون تسجيل أو تحم…","inLanguage":"ar","isPartOf":{"@id":"https://iraqia-chat.com/#website"}}]}</script><script>(()=>{const m=window.modelContext||(window.navigator&&navigator.modelContext);if(!m)return;m.registerTool({name:"search_site",description:"Search chat rooms and pages on this site",inputSchema:{type:"object",properties:{q:{type:"string",description:"Search keywords"}},required:["q"]},execute:({q})=>{location.assign("/search/?q="+encodeURIComponent(q));}});})();</script></head><body>
+<header class="ds-header"><div class="ds-container ds-nav"><a class="ds-brand" href="https://iraqia-chat.com/"><img src="/assets/brand-logo.webp" srcset="/assets/brand-logo-40.webp 40w, /assets/brand-logo.webp 1024w" sizes="34px" alt="" width="34" height="34" loading="lazy">شات درر العرب</a><nav class="ds-menu" aria-label="القائمة الرئيسية"><a href="https://iraqia-chat.com/" class="is-active" aria-current="page">الرئيسية</a><a href="https://iraqia-chat.com/rules/">القوانين</a><a href="https://iraqia-chat.com/articles/">المقالات</a><a href="https://iraqia-chat.com/questions/">الأسئلة</a><a href="https://iraqia-chat.com/search/">بحث</a><a href="https://iraqia-chat.com/sub/">الاشتراكات</a><a href="https://iraqia-chat.com/contact/">اتصل بنا</a></nav><form class="ds-search-mini" role="search" action="https://iraqia-chat.com/search/" method="get" toolname="search_chat" tooldescription="البحث في غرف الدردشة وصفحات الموقع" toolautosubmit><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><input type="search" name="q" placeholder="ابحث" aria-label="بحث" toolparamdescription="كلمات البحث"></form><a class="ds-cta-mini" href="https://iraqia-chat.com/">دخول</a><button class="ds-theme-btn" type="button" aria-label="تبديل السمة">◐</button><button class="ds-burger" type="button" aria-label="فتح القائمة" aria-expanded="false"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></button></div></header>
+<aside class="ds-drawer" hidden><a href="https://iraqia-chat.com/" class="is-active" aria-current="page">الرئيسية</a><a href="https://iraqia-chat.com/rules/">القوانين</a><a href="https://iraqia-chat.com/articles/">المقالات</a><a href="https://iraqia-chat.com/questions/">الأسئلة</a><a href="https://iraqia-chat.com/search/">بحث</a><a href="https://iraqia-chat.com/sub/">الاشتراكات</a><a href="https://iraqia-chat.com/contact/">اتصل بنا</a></aside>
+<div class="ds-scrim"></div>
+
+<main class="body-content"><div class="container"><div class="row"><div class="col-12 p-0"><div class="room_content" style="background:#fff;border-radius:10px;padding:16px;margin:20px auto;"><article class='recipe-article'><div class="ds-container"><figure class="px-banner"><img src="https://iraqia-chat.com/img/rooms/bnat-kwl.jpg" alt="شات بنات كول - دخول مباشر مجاني من المتصفح" width="1280" height="630" loading="lazy" fetchpriority="high"></figure><section class="px-hero ds-reveal"><span class="px-kicker">دردشة عربية مجانية بأسمها</span><h1>شات بنات كول</h1><p>شات بنات كول يجمع محبي السوالف العربية من كل الدول، شات كتابي وصوتي مجاني يعمل من الجوال في ثوانٍ بأسماء مستعارة تحفظ الخصوصية. <strong>(شات درر العرب)</strong></p><div class="px-chips"><span class="px-chip">شات كتابي</span><span class="px-chip">شات صوتي</span><span class="px-chip">للجوال</span><span class="px-chip">بدون تسجيل</span><span class="px-chip">مجاني</span></div><a class="px-cta" href="https://iraqia-chat.com/" rel="nofollow noopener">دخول الشات الآن</a></section><div class="px-band"><div class="px-stat"><b>مجاني بالكامل</b><span>بدون رسوم أو اشتراك</span></div><div class="px-stat"><b>بثاني تحب تدخل؟</b><span>دخول فوري بدون تسجيل</span></div><div class="px-stat"><b>من المتصفح</b><span>الجوال والكمبيوتر</span></div><div class="px-stat"><b>كتابي وصوتي</b><span>شات نصي وصوتي مباشر</span></div></div><section class="px-quote"><strong>إجابة سريعة:</strong>شات بنات كول دردشة عربية مجانية تجمع محبي السوالف الراقية من كل الدول العربية للشات الكتابي والصوتي، تعمل من المتصفح على الجوال والكمبيوتر دون تسجيل أو تحميل، مع دخول فوري بأسماء مستعارة ومشرفين متواجدين على مدار الساعة يحفظون أجواء الاحترام والدفء ويعاملون الجميع بإنصاف.</section><section class="px-grid"><div class="px-card"><h2>مميزات شات بنات كول</h2><ul><li>دخول فوري دون تسجيل</li><li>مجاني بالكامل للجميع</li><li>سرعة عالية دون تحميل</li><li>تحديثات مستمرة للواجهة</li><li>شات كتابي وصوتي</li></ul></div><div class="px-card"><h2>كيف تبدأ؟</h2><ol class="px-steps"><li>افتح الصفحة من متصفح جوالك أو جهازك.</li><li>اكتب اسماً مستعاراً يعبر عنك واضغط دخول.</li><li>أدخل وابدأ السوالف فوراً مع أعضاء من كل الدول.</li></ol></div><div class="px-card"><h2>لماذا شات بنات كول؟</h2><p>التجربة مصممة خصيصاً للجوال، فلا تطبيقات ثقيلة ولا صفحات بطيئة، بل شاشة خفيفة تكتب فيها وتسمع بسرعة.</p><p>للمقربين يوجد خاص تتبادل فيه الرسائل بحرية، وللجديد نصائح من السوابر تجعل دخولك الأول مريحاً.</p></div></section><h2 class="px-sec-t">دردشات بأسمائها</h2><section class="px-card"><div class="px-links"><a href="https://iraqia-chat.com/dlaa-jnwb/">شات دلع جنوب</a><a href="https://iraqia-chat.com/shlh-aaraq/">شات شله عراق</a><a href="https://iraqia-chat.com/shlh-bghdad/">شات شله بغداد</a><a href="https://iraqia-chat.com/shlh-khlyj/">شات شله خليج</a><a href="https://iraqia-chat.com/shlh-aarb/">شات شلة عرب</a><a href="https://iraqia-chat.com/shlh-khlyj-2/">شات شلة خليج</a><a href="https://iraqia-chat.com/shlh-wtn/">شات شله وطن</a><a href="https://iraqia-chat.com/nbaa-alhb/">شات نبع الحب</a><a href="https://iraqia-chat.com/trath-aaraq/">شات تراث عراق</a><a href="https://iraqia-chat.com/rwh-khlyj/">شات روح خليج</a></div></section><h2 class="px-sec-t">غرف وأقسام الشات</h2><section class="px-card"><div class="px-links"><a href="https://iraqia-chat.com/iraq-chat/">شات العراق</a><a href="https://iraqia-chat.com/saudi-chat/">شات السعودية</a><a href="https://iraqia-chat.com/egypt-chat/">شات مصر</a><a href="https://iraqia-chat.com/maroc-chat/">شات المغرب</a><a href="https://iraqia-chat.com/Chat-Girls/">شات بنات</a><a href="https://iraqia-chat.com/watan/">شات وطن</a><a href="https://iraqia-chat.com/arab-chat/">شات عربي</a><a href="https://iraqia-chat.com/mobile-chat/">شات للجوال</a><a href="https://iraqia-chat.com/voice-chat/">شات صوتي</a><a href="https://iraqia-chat.com/text-chat/">شات كتابي</a><a href="https://iraqia-chat.com/free-chat/">شات بدون تسجيل</a><a href="https://iraqia-chat.com/girls-chat/">شات بنات</a><a href="https://iraqia-chat.com/gulf-chat/">شات خليجي</a><a href="https://iraqia-chat.com/iraqi-chat/">شات عراقي</a></div></section><h2 class="px-sec-t">دردشات الدول</h2><section class="px-card"><div class="px-links"><a href="https://iraqia-chat.com/iraq/">شات العراق</a><a href="https://iraqia-chat.com/saudi/">شات السعودية</a><a href="https://iraqia-chat.com/egypt/">شات مصري</a><a href="https://iraqia-chat.com/algeria/">شات الجزائر</a><a href="https://iraqia-chat.com/bahrain/">شات البحرين</a><a href="https://iraqia-chat.com/emirates/">شات الإمارات</a><a href="https://iraqia-chat.com/jordan/">شات الأردن</a><a href="https://iraqia-chat.com/kuwait/">شات الكويت</a><a href="https://iraqia-chat.com/lebanon/">شات لبنان</a><a href="https://iraqia-chat.com/libya/">شات ليبيا</a><a href="https://iraqia-chat.com/morocco/">شات المغرب</a><a href="https://iraqia-chat.com/oman/">شات عمان</a><a href="https://iraqia-chat.com/palestine/">شات فلسطين</a><a href="https://iraqia-chat.com/qatar/">شات قطر</a><a href="https://iraqia-chat.com/sudan/">شات السودان</a><a href="https://iraqia-chat.com/syria/">شات سوريا</a><a href="https://iraqia-chat.com/tunnis/">شات تونس</a><a href="https://iraqia-chat.com/yemen/">شات اليمن</a><a href="https://iraqia-chat.com/aden/">شات عدن</a></div></section><h2 class="px-sec-t">أسئلة شائعة</h2><section class="px-faq"><details><summary>هل دخول شات بنات كول مجاني؟</summary><p>نعم، الدخول إلى شات بنات كول مجاني بالكامل وبدون تسجيل أو اشتراك، ويعمل من المتصفح على الجوال والكمبيوتر وفي أي وقت.</p></details><details><summary>هل يعمل شات بنات كول على الجوال؟</summary><p>يعمل على أندرويد وآيفون وعلى أي متصفح جوال أو كمبيوتر، دون تحميل أي تطبيق أو برنامج وبسرعة عالية.</p></details><details><summary>كيف أغير اسمي في شات بنات كول؟</summary><p>يمكنك تغيير اسمك في أي وقت واختيار اسم مستعار يعبر عنك، مع بقاء خصوصيتك محفوظة دائماً.</p></details></section></div></article></div></div></div></div></main>
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-6 text-right">
+                <img loading="lazy" decoding="async" class="img-fluid footer-brand" src="/assets/brand-logo.webp" alt="شات درر العرب" width="497" height="501">
+                <p class="footer_description">شات درر العرب غرفة دردشة عربية مجانية تجمع شباب وبنات العراق والخليج للشات الكتابي والصوتي، تعمل من الجوال مباشرة دون تسجيل، بأجواء عائلية راقية على مدار الساعة.</p>
+                <div class="footer-social" >
+                    <a class="social_h_icon fscoial header_social1" href="https://iraqia-chat.com/" aria-label="فيسبوك"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.91v-7.01H7.9v-2.9h2.54V9.86c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46H15.2c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7.01C13.56 21.2 22 17.06 22 12.06z"/></svg></a>
+                    <a class="social_h_icon fscoial header_social1" href="https://iraqia-chat.com/" aria-label="تويتر"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mt-sm-3">
+                <h2 class="menu_title">درر العرب</h2>
+                <ul class="footer-menu pr-3"><li><a href="https://iraqia-chat.com/">الرئيسية</a></li>
+<li><a href="https://iraqia-chat.com/Forum/">منتدى الدردشة</a></li>
+<li><a href="https://iraqia-chat.com/blog/">المدونة</a></li>
+<li><a href="https://iraqia-chat.com/news/">أخبار الشات</a></li>
+</ul>
+            </div>
+            <div class="col-lg-2 col-md-3 col-6 mt-sm-3">
+                <h2 class="menu_title">معلومات الموقع</h2>
+                <ul class="footer-menu pr-2"><li><a href="https://iraqia-chat.com/questions/">الأسئلة الشائعة</a></li>
+<li><a href="https://iraqia-chat.com/terms/">شروط الاستخدام</a></li>
+<li><a href="https://iraqia-chat.com/privacy/">سياسة الخصوصية</a></li>
+<li><a href="https://iraqia-chat.com/rules/">قوانين الموقع</a></li>
+</ul>            </div>
+
+        </div>
+
+    </div>
+    <div class="middle_footer">
+        <div class="container">
+            <ul class="middle_menu"><li><a href="https://iraqia-chat.com/">الرئيسية</a></li>
+<li><a href="https://iraqia-chat.com/questions/">الأسئلة الشائعة</a></li>
+<li><a href="https://iraqia-chat.com/terms/">شروط الاستخدام</a></li>
+<li><a href="https://iraqia-chat.com/privacy/">سياسة الخصوصية</a></li>
+</ul>            <p class="copyrights">&copy; 2026 شات درر العرب &#183; جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+
+
+	
+</footer>
+
+
+
+
+<script src="/assets/app.js" defer></script>
+</body>
+</html>

@@ -37,7 +37,7 @@ def _legacy_relpath(p):
 
 html_files = [p for p in html_files if not _legacy_relpath(p)]
 
-managed = [p for p in html_files if 'premium.min.css' in read(p)]
+managed = [p for p in html_files if ('premium.min.css' in read(p) or '<header class="ds-header"' in read(p))]
 
 titles, descs = {}, {}
 errors, warns = [], []

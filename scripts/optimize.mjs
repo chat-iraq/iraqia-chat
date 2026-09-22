@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-/* optimize.mjs — WordPress-cruft + Lighthouse + SEO fixer for statically exported pages.
+/* optimize.mjs â€” WordPress-cruft + Lighthouse + SEO fixer for statically exported pages.
    Usage: node scripts/optimize.mjs            (runs against the repo root / current dir)
    Idempotent: safe to re-run; all transforms are idempotent text rewrites. */
 import { readdirSync, readFileSync, writeFileSync, statSync, rmSync } from 'node:fs';
-import { join, extname, relative } from 'node:path';
+import { join, extname, relative, basename } from 'node:path';
 
 const ROOT = process.cwd();
+const SITE_HOST = ({ 'chatiraq': 'https://chat-iraq.com', 'iraqia-chat': 'https://iraqia-chat.com' })[basename(ROOT)] || '';
 const SKIP = new Set(['.git', 'node_modules', '_audit', 'wp-admin', 'wp-includes', 'wp-content', 'scripts', 'seo', 'assets', '.github', 'premium']);
 
 /* ---------- shared helpers ---------- */
@@ -28,6 +29,87 @@ function cleanUrl(u) {
   let b = u.slice(0, -5);
   if (b.endsWith('/index')) b = b.slice(0, -6) + '/';
   return b;
+}
+
+/* page dirs: every non-root directory that holds index.html (slug-based URLs after restructure) */
+let PAGE_SLUGS = new Set();
+
+/* repair "https://domain+slug[/â€¦]" glue (domain and slug fused without "/") â€”
+   guarded to only fire when the stripped host is a known site host, so a global
+   slug like "m/article" (lead "m") can never eat into "â€¦com" of a legit URL */
+const KNOWN_HOSTS = new Set(['chat-iraq.com', 'iraqia-chat.com']);
+function repairGlue(u) {
+  const qi = u.search(/[?#]/);
+  const base = qi === -1 ? u : u.slice(0, qi);
+  const tail = qi === -1 ? '' : u.slice(qi);
+  const m = base.match(/^(https?:\/\/)([^/]+)(.*)$/);
+  if (!m) return u;
+  const dom = m[2];
+  for (const slug of PAGE_SLUGS) {
+    const lead = slug.split('/')[0];
+    if (dom.length > lead.length + 10 && dom.endsWith(lead)) {
+      const base2 = dom.slice(0, -lead.length);
+      if (KNOWN_HOSTS.has(base2)) {
+        return m[1] + base2 + '/' + slug + tail;
+      }
+    }
+  }
+  for (const slug of PAGE_SLUGS) {
+    if (dom.length > slug.length + 10 && dom.endsWith(slug)) {
+      const base2 = dom.slice(0, -slug.length);
+      if (KNOWN_HOSTS.has(base2)) {
+        return m[1] + base2 + '/' + slug + m[3] + tail;
+      }
+    }
+  }
+  return u;
+}
+
+/* turn "â€¦/slug" into "â€¦/slug/" for any URL whose path resolves to a real page dir. */
+function slashUrl(u) {
+  const qi = u.search(/[?#]/);
+  const base = qi === -1 ? u : u.slice(0, qi);
+  const tail = qi === -1 ? '' : u.slice(qi);
+  let prefix = '';
+  let path = '';
+  if (/^https?:\/\//.test(base)) {
+    const m = base.match(/^(https?:\/\/[^\/]+)(\/.*)?$/);
+    prefix = m ? m[1] : base;
+    path = m && m[2] ? m[2] : '';
+  } else if (base.startsWith('/')) {
+    path = base;
+  } else {
+    return u; /* mailto:, tel:, #, fragments, relative links */
+  }
+  const clean = path.replace(/^\//, '').replace(/\/$/, '');
+  if (!clean || /[\s]/.test(clean) || /\.\w+$/.test(clean)) return u;
+  if (!PAGE_SLUGS.has(clean)) return u;
+  return prefix + (path.endsWith('/') ? path : path + '/') + tail;
+}
+
+/* news/ + preview/ templates: refs whose first segment is a real site-root page must be
+   absolute; template-relative assets (lib/, css/, img/, js/) break at depth>=2 and need
+   "../"; page-internal refs (contact, single-page) also climb one level. */
+function depthFix(html, relp) {
+  if (!/^(?:news|preview)\//.test(relp)) return html;
+  const depth = relp.split('/').length - 1;
+  return html.replace(/(href|src)\s*=\s*"([^"]+)"/g, (m, a, u) => {
+    if (/^(?:https?:|mailto:|tel:|#|data:|about:|javascript:)/.test(u) || u.startsWith('/') || u.startsWith('..')) return m;
+    const base = u.split(/[?#]/)[0];
+    const first = base.split('/')[0];
+    if (PAGE_SLUGS.has(first)) {
+      const seg = u.match(/^([^?#]*)([?#].*)?$/);
+      let p = seg[1];
+      if (p && !p.endsWith('/')) p += '/';
+      return a + '="/' + p + (seg[2] || '') + '"';
+    }
+    if (depth > 1) {
+      if (base === 'contact' || base === 'contact/') return a + '="../contact/"';
+      if (base === 'single-page' || base === 'single-page/') return a + '="../single-page/"';
+      if (/^(?:lib|css|img|js)\//.test(base)) return a + '="../' + u + '"';
+    }
+    return m;
+  });
 }
 
 function esc(s) {
@@ -108,15 +190,15 @@ function metaDesc(html) {
 function descFromQuote(html) {
   const q = html.match(/<section class="px-quote">[\s\S]*?<\/section>/);
   if (q) {
-    const t = stripTags(q[0]).replace(/^إجابة\s*سريعة:/, '').trim();
-    if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + '…' : t;
+    const t = stripTags(q[0]).replace(/^ط¥ط¬ط§ط¨ط©\s*ط³ط±ظٹط¹ط©:/, '').trim();
+    if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + 'â€¦' : t;
   }
   const hero = html.match(/<section class="px-hero[^"]*">([\s\S]*?)<\/section>/);
   if (hero) {
     const p = hero[1].match(/<p>([\s\S]*?)<\/p>/);
     if (p) {
       const t = stripTags(p[1]);
-      if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + '…' : t;
+      if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + 'â€¦' : t;
     }
   }
   const main = html.match(/<main[\s\S]*?<\/main>/);
@@ -124,14 +206,14 @@ function descFromQuote(html) {
     for (const mm of main[0].matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)) {
       if (/footer_description/.test(mm[0])) continue;
       const t = stripTags(mm[1]).replace(/&nbsp;/g, ' ').trim();
-      if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + '…' : t;
+      if (t.length >= 60) return t.length > 158 ? t.slice(0, 155).trim() + 'â€¦' : t;
     }
   }
   return null;
 }
 
 /* ---------- page transform ---------- */
-function fixHtml(html, rel, genericTitles) {
+function fixHtml(html, rel, genericTitles, dsCss, premCss) {
   const start = html.length;
   const relp = rel.replace(/\\/g, '/');
   const isHome = relp === 'index.html';
@@ -145,7 +227,42 @@ function fixHtml(html, rel, genericTitles) {
     (html.match(/<meta property="og:site_name" content="([^"]+)"/) || [])[1] ||
     (html.match(/<a class="ds-brand"[^>]*>[\s\S]*?alt="([^"]+)"[\s\S]*?<\/a>/) || [])[1] ||
     (html.match(/<img[^>]*class="[^"]*footer-brand[^"]*"[^>]*alt="([^"]+)"/) || [])[1] || '';
-  const host = (html.match(/rel="canonical" href="(https:\/\/[^\/"]+)/) || [])[1] || '';
+  let host = SITE_HOST;
+  if (!host) {
+    const hostSrc = html.match(/rel="canonical" href="(https:\/\/[^"]+)/)
+      || html.match(/property="og:image" content="(https:\/\/[^"]+)"/)
+      || html.match(/name="twitter:image" content="(https:\/\/[^"]+)"/);
+    if (hostSrc) { try { host = new URL(hostSrc[1]).origin; } catch { host = (hostSrc[1].match(/https:\/\/[^/]+/) || [''])[0]; } }
+  }
+
+  /* self-heal: regenerate this page's canonical/og:url/twitter:url from its own slug dir (slug pages only; root files & blog.amp.html keep their flat URLs) */
+  const isSlugPage = /\/?index\.html$/.test(rel);
+  const selfPath = isSlugPage ? rel.replace(/\\/g, '/').replace(/\/?index\.html$/, '') : '';
+  if (host && selfPath) {
+    const canonFull = host + '/' + selfPath + '/';
+    if (/<link rel="canonical"[^>]*>/.test(html)) {
+      html = html.replace(/<link rel="canonical"[^>]*>/, '<link rel="canonical" href="' + canonFull + '">');
+      html = html.replace(/<meta property="og:url"[^>]*>/, '<meta property="og:url" content="' + canonFull + '">');
+      html = html.replace(/<meta name="twitter:url"[^>]*>/, '<meta name="twitter:url" content="' + canonFull + '">');
+    } else {
+      html = html.replace('</title>',
+        '</title>\n    <link rel="canonical" href="' + canonFull + '" />\n    <meta property="og:url" content="' + canonFull + '" />\n    <meta name="twitter:url" content="' + canonFull + '" />');
+    }
+  }
+
+  /* flat legacy AMP pages (blog.amp.html): keep their flat canonical ("â€¦/blog/blog.amp") */
+  if (host && /\.amp\.html$/.test(rel)) {
+    const ampRel = rel.replace(/\\/g, '/');
+    const ampCanon = host + '/' + ampRel.replace(/\.html$/, '');
+    if (/<link rel="canonical"[^>]*>/.test(html)) {
+      html = html.replace(/<link rel="canonical"[^>]*>/, '<link rel="canonical" href="' + ampCanon + '">');
+      html = html.replace(/<meta property="og:url"[^>]*>/, '<meta property="og:url" content="' + ampCanon + '">');
+      html = html.replace(/<meta name="twitter:url"[^>]*>/, '<meta name="twitter:url" content="' + ampCanon + '">');
+    } else {
+      html = html.replace('</title>',
+        '</title>\n    <link rel="canonical" href="' + ampCanon + '" />\n    <meta property="og:url" content="' + ampCanon + '" />\n    <meta name="twitter:url" content="' + ampCanon + '" />');
+    }
+  }
 
   if (!html.includes('/assets/favicon-64.png')) {
     html = html.replace(
@@ -160,8 +277,8 @@ function fixHtml(html, rel, genericTitles) {
     const q = (html.match(/<section class="px-quote"><strong>[^<]*<\/strong>\s*([^<]{0,170})/) || [])[1] || '';
     let s = (h1 || t).trim().replace(/<[^>]+>/g, ' ').replace(/&[a-zA-Z#0-9]{1,8};/g, ' ').replace(/\s+/g, ' ').trim();
     let extra = q.trim().replace(/<[^>]+>/g, ' ').replace(/&[a-zA-Z#0-9]{1,8};/g, ' ').replace(/\s+/g, ' ').trim();
-    if (extra && extra.indexOf(s) !== 0) s = s ? s + ' — ' + extra : extra;
-    if (s.length > 158) s = s.slice(0, 155).trim() + '…';
+    if (extra && extra.indexOf(s) !== 0) s = s ? s + ' â€” ' + extra : extra;
+    if (s.length > 158) s = s.slice(0, 155).trim() + 'â€¦';
     if (s) html = html.replace('<meta name="description" content="">', '<meta name="description" content="' + esc(s) + '">');
   }
 
@@ -191,11 +308,11 @@ function fixHtml(html, rel, genericTitles) {
 
   html = html.replace(
     /<a class="social_h_icon fscoial header_social1"[^>]*href="([^"]+)"[^>]*>\s*<i class="fab fa-facebook-f fa-sm sociali "><\/i>\s*<\/a>/g,
-    function (m, href) { return '<a class="social_h_icon fscoial header_social1" href="' + href + '" aria-label="فيسبوك">' + FB_SVG + '</a>'; }
+    function (m, href) { return '<a class="social_h_icon fscoial header_social1" href="' + href + '" aria-label="ظپظٹط³ط¨ظˆظƒ">' + FB_SVG + '</a>'; }
   );
   html = html.replace(
     /<a class="social_h_icon fscoial header_social1"[^>]*href="([^"]+)"[^>]*>\s*<i class="fab fa-twitter fa-sm sociali "><\/i>\s*<\/a>/g,
-    function (m, href) { return '<a class="social_h_icon fscoial header_social1" href="' + href + '" aria-label="تويتر">' + X_SVG + '</a>'; }
+    function (m, href) { return '<a class="social_h_icon fscoial header_social1" href="' + href + '" aria-label="طھظˆظٹطھط±">' + X_SVG + '</a>'; }
   );
 
   html = html.replace(/(href|action)="([^"]*\.html)"/g, (m, a, u) => a + '="' + cleanUrl(u) + '"');
@@ -204,7 +321,44 @@ function fixHtml(html, rel, genericTitles) {
   html = html.replace(/([a-z-]+=")%[^"]+\.html(")/g, (m, a, b) => a + b);
   html = html.replace(/(?:^|\n)\s*<a onclick="location\.href=['"]\.[\s\S]*?<\/a>\s*/g, '');
 
-  /* --- SEO: unique per-page title --- */
+  /* --- professional URLs: appendix "/" for every link that now resolves to a page dir --- */
+  /* repair an earlier-round mangling (canonical/og:url tags whose prefix was dropped) */
+  html = html.replace(/^(\s*)href="([^"]+)">\r?\n\1content="([^"]+)">/gm,
+    (m, sp, a, b) => sp + '<link rel="canonical" href="' + a + '">\n' + sp + '<meta property="og:url" content="' + b + '">');
+  html = html.replace(/^(\s*)content="([^"]+)">\r?$/gm,
+    (m, sp, b) => sp + '<meta name="twitter:url" content="' + b + '">');
+  html = html.replace(/(href|action|src)="([^"]+)"/g, (m, a, u) => a + '="' + slashUrl(repairGlue(u)) + '"');
+  html = html.replace(/<link rel="canonical" href="([^"]+)"/g, (m, u) => '<link rel="canonical" href="' + slashUrl(u) + '"');
+  html = html.replace(/<meta property="og:url" content="([^"]+)"/g, (m, u) => '<meta property="og:url" content="' + slashUrl(u) + '"');
+  html = html.replace(/<meta name="twitter:url" content="([^"]+)"/g, (m, u) => '<meta name="twitter:url" content="' + slashUrl(u) + '"');
+
+  /* heal earlier-round mishaps: WebMCP attrs appended AFTER ">" (stray visible text, grew each run)
+     and the relative "search/?q=" inside the injected agent-search script (fake broken-link) */
+  let w2 = html;
+  do {
+    html = w2;
+    w2 = w2.replace(/>\s*toolname="[^"]*" tooldescription="[^"]*"(?:\s*toolautosubmit)?(?=[\s<])/g, '>');
+    w2 = w2.replace(/>\s*toolparamdescription="[^"]*"/g, '>');
+  } while (w2 !== html);
+  html = html.replace(/location\.href="[^"]*search\/?\?q="\+encodeURIComponent\(q\)/g,
+    'location.assign("/search/?q="+encodeURIComponent(q))');
+
+  /* repair "â€¦slug.html/" residue on legacy list pages (404 / sitemap.html): slug links -> "/slug/", others keep .html */
+  html = html.replace(/href="([^"]*)\.html\/?"/g, (m, u) => {
+    const tail = u.slice(u.lastIndexOf('/') + 1).replace(/\.html$/, '');
+    return 'href="' + (PAGE_SLUGS.has(tail) ? slashUrl(cleanUrl(u)) : u) + '"';
+  });
+  /* any leftover "â€¦/page.html/" -> "â€¦/page.html" (root special pages, blog.amp.html) */
+  html = html.replace(/(href|content)="([^"]*\.html)\//g, '$1="$2"');
+  /* links that lost their extension on root special pages regain it */
+  html = html.replace(/href="(https:\/\/[^"]+\/(404|sitemap))"/g, 'href="$1.html"');
+  html = html.replace(/content="(https:\/\/[^"]+\/(404|sitemap))"/g, 'content="$1.html"');
+
+  /* nested-template pages (news/, preview/): relative refs to site-root pages go absolute;
+     template-relative assets break at depth>=2 and need "../" */
+  html = depthFix(html, relp);
+
+/* --- SEO: unique per-page title --- */
   const curTitle = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
   const generic = genericTitles.size === 0 || genericTitles.has(curTitle);
   if (generic && !isHome && brand) {
@@ -212,7 +366,7 @@ function fixHtml(html, rel, genericTitles) {
     const h1 = stripTags(h1Raw);
     if (h1 && h1 !== brand && h1.length > 2) {
       let t = h1 + ' | ' + brand;
-      if (t.length > 62) t = h1.slice(0, 62 - (' | ' + brand).length - 1) + '… | ' + brand;
+      if (t.length > 62) t = h1.slice(0, 62 - (' | ' + brand).length - 1) + 'â€¦ | ' + brand;
       html = html.replace(/<title>[\s\S]*?<\/title>/, '<title>' + t + '</title>');
     }
   }
@@ -273,12 +427,90 @@ function fixHtml(html, rel, genericTitles) {
     html = html.replace('</head>', block + '</head>');
   }
 
-  /* --- SEO: strip .html inside any legacy JSON-LD blocks --- */
+  /* --- SEO: strip .html + trailing-slash urls inside any legacy JSON-LD blocks --- */
   html = html.replace(/(<script[^>]*application\/ld\+json[^>]*>)([\s\S]*?)(<\/script>)/g,
-    (m, a, b, c) => a + b.replace(/\.html/g, '') + c);
+    (m, a, b, c) => a + b.replace(/\.html/g, '').replace(/"url"\s*:\s*"([^"]+)"/g,
+      (m2, u) => '"url":"' + (isSlugPage && host && selfPath ? host + '/' + selfPath + '/' : slashUrl(repairGlue(u))) + '"') + c);
 
   /* --- lazy-load images (banner keeps loading="eager") --- */
   html = html.replace(/<img(?![^>]*loading=)([^>]*?)>/g, (m, a) => '<img loading="lazy" decoding="async"' + a + '>');
+
+  /* reserve layout for the fluid footer brand logo (intrinsic 497x501) â€” kills img-missing-dimensions */
+  html = html.replace(/(<img(?=[^>]*class="[^"]*footer-brand[^"]*")(?![^>]*width=)[^>]*>)/g,
+    (m) => m.slice(0, -1) + ' width="497" height="501">');
+
+  /* news-carousel images encode their size in the filename (news-350x223-â€¦, news-450x350-â€¦, news-825x525) */
+  /* repair an earlier broken pass that merged imgs by adding width="<img â€¦ inside the tag */
+  html = html.replace(/<img alt="([^"]*)" src="((?:\.\.\/)?img\/(news-(\d+)x(\d+)(?:-\d+)?\.(?:jpe?g|png|webp)))" loading="lazy" width="<(?:(?!<\/div>)[\s\S])*?<\/div>/g,
+    (m, alt, full, w, h) => ' <img alt="' + alt + '" src="' + full + '" loading="lazy" width="' + w + '" height="' + h + '">\n </div>');
+  html = html.replace(/(<img(?=[^>]*src="[^"]*news-(\d+)x(\d+)(?:-\d+)?\.(?:jpe?g|png|webp)")(?![^>]*width=)[^>]*>)/g,
+    (m, w, h) => m.slice(0, -1) + ' width="' + w + '" height="' + h + '">');
+
+  /* ---------- Lighthouse / agent-readiness fixes ---------- */
+
+  /* stray ">" after </main> on every page */
+  html = html.replace(/<\/main>>/g, '</main>');
+
+  /* h5.menu_title -> h2 (heading order: the card title used to jump ranks) */
+  html = html.replace(/<h5 class="menu_title">([\s\S]*?)<\/h5>/g, '<h2 class="menu_title">$1</h2>');
+
+  /* brand logo: decorative alt (text right next to it) + responsive srcset (40px variant) */
+  html = html.replace(/<img src="\/assets\/brand-logo\.webp" alt="[^"]*" width="34" height="34"/g,
+    '<img src="/assets/brand-logo.webp" srcset="/assets/brand-logo-40.webp 40w, /assets/brand-logo.webp 1024w" sizes="34px" alt="" width="34" height="34"');
+
+  /* home card image links: discernible text via aria-label from the paired article title */
+  const cardTitles = new Map();
+  for (const cm of html.matchAll(/<a class="article_title[^"]*" href="([^"]+)">([\s\S]*?)<\/a>/g)) {
+    cardTitles.set(cm[1], stripTags(cm[2]).trim());
+  }
+  html = html.replace(/<a\s+href="([^"]+)"\s*>(?=\s*<div class="articleimg")/g, (m, h) => {
+    const t = cardTitles.get(h);
+    return t ? '<a href="' + h + '" aria-label="' + esc(t) + '">' : m;
+  });
+
+  /* inline our two design stylesheets: removes 2 of the 4 render-blocking requests */
+  if (dsCss && /href="[^"]*\/assets\/(ds\.css|premium\.min\.css)"/.test(html)) {
+    html = html.replace(/<link rel="stylesheet" href="[^"]*\/assets\/(ds\.css|premium\.min\.css)"[^>]*\/?>/g, '');
+    html = html.replace('<link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png" />',
+      '$&\n    <style>' + dsCss + premCss + '</style>');
+  }
+
+  /* preload the two Arabic fonts that drive first-paint layout (defuses font-swap CLS) */
+  if (!html.includes('NotoKufiArabic-Bold.woff2" as="font"')) {
+    html = html.replace('<link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png" />',
+      '$&\n    <link rel="preload" href="/assets/fonts/NotoKufiArabic-Bold.woff2" as="font" type="font/woff2" crossorigin />\n    <link rel="preload" href="/assets/fonts/NotoNaskhArabic-Regular.woff2" as="font" type="font/woff2" crossorigin />');
+  }
+
+  /* LCP: preload the first home-card background image with high priority; room banners get fetchpriority */
+  if (isHome) {
+    const bg = html.match(/<div class="articleimg"[^>]*style="background:\s*url\('([^']+)'\)/);
+    if (bg && bg[1] && !html.includes('rel="preload" as="image"')) {
+      html = html.replace('</head>', '<link rel="preload" as="image" href="' + bg[1] + '" fetchpriority="high" />\n    </head>');
+    }
+  }
+  html = html.replace(/(<figure class="px-banner"><img )([^>]*)>/g,
+    (m, a, c) => a + c.replace(/ fetchpriority="high"/g, '') + ' fetchpriority="high">');
+
+  /* WebMCP: declarative tool annotations on every form + field descriptions (each guarded for idempotency) */
+  html = html.replace(/(<form class="ds-search-mini" role="search" action="[^"]+" method="get"(?! [^>]*toolname=)[^>]*)>/g,
+    '$1 toolname="search_chat" tooldescription="ط§ظ„ط¨ط­ط« ظپظٹ ط؛ط±ظپ ط§ظ„ط¯ط±ط¯ط´ط© ظˆطµظپط­ط§طھ ط§ظ„ظ…ظˆظ‚ط¹" toolautosubmit>');
+  html = html.replace(/(<form class="fm-search" role="search" action="[^"]+" method="get"(?! [^>]*toolname=)[^>]*)>/g,
+    '$1 toolname="search_forum" tooldescription="ط§ظ„ط¨ط­ط« ط¯ط§ط®ظ„ ط§ظ„ظ…ظ†طھط¯ظ‰" toolautosubmit>');
+  html = html.replace(/(<form id="f" role="search" class="ds-searchbar"(?! [^>]*toolname=)[^>]*)>/g,
+    '$1 toolname="search_site" tooldescription="ط§ظ„ط¨ط­ط« ظپظٹ ط؛ط±ظپ ط§ظ„ط¯ط±ط¯ط´ط© ظˆط§ظ„ظ…ظ‚ط§ظ„ط§طھ ظˆط§ظ„ط£ط³ط¦ظ„ط©">');
+  html = html.replace(/(<form method="GET" action="\/" target="_top" class="p0 m0 px3 mb4"(?! [^>]*toolname=)[^>]*)>/g,
+    '$1 toolname="site_search_legacy" tooldescription="ط§ظ„ط¨ط­ط« ظپظٹ ط§ظ„ظ…ظˆظ‚ط¹" toolautosubmit>');
+  html = html.replace(/(<form name="jump"(?! [^>]*toolname=)[^>]*)>/g,
+    '$1 toolname="quick_jump" tooldescription="ط§ظ„ط§ظ†طھظ‚ط§ظ„ ط§ظ„ط³ط±ظٹط¹ ط¥ظ„ظ‰ طµظپط­ط©">');
+  html = html.replace(/(<form(?! [^>]*toolname=)>)/g, '<form toolname="newsletter_signup" tooldescription="ط§ظ„ط§ط´طھط±ط§ظƒ ظپظٹ ط§ظ„ظ†ط´ط±ط© ط§ظ„ط¨ط±ظٹط¯ظٹط©">');
+  html = html.replace(/(<input type="search" name="q" placeholder="[^"]*" aria-label="[^"]*"(?! [^>]*toolparamdescription=)[^>]*)>/g,
+    '$1 toolparamdescription="ظƒظ„ظ…ط§طھ ط§ظ„ط¨ط­ط«">');
+
+  /* WebMCP: register an in-browser search tool when the agent API exists (progressive enhancement) */
+  if (!html.includes('modelContext')) {
+    html = html.replace('</head>',
+      '<script>(()=>{const m=window.modelContext||(window.navigator&&navigator.modelContext);if(!m)return;m.registerTool({name:"search_site",description:"Search chat rooms and pages on this site",inputSchema:{type:"object",properties:{q:{type:"string",description:"Search keywords"}},required:["q"]},execute:({q})=>{location.assign("/search/?q="+encodeURIComponent(q));}});})();</script></head>');
+  }
 
   return { html, saved: start - html.length };
 }
@@ -304,12 +536,26 @@ for (const [t, n] of titleCount) if (n > 5) genericTitles.add(t);
 let totalSaved = 0;
 let files = 0;
 let changed = 0;
+
+/* page-dir slug map (all non-root dirs holding index.html) â€” drives the trailing-slash rewrite */
+PAGE_SLUGS = new Set();
+for (const f of filesList) {
+  const r = relative(ROOT, f).replace(/\\/g, '/');
+  if (r.endsWith('/index.html')) PAGE_SLUGS.add(r.slice(0, -'index.html'.length - 1));
+}
+console.log('%d page slugs (dir/index.html)', PAGE_SLUGS.size);
+
+/* design-system CSS to inline (drop 2 render-blocking <link>s) */
+let DS_CSS = '', PREM_CSS = '';
+try { DS_CSS = readFileSync(join(ROOT, 'assets', 'ds.css'), 'utf8'); } catch {}
+try { PREM_CSS = readFileSync(join(ROOT, 'assets', 'premium.min.css'), 'utf8'); } catch {}
+
 for (const f of filesList) {
   files++;
   let html;
   try { html = readFileSync(f, 'utf8'); } catch { continue; }
   const rel = relative(ROOT, f);
-  const { html: out, saved } = fixHtml(html, rel, genericTitles);
+  const { html: out, saved } = fixHtml(html, rel, genericTitles, DS_CSS, PREM_CSS);
   if (out !== html) {
     writeFileSync(f, out, 'utf8');
     changed++;
@@ -325,10 +571,17 @@ for (const name of ['sitemap.xml', 'sitemap.txt', 'sitemape.xml', 'sitemapk.xml'
     let c = readFileSync(p, 'utf8');
     const before = c.length;
     c = c.replace(/(<loc>)([^<]*?)\.html(<\/loc>)/g, '$1$2$3');
+    c = c.replace(/(<loc>)(https?:\/\/[^<]*?)(<\/loc>)/g, (m, a, u, b) => a + slashUrl(repairGlue(u)) + b);
     c = c.replace(/(^|\n)(https?:\/\/[^\s]*?)\.html/g, '$1$2');
+    c = c.split('\n').map(l => {
+      const seg = l.match(/^\s*(https?:\/\/[^\s]*?)(\s*)$/);
+      if (!seg) return l;
+      const { 1: u, 2: sp } = seg;
+      return l.replace(u, slashUrl(repairGlue(u)));
+    }).join('\n');
     if (c.length !== before) {
       writeFileSync(p, c, 'utf8');
-      console.log('ok  %-48s (sitemap cleaned)', name);
+      console.log('ok  %-48s (sitemap cleaned + trailing slash)', name);
     }
   } catch {}
 }
@@ -337,14 +590,14 @@ const siP = join(ROOT, 'assets', 'search-index.json');
 try {
   let c = readFileSync(siP, 'utf8');
   const before = c.length;
-  c = c.replace(/"u"\s*:\s*"([^"]*\.html)"/g, (m, u) => '"u": "' + cleanUrl(u) + '"');
+  c = c.replace(/"u"\s*:\s*"([^"]+)"/g, (m, u) => '"u": "' + slashUrl(repairGlue(u)) + '"');
   if (c.length !== before) {
     writeFileSync(siP, c, 'utf8');
-    console.log('ok  assets/search-index.json (cleaned)');
+    console.log('ok  assets/search-index.json (cleaned + trailing slash)');
   }
 } catch {}
 
-/* assets/search.js — clean sitemap link */
+/* assets/search.js â€” clean sitemap link */
 const sjP = join(ROOT, 'assets', 'search.js');
 try {
   let c = readFileSync(sjP, 'utf8');
@@ -355,7 +608,7 @@ try {
   }
 } catch {}
 
-/* robots.txt — real, non-www sitemap files only */
+/* robots.txt â€” real, non-www sitemap files only */
 const robotsP = join(ROOT, 'robots.txt');
 try {
   const rc = readFileSync(robotsP, 'utf8');
