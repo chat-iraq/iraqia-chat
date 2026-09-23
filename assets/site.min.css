@@ -6,10 +6,10 @@ Anatomy: Tokens → Base → Layout → Components → Patterns →
 Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
 ============================================================ */
 /* ---------- 0. CRITICAL FONTS (self-hosted من CDN hsoub) ---------- */
-@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
-@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
-@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
-@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
 @font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:400;src:url(/assets/fonts/OpenSans-Regular-latin.woff2) format('woff2')}
 @font-face{font-family:'Open Sans';font-style:normal;font-display:swap;font-weight:700;src:url(/assets/fonts/OpenSans-Bold-latin.woff2) format('woff2')}
 /* ---------- 1. TOKENS ---------- */
@@ -520,3 +520,107 @@ code{background:var(--soft);border:1px solid var(--line);padding:.15rem .5rem;bo
 .px-banner{margin:0 0 14px}.px-banner img{width:100%;height:auto;border-radius:14px;display:block;box-shadow:0 2px 12px rgba(0,0,0,.10)}
 .articleimg{position:relative;overflow:hidden}
 .articleimg::before{content:"";position:absolute;inset:0;background:url('/assets/brand-logo.webp') center/56px no-repeat;opacity:.5;pointer-events:none;z-index:2}
+
+/* ============================================================
+   إعادة برمجة الهوية الخطية (§19/§20/§23) — خطوط محلية woff2 فقط
+   font-display:swap + ألوان ∎ متمايزة = هوية مستقلة لكل موقع (§52 الصدق)
+   ============================================================ */
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Bold.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Bold.woff2) format("woff2")}
+
+:root{
+  --ds-font-display:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+  --ds-font:"Noto Kufi Arabic","Noto Naskh Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+  --ds-radius:12px;
+  --ds-radius-sm:12px;
+}
+h1,h2,h3,h4,h5,h6,.ds-title,.px-title,.menu_title,.px-sec-t{
+  font-family:var(--ds-font-display)!important;
+  font-weight:700;
+}
+body,p,li,span,a,.px-desc,.px-card{
+  font-family:var(--ds-font)!important;
+}
+/* ============================================================
+   الهوية الخطية البرمجية §19/§20/§30 — خطوط محلية woff2 فقط (صفر طلبات خارجية = سرعة §14/§16)
+   ربط @font-face مصحّح: عائلة Noto Kufi ← ملف NotoKufiArabic-*.woff2 ، عائلة Noto Naskh ← NotoNaskhArabic-*.woff2
+   (يربح الكاسكيد لأنه في نهاية site.min.css) */
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Bold.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Bold.woff2) format("woff2")}
+:root{
+  --ds-font-display:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+  --ds-font:"Noto Kufi Arabic","Noto Naskh Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+  --ds-font-role-display:headings;
+  --ds-font-role-body:text;
+}
+h1,h2,h3,h4,h5,h6,.ds-title,.px-sec-t,.menu_title,.ds-brand,.ds-display,
+.px-card-title,.ds-card-title,.ds-menu-title,[class*="display"],[class*="heading"]{
+  font-family:var(--ds-font-display)!important;
+}
+body,p,a,span,li,div,article,td,th,[class*="ds-"],[class*="px-"]{
+  font-family:var(--ds-font)!important;
+}
+/* ===== هوية ملحقة identity-overlay §19/§20/§30 ===== */
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Kufi Arabic';font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Bold.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Regular.woff2) format('woff2')}
+@font-face{font-family:'Noto Naskh Arabic';font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Bold.woff2) format('woff2')}
+:root{
+  --ds-font-display:'Noto Naskh Arabic','Noto Kufi Arabic',Tahoma,system-ui,sans-serif;
+  --ds-font:'Noto Kufi Arabic','Noto Naskh Arabic',Tahoma,system-ui,sans-serif;
+}
+h1,h2,h3,h4,h5,h6,[class*="title"],[class*="menu"],[class*="brand"],[class*="display"],strong,b,badge,caption{
+  font-family:'Noto Naskh Arabic','Noto Kufi Arabic',Tahoma,sans-serif!important;
+}
+body,p,a,span,li,div,article,section,td,th,input,textarea,button,select{
+  font-family:'Noto Kufi Arabic','Noto Naskh Arabic',Tahoma,sans-serif!important;
+}
+/* ===== نهاية الهوية الملحقة ===== */
+/* ============================================================
+   الهوية البرمجية الخطية §19/§20/§30 — يُلحق أخيراً (يفوز بالكاسكيد)
+   خطوط محلية woff2 فقط = صفر طلبات خارجية = سرعة فائقة §13/§14/§16/§30
+   ============================================================ */
+:root{
+  --ds-font-display: "Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+  --ds-font: "Noto Kufi Arabic","Noto Naskh Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+}
+h1,h2,h3,h4,h5,h6,[class*="title"],[class*="menu_title"],[class*="sec"],[class*="head"],[class*="display"],
+.ds-title,.px-title,.px-sec-t,.ds-sec-t,.menu_title,.ds-brand,[class*="brand"],[class*="logo"]{
+  font-family:var(--ds-font-display)!important;
+  font-weight:700;
+}
+body,p,a,span,li,div,article,section,td,th,caption,input,textarea,button,select,h1,h2,h3,h4,h5,h6{
+  font-family:var(--ds-font)!important;
+}
+
+/* ========== identity-overlay iraqia-chat ========== */
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Bold.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Bold.woff2) format("woff2")}
+:root{
+  --ds-font-display:"Noto Naskh Arabic","Open Sans","Noto Kufi Arabic",Tahoma,system-ui,sans-serif;
+  --ds-font:"Noto Kufi Arabic","Noto Naskh Arabic","Open Sans",Tahoma,system-ui,sans-serif;
+}
+h1,h2,h3,h4,h5,h6,[class*="title"],[class*="menu"],[class*="brand"],[class*="display"],[class*="sec-t"],strong,b{
+  font-family:var(--ds-font-display)!important;
+}
+body,p,a,span,li,div,article,section,td,th,input,textarea,button,select{
+  font-family:var(--ds-font)!important;
+}
+/* ========== end identity-overlay iraqia-chat ========== */
+
+/* ===== هوية iraqia-chat المميزة معكوسة-الأدوار (identity §19/§20/§30) ===== */
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Kufi Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoKufiArabic-Bold.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Regular.woff2) format("woff2")}
+@font-face{font-family:"Noto Naskh Arabic";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/NotoNaskhArabic-Bold.woff2) format("woff2")}
+:root{--ds-font-display:"Noto Naskh Arabic","Open Sans","Noto Kufi Arabic",Tahoma,system-ui,sans-serif;
+      --ds-font:"Noto Kufi Arabic","Open Sans","Noto Naskh Arabic",Tahoma,system-ui,sans-serif;}
+h1,h2,h3,h4,h5,h6,[class*="title"],[class*="menu"],[class*="brand"],[class*="display"],strong,b{font-family:var(--ds-font-display)!important}
+body,p,a,span,li,div,article,section,td,th,input,textarea,button,select{font-family:var(--ds-font)!important}
+/* ===== نهاية هوية iraqia-chat ===== */
