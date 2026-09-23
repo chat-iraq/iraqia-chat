@@ -1,36 +1,85 @@
-/* درر العرب - واجهة 2026 نشطة */
-:root{--brand:#0F766E;--brand-2:#134E4A;--brand-3:#99F6E4;--ink-deep:#062926;--ff:'Noto Naskh Arabic', 'Segoe UI', Tahoma, serif;--bg:#15110c;--paper:#fdf8ee;--line:rgba(255,255,255,.14)}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
-body{margin:0;font-family:var(--ff);line-height:1.8;background:var(--bg);color:#f3ead7;direction:rtl;text-align:right}
-a{color:var(--brand-3);text-decoration:none;transition:color .15s}
-a:hover,a:focus-visible{color:#fff;text-decoration:underline;outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
-img{max-width:100%;height:auto}
-.ds-top{position:relative;z-index:5;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;padding:0 14px;box-shadow:0 3px 18px rgba(0,0,0,.35)}
-.ds-top-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;flex-wrap:wrap}
-.ds-brand{color:#fff;font-weight:800;font-size:1.25rem;display:inline-flex;align-items:center;gap:10px}
-.ds-brand b{opacity:.85;font-size:.72rem;letter-spacing:2px}
-.ds-nav{display:flex;gap:4px;flex-wrap:wrap}
-.ds-nav a{color:#fff;padding:8px 14px;border-radius:999px;font-weight:700}
-.ds-nav a:hover{background:rgba(255,255,255,.18);text-decoration:none}
-.ds-hero{text-align:center;padding:52px 18px 40px;background:radial-gradient(120% 100% at 50% 0%,var(--brand-2),#000 78%)}
-.ds-hero h1{margin:0 0 14px;font-size:clamp(1.6rem,4vw,2.8rem);line-height:1.4;color:#fff}
-.ds-hero h1 span{color:var(--brand);display:block;margin-top:6px}
-.ds-hero p{max-width:660px;margin:0 auto 24px;color:rgba(255,255,255,.85);font-size:1.05rem}
-.ds-enter{display:inline-block;background:var(--brand);color:#fff!important;font-weight:800;padding:13px 32px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.ds-enter:hover{background:var(--brand-3);color:var(--ink-deep)!important}
-.ds-wrap{max-width:1080px;margin:0 auto;padding:36px 16px 20px}
-.ds-wrap h2{text-align:center;color:var(--brand-3);font-size:1.5rem;margin:0 0 8px}
-.ds-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:24px}
-.ds-cir{background:var(--paper);color:#2a2118;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:10px;border:1px solid rgba(0,0,0,.08);box-shadow:0 6px 20px rgba(0,0,0,.25);transition:transform .18s,box-shadow .18s;contain:content}
-.ds-cir:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.4)}
-.ds-cir-a{text-align:right;color:inherit;font-weight:800;font-size:1.2rem}
-.ds-cir-a:hover{color:var(--brand-2)}
-.ds-cir-n{display:inline-block;background:var(--brand);color:#fff;padding:2px 12px;border-radius:999px;font-size:.8rem}
-.ds-cir-s{display:block;margin-top:4px;font-weight:700;color:var(--brand-2)}
-.ds-cir-p{margin:0;font-size:.92rem;color:#555}
-.ds-foot,.footer{margin-top:auto;background:#120d07;color:rgba(255,255,255,.75);text-align:center;padding:22px 16px 30px;font-size:.92rem}
-.ds-foot a,.footer a{color:var(--brand-3)}
-::selection{background:var(--brand);color:#fff}
-@media (max-width:640px){.ds-nav{width:100%;justify-content:center} .ds-nav a{flex:1;text-align:center;padding:8px 4px} .ds-cards{grid-template-columns:1fr 1fr}.ds-cir{padding:14px}}
+/* درر العرب | تصميم جديد بالكامل 2026 - متوافق مع معايير Google (Core Web Vitals) */
+:root{
+  --brand:#0F766E;
+  --brand-2:#115E59;
+  --brand-dark:#083430;
+  --brand-light:#A7D8CE;
+  --ink:#1c1917;
+  --paper:#fffdf7;
+  --paper-soft:#f7f3ea;
+  --line:#e8e0d0;
+  --ok:#15803d;
+  --font:'Noto Naskh Arabic', 'Segoe UI', Tahoma, serif;
+  --radius:16px;
+  --shadow:0 10px 30px rgba(60,42,18,.12);
+}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none !important;transition:none !important}
+}
+body{
+  margin:0;padding:0;background:var(--paper);color:var(--ink);
+  font-family:var(--font);direction:rtl;line-height:1.8;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+a{color:var(--brand-2);text-decoration:none;transition:color .2s}
+a:hover,a:focus-visible{color:var(--brand);text-decoration:underline;outline:none}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+img{max-width:100%;height:auto;display:block}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* ===== الشريط العلوي ===== */
+.ds-top{position:sticky;top:0;z-index:50;background:linear-gradient(90deg,var(--brand-dark),var(--brand-2));box-shadow:0 2px 14px rgba(0,0,0,.18)}
+.ds-top-in{max-width:1120px;margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+.ds-brand{display:inline-flex;flex-direction:column;color:#fff;font-weight:700;font-size:1.25rem;line-height:1.2}
+.ds-brand b{font-size:.8rem;font-weight:600;letter-spacing:1px;opacity:.9}
+.ds-brand:hover,.ds-brand:focus-visible{text-decoration:none;color:#ffe9a8}
+.ds-nav{display:flex;gap:6px;flex-wrap:wrap}
+.ds-nav a{color:#fff;padding:8px 14px;border-radius:999px;font-weight:600;font-size:.95rem}
+.ds-nav a:hover,.ds-nav a:focus-visible{background:rgba(255,255,255,.16);text-decoration:none;color:#ffe9a8}
+/* ===== البطل ===== */
+.ds-hero{background:linear-gradient(160deg,var(--brand-light),var(--paper));padding:56px 16px 40px;text-align:center;border-bottom:1px solid var(--line)}
+.ds-hero h1{margin:0 0 12px;font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.35;color:var(--brand-dark)}
+.ds-hero h1 span{display:block;color:var(--brand-2);font-weight:700}
+.ds-hero p{margin:0 auto 22px;max-width:640px;font-size:1.05rem;color:#57534e}
+.ds-hero .ds-enter{display:inline-block;background:var(--brand);color:#fff;font-weight:700;font-size:1.05rem;padding:14px 34px;border-radius:999px;box-shadow:var(--shadow)}
+.ds-hero .ds-enter:hover,.ds-hero .ds-enter:focus-visible{background:var(--brand-2);text-decoration:none;transform:translateY(-2px)}
+/* ===== شبكة الغرف ===== */
+.ds-wrap{max-width:1120px;margin:0 auto;padding:36px 16px 52px}
+.ds-wrap h2{text-align:center;color:var(--brand-dark);font-size:1.5rem;margin:0 0 6px}
+.ds-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:16px;margin-top:26px}
+.ds-cir{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:transform .18s,box-shadow .18s;contain:content}
+@media (hover:hover){
+  .ds-cir:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+}
+.ds-cir-a{display:block;font-weight:700;font-size:1.1rem;color:var(--brand-2)}
+.ds-cir-n{display:block;font-size:1.05rem;color:var(--ink)}
+.ds-cir-s{display:inline-block;margin-top:auto;background:var(--brand-light);color:var(--brand-dark);font-size:.85rem;font-weight:700;padding:6px 12px;border-radius:999px}
+.ds-cir-p{margin:0;color:#6b675f;font-size:.95rem}
+/* ===== شريط الدخول / غرف الغرف ===== */
+.ds-room,.chat-wrap,.room-container{max-width:900px;margin:0 auto;padding:28px 16px}
+.ds-launch,.launch-btn,.enter-btn,button.enter{display:inline-block;background:var(--brand);color:#fff !important;border:0;font-weight:700;font-size:1rem;padding:14px 30px;border-radius:999px;cursor:pointer;font-family:inherit}
+.ds-launch:hover,.launch-btn:hover,.enter-btn:hover,button.enter:hover{background:var(--brand-2)}
+.ds-msg,.msg-bubble,.chat-bubble{background:var(--paper-soft);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0}
+/* ===== التذييل ===== */
+.ds-foot,.footer{margin-top:auto;background:var(--brand-dark);color:#fdf6e3;text-align:center;padding:26px 16px 34px;font-size:.95rem}
+.ds-foot a,.footer a{color:var(--brand-light)}
+.ds-foot .legal,.footer .legal{margin-top:10px;font-size:.82rem;opacity:.85}
+/* ===== أدوات عامة ===== */
+.container,.m-container{max-width:1120px;margin-inline:auto;padding-inline:16px}
+.btn{display:inline-block;background:var(--brand);color:#fff;font-weight:700;padding:11px 24px;border-radius:999px;border:0;cursor:pointer;font-family:inherit;font-size:.98rem}
+.btn:hover{background:var(--brand-2)}
+input,select,textarea{font-family:inherit;font-size:1rem;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:3px solid color-mix(in srgb,var(--brand) 35%,transparent);border-color:var(--brand)}
+h1,h2,h3{text-wrap:balance}
+p,li{text-wrap:pretty}
+/* ===== الشاشات الصغيرة ===== */
+@media (max-width:640px){
+  .ds-top-in{flex-direction:column;align-items:flex-start;gap:8px}
+  .ds-nav{width:100%}
+  .ds-nav a{flex:1;text-align:center;padding:10px 6px}
+  .ds-cards{grid-template-columns:1fr}
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#f4f0e6;--paper:#171310;--paper-soft:#201b16;--line:#3a332a}
+}
