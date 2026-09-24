@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1022"/>
+      <stop offset="0.55" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d9488"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1020" cy="90" r="260" fill="#0d9488" opacity="0.28"/>
+  <circle cx="180" cy="560" r="300" fill="#134e4a" opacity="0.4"/>
+  <circle cx="1060" cy="60" r="30" fill="#ffffff" opacity="0.85"/>
+  <rect x="70" y="70" width="208" height="208" rx="48" fill="url(#accent)"/>
+  <path d="M174 116c-44 0-80 30-80 67 0 21 11 40 28 52l-7 25 27-12c10 3 21 4 32 4 44 0 80-30 80-67s-36-67-80-67z" fill="#0b1022"/>
+  <g fill="#ccfbf1">
+    <ellipse cx="152" cy="158" rx="11" ry="14"/>
+    <ellipse cx="196" cy="158" rx="11" ry="14"/>
+  </g>
+  <path d="M134 172c10 8 21 11 40 11s30-3 40-11" fill="none" stroke="#0b1022" stroke-width="7" stroke-linecap="round"/>
+  <text x="330" y="200" font-family="Tajawal, Arial, sans-serif" font-size="62" font-weight="700" fill="#ccfbf1">شات درر العرب</text>
+  <text x="332" y="260" font-family="Tajawal, Arial, sans-serif" font-size="34" fill="#5eead4">دردشة عراقية مجانية · بلا تسجيل · لكل المحافظات</text>
+  <g font-family="Tajawal, Arial, sans-serif" font-size="26" fill="#f0fdfa">
+    <rect x="332" y="320" rx="26" width="190" height="52" fill="#0f766e"/>
+    <text x="332" y="354" width="190" text-anchor="middle">ابدأ الدردشة</text>
+  </g>
+  <text x="70" y="580" font-family="Tajawal, Arial, sans-serif" font-size="24" fill="#2dd4bf">www.iraqia-chat.com</text>
+</svg>

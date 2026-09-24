@@ -1,0 +1,11 @@
+/* خطوط عربية مستضافة محلياً (font-display: swap) - تُحمّل مع الحزمة دون حجب العرض */
+@import '@fontsource/tajawal/300.css';
+@import '@fontsource/tajawal/400.css';
+@import '@fontsource/tajawal/500.css';
+@import '@fontsource/tajawal/700.css';
+@import '@fontsource/tajawal/800.css';
+
+@import '@fontsource/readex-pro/400.css';
+@import '@fontsource/readex-pro/500.css';
+@import '@fontsource/readex-pro/600.css';
+@import '@fontsource/readex-pro/700.css';

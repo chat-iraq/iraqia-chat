@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-night-900 text-slate-100 antialiased;
+    background-image:
+      radial-gradient(1100px 520px at 85% -8%, rgba(19, 68, 225, 0.5) 0%, transparent 55%),
+      radial-gradient(900px 480px at 5% 112%, rgba(24, 52, 143, 0.55) 0%, transparent 52%);
+    background-attachment: fixed;
+    font-feature-settings: 'kern';
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-brand-500/40 text-white;
+  }
+
+  a {
+    @apply text-brand-300 transition-colors hover:text-brand-200;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-400;
+  }
+}
+
+@layer components {
+  .container-px {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .surface {
+    @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm;
+  }
+
+  .surface-strong {
+    @apply rounded-2xl border border-white/10 bg-night-800/80 shadow-soft;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-glow hover:bg-brand-500 active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply btn border border-white/15 bg-white/[0.06] text-slate-100 hover:bg-white/[0.12] active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply btn text-brand-200 hover:bg-white/[0.06];
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-night-900/70 px-4 py-3 text-slate-100 placeholder:text-slate-500 transition-colors focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-300;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .link-underline {
+    @apply underline decoration-brand-400/50 underline-offset-4 transition-colors hover:decoration-brand-300;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(89, 155, 255, 0.4) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgba(89, 155, 255, 0.35);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .bg-shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+  }
+}

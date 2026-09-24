@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="ar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>شات درر العرب — جارٍ التوجيه</title>
+    <style>
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: grid; place-items: center; font-family: system-ui, sans-serif;
+        color: #d9e8ff; background: radial-gradient(1000px 500px at 80% -10%, #1344e1 0%, transparent 55%), #0b1022;
+      }
+      p { font-size: 15px; opacity: 0.85; }
+    </style>
+    <script>
+      (function () {
+        try {
+          sessionStorage.setItem('iraqiachat:path', location.pathname + location.search + location.hash);
+        } catch (e) {}
+        location.replace('/');
+      })();
+    </script>
+  </head>
+  <body>
+    <p>جارٍ توجيهك إلى الصفحة المطلوبة…</p>
+  </body>
+</html>
