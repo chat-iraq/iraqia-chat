@@ -18,7 +18,8 @@ for (const m of sitemap.matchAll(imgRe)) imgLocs.push(m[1]);
 
 let missing = [];
 const check = (url) => {
-  const path = new URL(url).pathname.replace(/^\//, '');
+  const raw = new URL(url).pathname.replace(/^\//, '');
+  const path = (() => { try { return decodeURIComponent(raw); } catch { return raw; } })();
   const file = path || 'index.html';
   const variants = [file];
   if (path && !/\.(html?|xml|jpg|jpeg|png|webp|avif|gif|svg|css|js|woff2?|txt|json|py|mjs)$/.test(path)) {
@@ -32,7 +33,7 @@ for (const u of locs) check(u);
 for (const u of imgLocs) check(u);
 
 const out = {
-  site: readFileSync(join(ROOT, 'package.json'), 'utf8').includes('chat-iraq') ? 'chatiraq' : 'iraqia',
+  site: readFileSync(join(ROOT, 'package.json'), 'utf8').includes('chatiraq') ? 'chatiraq' : 'iraqia',
   generatedAt: new Date().toISOString(),
   locsChecked: locs.length,
   imagesChecked: imgLocs.length,
