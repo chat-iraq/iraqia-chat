@@ -1,13 +1,20 @@
-/* chat.js — live room chat for static pages (Pusher Channels, browser-only client events)
+/* chat.js — live room chat for static pages (Firebase Realtime Database)
    Entry form: <form class="px-enter">  ·  Overlay chat injected on submit. No backend. */
 (function () {
   'use strict';
-  var cfg = (window.PUSHER_CHAT) || { key: '', cluster: '', prefix: 'lobby' };
-  var READY = !!(cfg.key && cfg.key.length > 4 && cfg.cluster);
+  var cfg = (window.CHAT_FIREBASE) || null;
+  var READY = !!(cfg && cfg.databaseURL && cfg.apiKey && cfg.roomPrefix);
 
   function qs(s, r) { return (r || document).querySelector(s); }
   function qsa(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function store() { try { var v = localStorage.getItem('ds-nick'); return v || ''; } catch (e) { return ''; } }
+  function tabKey() {
+    try {
+      var k = sessionStorage.getItem('px-tab');
+      if (!k) { k = 't' + (Math.random() * 1e9 | 0) + Date.now(); sessionStorage.setItem('px-tab', k); }
+      return k;
+    } catch (e) { return 't' + (Math.random() * 1e9 | 0) + Date.now(); }
+  }
 
   /* ---- helpers ---- */
   function cleanName(raw) {
@@ -104,7 +111,8 @@
     var send = qs('.chat-send', root);
     var chatForm = qs('.chat-form', root);
     var me = nick;
-    var subCount = 0;
+    var detached = false;
+    var myPres = null;
 
     function infoLine(text) {
       var d = document.createElement('div');
@@ -138,42 +146,54 @@
       scrollDown();
     }
 
-    function loadPusher(cb, onFail) {
-      if (window.Pusher) return cb(window.Pusher);
-      var s = document.createElement('script');
-      s.src = 'https://js.pusher.com/8.3.0/pusher.min.js';
-      s.onload = function () { cb(window.Pusher); };
-      s.onerror = onFail;
-      document.head.appendChild(s);
+    function loadFirebase(cb, onFail) {
+      if (window.firebase && window.firebase.database) return cb();
+      var base = 'https://www.gstatic.com/firebasejs/10.12.2/';
+      var app = document.createElement('script');
+      app.src = base + 'firebase-app-compat.js';
+      var db = document.createElement('script');
+      db.src = base + 'firebase-database-compat.js';
+      app.onerror = onFail;
+      db.onerror = onFail;
+      db.onload = function () { cb(); };
+      document.head.appendChild(app);
+      document.head.appendChild(db);
     }
 
-    loadPusher(function (Pusher) {
-      var errOnce = false;
-      var pusher = new Pusher(cfg.key, { cluster: cfg.cluster });
-      var channelName = cfg.prefix + '-' + slug();
-      var ch = pusher.subscribe(channelName);
-      ch.bind('pusher:subscription_succeeded', function () {
-        send.disabled = false;
-        infoLine('تم الاتصال بالغرفة — تفضل أدردش!');
+    loadFirebase(function () {
+      var app = window.firebase.initializeApp(cfg, 'ds-chat');
+      var db = window.firebase.database(app);
+      var room = cfg.roomPrefix + '-' + slug();
+      var msgRef = db.ref('chat/' + room);
+      var presRef = db.ref('presence/' + room);
+      myPres = presRef.child(tabKey());
+
+      myPres.onDisconnect().remove();
+      myPres.set({ n: me, t: Date.now() });
+
+      presRef.on('value', function (snap) {
+        if (detached) return;
+        var c = snap.numChildren();
+        countEl.hidden = false;
+        countEl.textContent = '· ' + c + ' متصل';
       });
-      if ('pusher:subscription_count' in ch) {
-        ch.bind('pusher_internal:subscription_count', function (d) {
-          if (d && typeof d.subscription_count === 'number') {
-            subCount = d.subscription_count;
-            countEl.hidden = false;
-            countEl.textContent = '· ' + subCount + ' متصل';
-          }
-        });
-      }
-      ch.bind('client-msg', function (d) { addMsg(d); });
-      pusher.connection.bind('error', function () {
-        if (errOnce) return;
-        errOnce = true;
-        var e = document.createElement('div');
-        e.className = 'chat-err';
-        e.textContent = 'انقطعت الفائدة من الخادم — حاول لاحقاً.';
-        msgs.appendChild(e);
+
+      var cutoff = Date.now() - 86400000;
+      msgRef.orderByChild('ts').endAt(cutoff).limitToLast(200).once('value', function (snap) {
+        if (detached || !snap.numChildren()) return;
+        var updates = {};
+        snap.forEach(function (ch) { updates[ch.key] = null; });
+        msgRef.update(updates);
       });
+
+      msgRef.orderByChild('ts').limitToLast(80).on('child_added', function (snap) {
+        if (detached) return;
+        var d = snap.val();
+        if (d) addMsg({ n: d.n, t: d.t });
+      });
+
+      send.disabled = false;
+      infoLine('تم الاتصال بالغرفة — تفضل أدردش!');
 
       chatForm.addEventListener('submit', function (ev) {
         ev.preventDefault();
@@ -181,7 +201,7 @@
         var text = cleanMsg(field.value);
         if (!text) return;
         field.value = '';
-        ch.trigger('client-msg', { n: me, t: text });
+        try { msgRef.push({ n: me, t: text, ts: Date.now() }); } catch (e) {}
       });
       field.focus();
     }, function () {
@@ -189,10 +209,10 @@
       send.disabled = true;
     });
 
-    qs('.chat-close', root).addEventListener('click', function () {
-      close();
-    });
+    qs('.chat-close', root).addEventListener('click', function () { close(); });
     function close() {
+      detached = true;
+      if (myPres) { try { myPres.remove(); } catch (e) {} }
       if (root.parentNode) root.parentNode.removeChild(root);
       document.removeEventListener('keydown', onKey, false);
     }
