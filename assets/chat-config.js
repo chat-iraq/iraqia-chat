@@ -1,5 +1,5 @@
 window.PUSHER_CHAT = {
-  key: "",
-  cluster: "",
+  key: "a9856038610c0b6d6ca5",
+  cluster: "ap1",
   prefix: "durar"
 };
