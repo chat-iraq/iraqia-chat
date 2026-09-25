@@ -24,7 +24,13 @@
       if(items.length>=60)break;}
     render(items,q);
   }
-  fetch('/assets/search-index.json').then(function(r){return r.json();}).then(function(j){data=j;meta.textContent='اكتب كلمة للبحث في '+data.length+' صفحة.';run();})
+  function fromUrl(){
+    try{
+      var u=new URL(window.location.href),q=(u.searchParams.get('q')||'').trim();
+      if(q){inp.value=q;run();}
+    }catch(e){}
+  }
+  fetch('/assets/search-index.json').then(function(r){return r.json();}).then(function(j){data=j;meta.textContent='اكتب كلمة للبحث في '+data.length+' صفحة.';fromUrl();})
    .catch(function(){meta.textContent='تعذّر تحميل فهرس البحث. افتح الصفحة عبر خادم ويب.';});
   inp.addEventListener('input',function(){clearTimeout(window.__t);window.__t=setTimeout(run,120);});
   var f=document.getElementById('f');if(f){f.addEventListener('submit',function(e){e.preventDefault();run();});}
