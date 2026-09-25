@@ -1,0 +1,18 @@
+{
+  "name": "شات درر العرب",
+  "short_name": "شات درر العرب",
+  "description": "دردشة عربية مجانية شات درر العرب",
+  "start_url": "https://iraqia-chat.com/",
+  "scope": "https://iraqia-chat.com/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "icons": [
+    {
+      "src": "https://iraqia-chat.com/assets/brand-logo.webp",
+      "sizes": "any",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ]
+}
