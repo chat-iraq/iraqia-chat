@@ -15,10 +15,10 @@ Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
 /* ---------- 1. TOKENS ---------- */
 :root {
 /* brand (honey / amber identity of the whole platform) */
---acc:#c98a2d; --acc2:#e8a33d;
---ds-primary:#c98a2d; --ds-primary-2:#e8a33d; --ds-on-primary:#fffdf5;
---ds-brand-50:#fdf6e7; --ds-brand-100:#faecd1; --ds-brand-200:#f3dca7;
---ds-brand-500:#e8a33d; --ds-brand-600:#c98a2d; --ds-brand-700:#a86f1e; --ds-brand-800:#8a5a17;
+--acc:#1a1a1a; --acc2:#3a3a3a;
+--ds-primary:#1a1a1a; --ds-primary-2:#3a3a3a; --ds-on-primary:#ffffff;
+--ds-brand-50:#f3f1ec; --ds-brand-100:#e8e4d9; --ds-brand-200:#d3ccba;
+--ds-brand-500:#3a3a3a; --ds-brand-600:#1a1a1a; --ds-brand-700:#a8997a; --ds-brand-800:#8a7f66;
 /* semantic surfaces (editorial: clean white + warm greys) */
 --ds-bg:#f7f8f5; --ds-surface:#ffffff; --ds-surface-2:#f1f3ef;
 --ds-line:#e7eae3; --ds-line-2:#d6dbcf;
@@ -26,7 +26,7 @@ Utilities → Motion → Dark → Print · V1 reskin · Blog · Header
 --ds-good:#15803d; --ds-bad:#b91c1c; --ds-info:#0e7490; --ds-warn:#b45309;
 --ds-grad:linear-gradient(135deg,var(--ds-primary),var(--ds-primary-2));
 /* compatible legacy tokens (premium.min.css) */
---acc:#c98a2d; --acc2:#e8a33d; --ink:#1a1c17; --mut:#5f6359;
+--acc:#1a1a1a; --acc2:#3a3a3a; --ink:#1a1c17; --mut:#5f6359;
 --bg:#f7f8f5; --soft:#ffffff; --line:#e7eae3; --grad:var(--ds-grad);
 /* typography */
 --ds-font:"Noto Naskh Arabic","Noto Kufi Arabic","Open Sans",Tahoma,system-ui,-apple-system,Arial,sans-serif;
@@ -230,19 +230,19 @@ html[dir="ltr"] .ds-drawer{transform:translateX(115%)}
 @media (prefers-reduced-motion:reduce){ @view-transition { navigation: none; } }
 /* ---------- 7. DARK MODE ---------- */
 @media (prefers-color-scheme:dark){
-:root:not([data-theme="light"]){
---ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
+:root[data-theme="dark"]{
+--ds-bg:#151310; --ds-surface:#1d1e18; --ds-surface-2:#262820;
 --ds-line:#343629; --ds-line-2:#464937;
 --ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
---bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
+--bg:#151310; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
 --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
 }
 }
 :root[data-theme="dark"]{
---ds-bg:#14140f; --ds-surface:#1d1e18; --ds-surface-2:#262820;
+--ds-bg:#151310; --ds-surface:#1d1e18; --ds-surface-2:#262820;
 --ds-line:#343629; --ds-line-2:#464937;
 --ds-ink:#f2ecdd; --ds-ink-2:#d6d0bf; --ds-mut:#a09a89; --ds-mut-2:#756f60;
---bg:#14140f; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
+--bg:#151310; --soft:#191a14; --line:#343629; --ink:#f2ecdd; --mut:#a09a89;
 --ds-shadow-1:0 1px 2px rgba(0,0,0,.4); --ds-shadow-2:0 10px 30px -14px rgba(0,0,0,.5); --ds-shadow-3:0 26px 55px -20px rgba(0,0,0,.55);
 }
 :root[data-theme="light"]{
@@ -402,7 +402,7 @@ font-size:var(--ds-fs-sm);margin:var(--ds-s-3) 0;
 :where(.ds-card,section.card,div.card)>h2,.ds-h2{text-align:center;margin-inline:auto}
 /* premium.min.css - unique premium design for branded chat pages */
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;--acc:#c98a2d;--acc2:#e8a33d;--ink:#1c1a17;--mut:#5c554b;--bg:#fdfbf6;--soft:#fffdef;--line:#ece4d4;--grad:linear-gradient(135deg,var(--acc),var(--acc2))}
+html{scroll-behavior:smooth;--acc:#1a1a1a;--acc2:#3a3a3a;--ink:#1c1a17;--mut:#5c554b;--bg:#fdfbf6;--soft:#fffdef;--line:#ece4d4;--grad:linear-gradient(135deg,var(--acc),var(--acc2))}
 body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
 img{max-width:100%;height:auto;border:0}
 a{color:var(--acc);text-decoration:none}
