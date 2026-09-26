@@ -146,18 +146,24 @@
       scrollDown();
     }
 
-    function loadFirebase(cb, onFail) {
-      if (window.firebase && window.firebase.database) return cb();
+    function loadFirebase(cb, onFail, depth) {
+      if (window.firebase && window.firebase.database && window.firebase.initializeApp) return cb();
+      if ((depth || 0) > 3) return onFail();
       var base = 'https://www.gstatic.com/firebasejs/10.12.2/';
       var app = document.createElement('script');
       app.src = base + 'firebase-app-compat.js';
-      var db = document.createElement('script');
-      db.src = base + 'firebase-database-compat.js';
-      app.onerror = onFail;
-      db.onerror = onFail;
-      db.onload = function () { cb(); };
+      app.onerror = function () { setTimeout(loadFirebase, 500, cb, onFail, (depth || 0) + 1); };
+      app.onload = function () {
+        var db = document.createElement('script');
+        db.src = base + 'firebase-database-compat.js';
+        db.onerror = function () { setTimeout(loadFirebase, 500, cb, onFail, (depth || 0) + 1); };
+        db.onload = function () {
+          if (window.firebase && window.firebase.database && window.firebase.initializeApp) { cb(); }
+          else { setTimeout(loadFirebase, 500, cb, onFail, (depth || 0) + 1); }
+        };
+        document.head.appendChild(db);
+      };
       document.head.appendChild(app);
-      document.head.appendChild(db);
     }
 
     loadFirebase(function () {
