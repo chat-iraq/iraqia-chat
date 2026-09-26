@@ -336,3 +336,238 @@
 @media (prefers-reduced-motion: reduce) {
   .pxc * { animation: none !important; transition: none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v3 — احترافي: يكتب الآن، اقتباس/رد، نسخ/حذف، ردود فعل، سجل أقدم،
+   إشعارات دخول/خروج، وضع ليلي، مشاركة
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── الوضع الليلي ── */
+.pxc.ds-dark { background: rgba(5, 4, 12, .8); }
+.pxc.ds-dark {
+  --pxc-bg: #0f0d17;
+  --pxc-surface: #17141f;
+  --pxc-surface-2: #201c2c;
+  --pxc-ink: #ece9f5;
+  --pxc-line: #2b2638;
+  --pxc-mut: rgba(236, 233, 245, .62);
+  --pxc-panel: #17141f;
+  --pxc-panel-ink: #ece9f5;
+}
+.pxc.ds-dark .pxc-info,
+.pxc.ds-dark .pxc-day { color: var(--pxc-mut); }
+.pxc.ds-dark .pxc-msg__time,
+.pxc.ds-dark .pxc-member__since { color: var(--pxc-mut); }
+.pxc.ds-dark .pxc-sys { color: var(--pxc-mut); }
+
+/* ── مؤشر الكتابة ── */
+.pxc-typing {
+  flex: none; min-height: 22px; padding: .1rem 1.15rem;
+  font-size: .78rem; color: var(--pxc-p1);
+  background: var(--pxc-surface);
+  border-top: 1px solid var(--pxc-line);
+  display: flex; align-items: center; gap: .45rem;
+}
+.pxc-typing:not([hidden]) { animation: pxc-in .18s ease; }
+.pxc-typing-dots { letter-spacing: .12rem; font-weight: 800; color: var(--pxc-p2); }
+
+/* ── شريط الرد المنسوخ (اقتباس) ── */
+.pxc-replychip {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: .45rem; padding: .4rem .7rem;
+  background: var(--pxc-surface-2);
+  border: 1px solid var(--pxc-line);
+  border-radius: 12px;
+  font-size: .8rem;
+}
+.pxc-replychip__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pxc-replychip__x {
+  flex: none; border: 0; background: transparent; cursor: pointer;
+  color: var(--pxc-mut); font-weight: 800; font-size: .95rem;
+}
+
+/* ── الرسالة: الصف ── */
+.pxc-msg { position: relative; }
+
+/* ── الاقتباس داخل الرسالة ── */
+.pxc-quote {
+  margin: .15rem 0 .35rem;
+  padding: .35rem .6rem .4rem .95rem;
+  background: var(--pxc-surface-2);
+  border-inline-start: 3px solid var(--pxc-p2);
+  border-radius: 8px;
+  font-size: .8rem;
+  display: flex; flex-direction: column; gap: .2rem;
+}
+.pxc-msg--me .pxc-quote { background: rgba(255, 255, 255, .18); border-inline-start-color: rgba(255, 255, 255, .8); }
+.pxc-quote__name { font-weight: 800; color: var(--pxc-p1); }
+.pxc-msg--me .pxc-quote__name { color: #fff; }
+.pxc-quote__text, .pxc-quote__img { opacity: .82; }
+.pxc-quote__img { max-width: 78px; max-height: 78px; border-radius: 6px; object-fit: cover; cursor: zoom-in; }
+
+/* ── أزرار الرسالة ── */
+.pxc-msg__act {
+  position: absolute; top: -6px; left: 0;
+  display: none; align-items: center; gap: .2rem;
+  background: var(--pxc-panel); color: var(--pxc-panel-ink);
+  padding: .15rem .25rem;
+  border-radius: 10px; box-shadow: 0 6px 22px rgba(20, 10, 40, .28);
+  border: 1px solid var(--pxc-line);
+  z-index: 4;
+}
+[dir="rtl"] .pxc-msg__act { left: auto; right: 0; }
+.pxc-msg:hover .pxc-msg__act, .pxc-msg .pxc-msg__act.is-open { display: inline-flex; }
+.pxc-msg__act button {
+  border: 0; background: transparent; cursor: pointer;
+  font-size: .74rem; font-weight: 700; color: var(--pxc-panel-ink);
+  padding: .3rem .5rem; border-radius: 7px;
+}
+.pxc-msg__act button:hover { background: var(--pxc-surface-2); }
+
+/* ── الردود الفعلية ── */
+.pxc-react-bar {
+  display: flex; flex-wrap: wrap; gap: .3rem;
+  margin-top: .3rem;
+}
+.pxc-react-bar[hidden] { display: none; }
+.pxc-react {
+  display: inline-flex; align-items: center; gap: .2rem;
+  border: 1px solid var(--pxc-line);
+  background: var(--pxc-surface-2);
+  border-radius: 999px; padding: .05rem .45rem;
+  font-size: .78rem; cursor: pointer;
+  color: var(--pxc-ink);
+}
+.pxc-react.is-mine { border-color: var(--pxc-p2); box-shadow: 0 0 0 1px var(--pxc-p2); }
+.pxc-react b { font-weight: 800; font-size: .72rem; }
+.pxc-react-panel {
+  position: fixed; z-index: 1300;
+  display: flex; gap: .2rem;
+  background: var(--pxc-panel); color: var(--pxc-panel-ink);
+  padding: .3rem; border-radius: 12px;
+  border: 1px solid var(--pxc-line);
+  box-shadow: 0 10px 30px rgba(20, 10, 40, .3);
+  animation: pxc-in .14s ease;
+}
+.pxc-react-panel button { border: 0; background: transparent; cursor: pointer; font-size: 1.25rem; padding: .15rem .35rem; border-radius: 8px; }
+.pxc-react-panel button:hover { background: var(--pxc-surface-2); }
+
+/* ── سطور دخول/خروج ── */
+.pxc-sys {
+  text-align: center; font-size: .74rem; color: var(--pxc-mut);
+  padding: .3rem 0; margin: .15rem 0;
+  display: flex; align-items: center; gap: .6rem;
+}
+.pxc-sys::before, .pxc-sys::after {
+  content: '—'; flex: 1; opacity: .4;
+}
+.pxc-sys--in b { color: var(--pxc-accent); }
+.pxc-sys--out b { color: #c45c5c; }
+
+/* ── زر أقدم الرسائل ── */
+.pxc-older {
+  align-self: center;
+  border: 1px dashed var(--pxc-line);
+  background: var(--pxc-surface);
+  color: var(--pxc-mut);
+  border-radius: 999px;
+  padding: .45rem 1.1rem;
+  margin: .6rem auto;
+  font-size: .78rem; font-weight: 700; cursor: pointer;
+}
+.pxc-older:hover { color: var(--pxc-p1); border-color: var(--pxc-p2); }
+
+/* ── شارة الغرف غير المقروءة ── */
+.pxc-rooms-badge {
+  font-style: normal;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px;
+  padding: 0 .3rem; border-radius: 999px;
+  background: #ff3d57; color: #fff;
+  font-size: .68rem; font-weight: 800;
+  margin-inline-start: .2rem;
+}
+
+/* ── نقطة تواجد الأعضاء ── */
+.pxc-member { position: relative; }
+.pxc-online {
+  position: absolute; top: .4rem; right: .55rem;
+  width: .62rem; height: .62rem; border-radius: 50%;
+  background: #2ec47a;
+  box-shadow: 0 0 0 2px var(--pxc-bg);
+}
+[dir="rtl"] .pxc-online { right: auto; left: .55rem; }
+
+/* ── الإعدادات ── */
+.pxc-set {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+  padding: .35rem 0;
+  font-size: .84rem; font-weight: 700;
+}
+.pxc-set button {
+  border: 1px solid var(--pxc-line);
+  background: var(--pxc-surface-2); color: var(--pxc-mut);
+  border-radius: 999px; padding: .25rem .8rem;
+  cursor: pointer; font-weight: 700;
+}
+
+/* ── @منشن الأعضاء (قائمة الاختيار) ── */
+.pxc-mentions {
+  position: absolute; bottom: calc(100% + .5rem); inset-inline-start: .9rem; inset-inline-end: .9rem;
+  background: var(--pxc-panel); color: var(--pxc-panel-ink);
+  border: 1px solid var(--pxc-line);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(20, 10, 40, .28);
+  padding: .35rem;
+  display: flex; flex-direction: column; gap: .1rem;
+  max-height: 232px; overflow-y: auto;
+  animation: pxc-in .14s ease; z-index: 6;
+}
+.pxc-mentions .pxc-mention {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .4rem .55rem;
+  border: 0; background: transparent;
+  border-radius: 10px; cursor: pointer;
+  font: inherit; font-weight: 700; text-align: start;
+  color: var(--pxc-panel-ink);
+}
+.pxc-mentions .pxc-mention:hover, .pxc-mentions .pxc-mention.is-on { background: color-mix(in srgb, var(--pxc-p1) 16%, transparent); }
+.pxc-mentions .pxc-mention .pxc-ava--s { width: 26px; height: 26px; font-size: .8rem; flex: none; }
+
+/* المنشن داخل نص الرسالة */
+.pxc-msg .pxc-mention {
+  display: inline; padding: .06rem .42rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--pxc-p1) 14%, transparent);
+  color: var(--pxc-p1);
+  font-weight: 800; cursor: pointer;
+}
+.pxc-msg--me .pxc-mention { background: rgba(255, 255, 255, .22); color: #fff; }
+.pxc-msg .pxc-mention--me { background: #ffd54a; color: #4a2c04 !important; }
+
+/* شارة «تم التعديل» */
+.pxc-edited {
+  font-size: .62rem; font-weight: 700;
+  opacity: .55; color: var(--pxc-mut);
+  margin-inline-start: .45rem;
+  border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+  border-radius: 999px; padding: .04rem .4rem;
+}
+
+/* شريط «أنت تحرر رسالتك» */
+.pxc-editchip {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: .45rem; padding: .4rem .7rem;
+  background: color-mix(in srgb, var(--pxc-gold, #ffd54a) 22%, var(--pxc-surface));
+  border: 1px solid color-mix(in srgb, var(--pxc-gold, #ffd54a) 60%, var(--pxc-line));
+  border-radius: 12px; font-size: .8rem;
+}
+.pxc-editchip__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.pxc-editchip__x {
+  flex: none; border: 0; background: transparent; cursor: pointer;
+  color: var(--pxc-mut); font-weight: 800; font-size: .95rem;
+}
+.pxc.ds-dark .pxc-editchip { background: #3a3209; }
+
+/* إغلاق شارات التعديل داخل الفقاعة البيضاء */
+.pxc-msg--me .pxc-edited { color: #fff; opacity: .72; border-color: rgba(255, 255, 255, .5); }

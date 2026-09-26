@@ -173,7 +173,9 @@
           '<button type="button" class="pxc-icon pxc-icon--nav" title="القائمة">☰</button>' +
           '<button type="button" class="pxc-me" title="ملفك الشخصي"></button>' +
           '<div class="pxc-head"><strong class="pxc-title"></strong><span class="pxc-sub"><span class="pxc-count">0</span>متصل الآن</span></div>' +
-          '<button type="button" class="pxc-icon pxc-icon--rooms" title="نافذة الغرف">🗂️<span>الغرف</span></button>' +
+          '<button type="button" class="pxc-icon pxc-icon--rooms" title="نافذة الغرف">🗂️<span>الغرف</span><i class="pxc-rooms-badge" hidden></i></button>' +
+          '<button type="button" class="pxc-icon pxc-icon--share" title="مشاركة رابط الغرفة">🔗</button>' +
+          '<button type="button" class="pxc-icon pxc-icon--theme" title="الوضع الليلي">🌙</button>' +
           '<button type="button" class="pxc-icon pxc-icon--close" title="خروج">&times;</button>' +
         '</header>' +
         '<div class="pxc-body">' +
@@ -188,7 +190,11 @@
           '</aside>' +
           '<section class="pxc-main"><div class="pxc-feed"></div></section>' +
         '</div>' +
+        '<div class="pxc-typing" hidden></div>' +
         '<footer class="pxc-composer">' +
+          '<div class="pxc-replychip" hidden></div>' +
+          '<div class="pxc-editchip" hidden></div>' +
+          '<div class="pxc-mentions" hidden></div>' +
           '<input type="file" class="pxc-file" accept="image/*" hidden>' +
           '<button type="button" class="pxc-icon pxc-icon--tool" title="إرسال صورة">🖼️</button>' +
           '<button type="button" class="pxc-icon pxc-icon--tool" title="ابتسامات">😊</button>' +
@@ -208,11 +214,17 @@
     var paneMembers = qs('.pxc-pane[data-pane="members"]', root);
     var paneRooms = qs('.pxc-pane[data-pane="roomslist"]', root);
     var fileInput = qs('.pxc-file', root);
+    var shareBtn = qs('.pxc-icon--share', root);
+    var themeBtn = qs('.pxc-icon--theme', root);
+    var typingLine = qs('.pxc-typing', root);
+    var replyChip = qs('.pxc-replychip', root);
+    var editChip = qs('.pxc-editchip', root);
+    var mentionsBox = qs('.pxc-mentions', root);
 
     /* الحالة */
     var pro = loadPro();
     var me = { n: nick, a: pro.a, c: Math.floor(Math.random() * NAME_COLORS.length), s: pro.s };
-    var room = { id: 'room-' + slug(), title: roomTitle(), desc: roomDesc() };
+    var room = { id: cfg.roomPrefix + '-' + slug(), title: roomTitle(), desc: roomDesc() };
     var detached = false;
     var members = {};           /* جزئية presence */
     var firebaseReady = false;
@@ -222,7 +234,111 @@
     var roomPollTimer = null;
     var uploadBusy = false;
 
+    /* ─── الإعدادات والتفاصيل الاحترافية ─── */
+    var settings = loadSettings();
+    var dark = settings.dark;
+    var sound = settings.sound;
+    var unread = 0;
+    var replyTo = null;          /* {key,n,t,img} للرد على رسالة */
+    var editingKey = null;       /* مفتاح الرسالة قيد التحرير */
+    var typingTimer = null;
+    var typingRef = null;
+    var typingShowTimer = null;
+    var typingKeys = {};         /* keys متصلين يكتبون الآن */
+    var prevPresKeys = null;
+    var firstPres = true;
+    var feedKeys = {};           /* مفاتيح الرسائل الظاهرة */
+    var oldestTs = Infinity;
+    var oldestVis = true;
+    var audioCtx = null;
+    var notificationsOn = false;
+    var rxCache = {};            /* ردود فعل الرسائل {key:{emoji:count}} */
+    var rxMine = {};           /* ردودي أنا {key:{emoji:true}} */
+
+    function loadSettings() {
+      try {
+        var s = JSON.parse(localStorage.getItem('ds-pro2') || '{}');
+        return { dark: s.dark === true, sound: s.sound !== false };
+      } catch (e) { return { dark: false, sound: true }; }
+    }
+    function saveSettings() {
+      try { localStorage.setItem('ds-pro2', JSON.stringify({ dark: dark, sound: sound })); } catch (e) {}
+    }
+    function applyTheme() {
+      root.classList.toggle('ds-dark', dark);
+      qsa('.pxc-icon--theme', root).forEach(function (b) { b.title = dark ? 'الوضع النهاري' : 'الوضع الليلي'; b.textContent = dark ? '☀️' : '🌙'; });
+    }
+
     function $(s) { return qs(s, root); }
+
+    /* ───────── الوسائط الصوتية والإشعارات ───────── */
+    function ensureAudio() {
+      if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+      }
+      if (audioCtx && audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch (e) {} }
+    }
+    function ring() {
+      if (!sound || !audioCtx) return;
+      try {
+        var t = audioCtx.currentTime;
+        [0, 0.14].forEach(function (off, i) {
+          var o = audioCtx.createOscillator();
+          var g = audioCtx.createGain();
+          o.type = 'sine';
+          o.frequency.value = i ? 988 : 790;
+          g.gain.setValueAtTime(0.0001, t + off);
+          g.gain.exponentialRampToValueAtTime(0.14, t + off + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + off + 0.16);
+          o.connect(g); g.connect(audioCtx.destination);
+          o.start(t + off); o.stop(t + off + 0.18);
+        });
+      } catch (e) {}
+    }
+    function notifyMsg(n, txt) {
+      if (document.hidden && notificationsOn && ('Notification' in window) && Notification.permission === 'granted') {
+        try { new Notification(room.title, { body: (n ? n + ': ' : '') + txt }); } catch (e) {}
+      }
+    }
+    function bumpUnread() {
+      unread++;
+      var b = qs('.pxc-rooms-badge', root);
+      if (b) { b.hidden = false; b.textContent = String(Math.min(99, unread)); }
+      document.title = '(' + unread + ') ' + room.title;
+    }
+    function clearUnread() {
+      unread = 0;
+      var b = qs('.pxc-rooms-badge', root);
+      if (b) b.hidden = true;
+      document.title = room.title;
+    }
+
+    /* ───────── مؤشر الكتابة ───────── */
+    function setTyping() {
+      if (!typingRef || !curMsgListeners) return;
+      try { typingRef.child(curMsgListeners.myKey).set({ n: me.n, t: Date.now() }); } catch (e) {}
+      if (typingTimer) clearTimeout(typingTimer);
+      typingTimer = setTimeout(stopTyping, 2800);
+    }
+    function stopTyping() {
+      if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+      if (typingRef && curMsgListeners) { try { typingRef.child(curMsgListeners.myKey).remove(); } catch (e) {} }
+    }
+    function showTypingNow(names) {
+      if (!names.length) { if (typingLine) typingLine.hidden = true; return; }
+      typingLine.hidden = false;
+      typingLine.innerHTML = '<span class="pxc-typing-dots">…</span><span>' + names.join('، ') + (names.length > 1 ? ' يكتبون' : ' يكتب') + ' الآن</span>';
+    }
+
+    /* ───────── إشعارات دخول/خروج ───────── */
+    function sysLine(html, kind) {
+      var li = document.createElement('div');
+      li.className = 'pxc-sys' + (kind ? ' pxc-sys--' + kind : '');
+      li.innerHTML = html;
+      feed.appendChild(li);
+      while (feed.children.length > 420) feed.removeChild(feed.firstChild);
+      scrollBottom();
+    }
 
     meBtn.innerHTML = '';
     meBtn.appendChild(avaEl(me.a, '', me.n));
@@ -242,11 +358,48 @@
     $('.pxc-sidefade').addEventListener('click', function () { root.classList.remove('app-side'); });
     $('.pxc-icon--close').addEventListener('click', close);
     $('.pxc-icon--rooms').addEventListener('click', openRooms);
+    shareBtn.addEventListener('click', shareRoom);
+    themeBtn.addEventListener('click', function () {
+      dark = !dark;
+      applyTheme();
+      saveSettings();
+      toast(dark ? 'الوضع الليلي مفعّل' : 'الوضع النهاري مفعّل', 1400);
+    });
+    applyTheme();
 
-    field.addEventListener('input', function () { autosize(); sendForm(); });
+    field.addEventListener('input', function () { autosize(); sendForm(); setTyping(); updateMentions(); });
+    field.addEventListener('focus', function () {
+      ensureAudio();
+      clearUnread();
+      if (!notificationsOn) {
+        notificationsOn = true;
+        if ('Notification' in window && Notification.permission === 'default') {
+          try { Notification.requestPermission(); } catch (e) {}
+        }
+      }
+    });
+
+    /* ───────── مشاركة رابط الغرفة ───────── */
+    function shareRoom() {
+      var url = location.origin + location.pathname.split('/').filter(Boolean).slice(0, -1).join('/');
+      var full = (url || location.href).replace(/\/$/, '') + '/' + slug();
+      try {
+        navigator.clipboard.writeText(full).then(function () { toast('رابط الغرفة مُنسخ ✓', 1600); }, function () { toast(full, 2600); });
+      } catch (e) { toast(full, 2600); }
+    }
     function autosize() { field.style.height = 'auto'; field.style.height = Math.min(132, field.scrollHeight) + 'px'; }
     function sendForm() { var v = cleanMsg(field.value); var val = v && !uploadBusy && firebaseReady; send.disabled = !val; }
     field.addEventListener('keydown', function (ev) {
+      if (!mentionsBox.hidden && (ev.key === 'ArrowDown' || ev.key === 'ArrowUp' || ev.key === 'Enter' || ev.key === 'Tab')) {
+        if (ev.key === 'Enter' && ev.shiftKey) return;
+        ev.preventDefault();
+        if (!mentionsList.length) return;
+        if (ev.key === 'ArrowDown') mentionsIdx = (mentionsIdx + 1) % mentionsList.length;
+        else if (ev.key === 'ArrowUp') mentionsIdx = (mentionsIdx - 1 + mentionsList.length) % mentionsList.length;
+        else { if (mentionsIdx >= 0 && mentionsIdx < mentionsList.length) selectMention(mentionsList[mentionsIdx]); return; }
+        paintMentions();
+        return;
+      }
       if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); doSend(); }
     });
     qs('.pxc-composer', root).addEventListener('submit', function (ev) { ev.preventDefault(); doSend(); });
@@ -275,6 +428,70 @@
       });
       qs('.pxc-composer', root).appendChild(emoPanel);
     }
+
+    /*────────── @منشن الأعضاء المتصلين ──────────*/
+    var mentionsList = [];
+    var mentionsIdx = -1;
+    function mentionCandidates() {
+      var names = [];
+      Object.keys(members).forEach(function (k) {
+        var nm = String((members[k] && members[k].n) || '').trim().slice(0, 20);
+        if (nm && nm !== 'زائر' && names.indexOf(nm) === -1) names.push(nm);
+      });
+      return names.map(function (nm) { return { name: nm }; });
+    }
+    function updateMentions() {
+      var text = field.value;
+      var pos = field.selectionStart || 0;
+      var before = text.slice(0, pos);
+      var m = /(?:^|\s)@([^\s@]*)$/.exec(before);
+      if (!m) { hideMentions(); return; }
+      var q = m[1].toLowerCase();
+      var cands = mentionCandidates().filter(function (c) { return !q || c.name.toLowerCase().indexOf(q) === 0; });
+      if (!cands.length) { hideMentions(); return; }
+      mentionsList = cands.slice(0, 8);
+      mentionsIdx = 0;
+      paintMentions();
+      mentionsBox.hidden = false;
+    }
+    function paintMentions() {
+      mentionsBox.innerHTML = '';
+      mentionsList.forEach(function (c, i) {
+        var it = document.createElement('button');
+        it.type = 'button';
+        it.className = 'pxc-mention' + (i === mentionsIdx ? ' is-on' : '');
+        it.appendChild(avaEl(0, 's', c.name));
+        var sp = document.createElement('span');
+        sp.textContent = c.name;
+        it.appendChild(sp);
+        it.addEventListener('click', function (ev) { ev.stopPropagation(); selectMention(c); });
+        mentionsBox.appendChild(it);
+      });
+    }
+    function selectMention(c) {
+      var text = field.value;
+      var pos = field.selectionStart || text.length;
+      var start = pos;
+      while (start > 0 && text.charAt(start - 1) !== ' ' && text.charAt(start - 1) !== '\n') start--;
+      var word = text.slice(start, pos);
+      var newSel = (word.charAt(0) === '@') ? '@' + c.name + ' ' : ((start > 0 ? ' ' : '') + '@' + c.name + ' ');
+      field.value = text.slice(0, start) + newSel + text.slice(pos);
+      var caret = start + newSel.length;
+      field.setSelectionRange(caret, caret);
+      hideMentions();
+      autosize(); sendForm();
+      field.focus();
+    }
+    function hideMentions() {
+      mentionsBox.hidden = true;
+      mentionsBox.innerHTML = '';
+      mentionsList = [];
+      mentionsIdx = -1;
+    }
+    document.addEventListener('click', function (ev) {
+      if (ev.target === field || mentionsBox.contains(ev.target)) return;
+      hideMentions();
+    });
 
     /*────────── رفع صورة ──────────*/
     $('.pxc-icon--tool[title="إرسال صورة"]').addEventListener('click', function () { if (firebaseReady && !uploadBusy) fileInput.click(); });
@@ -375,34 +592,130 @@
     function attachRoom(okCb) {
       var msgRef = db.ref('chat/' + room.id);
       var presRef = db.ref('presence/' + room.id);
+      var typingR = db.ref('typing/' + room.id);
       var myKey = tabKey();
 
       var myPres = presRef.child(myKey);
       myPres.onDisconnect().remove();
       myPres.set({ n: me.n, a: me.a, c: me.c, s: me.s, t: Date.now() });
 
-      curMsgListeners = { msgRef: msgRef, presRef: presRef, myPres: myPres, myKey: myKey, on: true };
+      typingRef = typingR;
+
+      curMsgListeners = { msgRef: msgRef, presRef: presRef, typingRef: typingR, myPres: myPres, myKey: myKey, on: true };
+      firstPres = true;
+      prevPresKeys = null;
 
       presRef.on('value', function (snap) {
         if (detached || !curMsgListeners || !curMsgListeners.on) return;
-        members = {};
-        snap.forEach(function (ch) { members[ch.key] = ch.val() || {}; });
+        var nowList = {};
+        snap.forEach(function (ch) { nowList[ch.key] = ch.val() || {}; });
+        if (!firstPres && prevPresKeys) {
+          Object.keys(nowList).forEach(function (k) {
+            if (!prevPresKeys[k]) {
+              var p = nowList[k];
+              sysLine('دخل <b>' + esc(String(p.n || 'زائر').slice(0, 20)) + '</b> الغرفة', 'in');
+            }
+          });
+          Object.keys(prevPresKeys).forEach(function (k) {
+            if (!nowList[k] && prevPresKeys[k]) {
+              var p = prevPresKeys[k];
+              sysLine('خرج <b>' + esc(String(p.n || 'زائر').slice(0, 20)) + '</b> من الغرفة', 'out');
+            }
+          });
+        }
+        firstPres = false;
+        prevPresKeys = nowList;
+        members = nowList;
         renderMembers();
         updateCount();
       });
 
-      msgRef.orderByChild('ts').limitToLast(80).on('child_added', function (snap) {
-        if (detached || !curMsgListeners || !curMsgListeners.on) return;
-        var d = snap.val();
-        if (d && (d.t || d.img)) addMsg(d, snap.key);
+      typingR.on('value', function (snap) {
+        if (detached) return;
+        var names = [];
+        var now = Date.now();
+        typingKeys = {};
+        snap.forEach(function (ch) {
+          if (ch.key === myKey) return;
+          var v = ch.val() || {};
+          if ((v.t || 0) > now - 3200) {
+            typingKeys[ch.key] = true;
+            names.push(String(v.n || 'شخص').slice(0, 20));
+          }
+        });
+        showTypingNow(names);
       });
 
-      var cutoff = Date.now() - 86400000;
-      msgRef.orderByChild('ts').endAt(cutoff).limitToLast(200).once('value', function (snap) {
+      var msgHandler = function (snap) {
+        if (detached || !curMsgListeners || !curMsgListeners.on) return;
+        var d = snap.val();
+        if (!d || (!d.t && !d.img)) return;
+        addMsg(d, snap.key);
+        var isMine = d.k === myKey || (String(d.n || '') === me.n && (d.c === undefined || d.c === me.c) && typeof d.k !== 'string');
+        if (!isMine) {
+          if (document.hidden) {
+            bumpUnread();
+            ring();
+            notifyMsg(String(d.n || '').slice(0, 20), String(d.t || 'صورة').slice(0, 80));
+          }
+        }
+      };
+
+      msgRef.orderByChild('ts').limitToLast(96).on('child_added', msgHandler);
+
+      msgRef.on('child_removed', function (snap) {
+        if (detached) return;
+        var key = snap.key;
+        delete feedKeys[key];
+        var row = qs('.pxc-msg[data-key="' + key + '"]', root);
+        if (row) row.remove();
+      });
+
+      msgRef.on('child_changed', function (snap) {
+        if (detached) return;
+        var key = snap.key;
+        var val = snap.val() || {};
+        rxCache[key] = val.r || {};
+        var actors = val.ra || {};
+        var mine = {};
+        Object.keys(actors).forEach(function (av) {
+          if (actors[av] && actors[av][myKey]) mine[av] = true;
+        });
+        rxMine[key] = mine;
+        var bar = qs('.pxc-msg[data-key="' + key + '"] .pxc-react-bar', root);
+        if (bar) renderReactBar(bar, key);
+        if (typeof val.t === 'string') {
+          var tx = qs('.pxc-msg[data-key="' + key + '"] .pxc-msg__text', root);
+          if (tx) tx.innerHTML = renderRich(val.t);
+        }
+        if (val.ed) {
+          var ed = qs('.pxc-msg[data-key="' + key + '"] .pxc-edited', root);
+          if (!ed) {
+            var whoEl = qs('.pxc-msg[data-key="' + key + '"] .pxc-msg__who', root);
+            if (whoEl) {
+              var e2 = document.createElement('span');
+              e2.className = 'pxc-edited';
+              e2.textContent = 'تم التعديل';
+              whoEl.appendChild(e2);
+            }
+          }
+        }
+      });
+
+      /* التنظيف التلقائي: نصوص قبل 7 أيام، صور قبل 48 ساعة */
+      var txtCut = Date.now() - 7 * 86400000;
+      var imgCut = Date.now() - 2 * 86400000;
+      msgRef.orderByChild('ts').endAt(txtCut).limitToLast(200).once('value', function (snap) {
         if (detached || !snap.numChildren()) return;
         var updates = {};
         snap.forEach(function (ch) { updates[ch.key] = null; });
         msgRef.update(updates);
+      });
+      msgRef.orderByChild('ts').endAt(imgCut).limitToLast(400).once('value', function (snap) {
+        if (detached || !snap.numChildren()) return;
+        var updates = {};
+        snap.forEach(function (ch) { var v = ch.val(); if (v && v.img) updates[ch.key] = null; });
+        if (Object.keys(updates).length) msgRef.update(updates);
       });
 
       if (okCb) okCb();
@@ -412,18 +725,30 @@
       if (!curMsgListeners) return;
       var L = curMsgListeners;
       L.on = false;
-      try { L.presRef.off(); L.msgRef.off(); L.myPres.remove(); L.myPres.onDisconnect().cancel(); } catch (e) {}
+      try { L.presRef.off(); L.msgRef.off(); if (L.typingRef) L.typingRef.off(); L.myPres.remove(); L.myPres.onDisconnect().cancel(); } catch (e) {}
       curMsgListeners = null;
+      stopTyping();
+      if (typingLine) typingLine.hidden = true;
+      typingKeys = {};
     }
 
     function switchRoom(id, title) {
       if (!firebaseReady || !curMsgListeners || id === room.id) { closeRooms(); return; }
+      clearReply();
+      cancelEdit();
       detachRoom();
       room = { id: id, title: title || id, desc: '' };
       titleEl.textContent = room.title;
+      document.title = room.title;
       feed.innerHTML = '';
       lastMsg = null;
+      lastDay = 0;
       members = {};
+      feedKeys = {};
+      rxCache = {};
+      rxMine = {};
+      oldestTs = Infinity;
+      oldestVis = true;
       paneMembers.innerHTML = '';
       renderRoomsList();
       attachRoom(function () {
@@ -464,6 +789,10 @@
         sn.textContent = 'دخل ' + fmtClock(m.t || Date.now());
         meta.appendChild(nm); meta.appendChild(sn);
         row.appendChild(meta);
+        var dot = document.createElement('i');
+        dot.className = 'pxc-online';
+        dot.title = 'متصل الآن';
+        row.appendChild(dot);
         row.addEventListener('click', function () { openProfile(m); });
         paneMembers.appendChild(row);
       });
@@ -595,7 +924,7 @@
         }
         row('الغرفة', room.title);
         row('دخل منذ', fmtClock(joined));
-        row('الحالة', isMe ? 'متصل في الغرفة' : ((m && Object.prototype.hasOwnProperty.call(m, 'n')) ? 'متصل في الغرفة' : 'غير معروف'));
+        row('الحالة', isMe ? 'متصل الآن' : ((m && Object.prototype.hasOwnProperty.call(m, 'n')) ? 'متصل الآن' : 'غير معروف'));
         body.appendChild(rows);
 
         if (isMe) {
@@ -636,6 +965,7 @@
           bt.style.marginTop = '.7rem';
           bt.textContent = 'حفظ الحالة';
           bt.addEventListener('click', function () {
+            ensureAudio();
             me.s = cleanStatus(ta.value);
             savePro(me);
             updateMyPresence();
@@ -644,6 +974,34 @@
           });
           f2.appendChild(bt);
           body.appendChild(f2);
+
+          /* الإعدادات */
+          var f3 = document.createElement('div');
+          f3.className = 'pxc-field';
+          var l3 = document.createElement('label'); l3.textContent = 'الإعدادات';
+          f3.appendChild(l3);
+          var setRow = function (txt, get, set) {
+            var r = document.createElement('div');
+            r.className = 'pxc-set';
+            var s = document.createElement('span'); s.textContent = txt;
+            var t = document.createElement('button');
+            t.type = 'button';
+            t.className = 'pxc-set__on';
+            t.textContent = get() ? 'تفعيل ✓' : 'إيقاف';
+            t.style.color = get() ? '#fff' : '';
+            t.addEventListener('click', function () {
+              set(!get());
+              t.textContent = get() ? 'تفعيل ✓' : 'إيقاف';
+              applyTheme();
+              toast(get() ? 'مفعّل ✓' : 'متوقف', 1200);
+            });
+            r.appendChild(s); r.appendChild(t);
+            f3.appendChild(r);
+            return r;
+          };
+          setRow('الوضع الليلي', function () { return dark; }, function (v) { dark = v; saveSettings(); });
+          setRow('صوت التنبيه', function () { return sound; }, function (v) { sound = v; saveSettings(); });
+          body.appendChild(f3);
         }
       });
     }
@@ -697,8 +1055,11 @@
       var name = String(d.n || 'زائر').slice(0, 20);
       var text = (typeof d.t === 'string') ? d.t : '';
       var isMe = name === me.n && (d.c === undefined || d.c === me.c);
+      if (isMe && typeof d.k === 'string' && curMsgListeners && d.k !== curMsgListeners.myKey) isMe = false;
       var row = document.createElement('div');
       row.className = 'pxc-msg' + (isMe ? ' pxc-msg--me' : '');
+      row.dataset.key = key;
+      if ('ts' in d && typeof d.ts === 'number') row.dataset.ts = String(d.ts);
 
       var av = avaEl(typeof d.a === 'number' ? d.a : DEFAULT_AV, 's', name);
       av.addEventListener('click', function () { openProfile(d); });
@@ -718,12 +1079,44 @@
       tm.className = 'pxc-msg__time';
       tm.textContent = fmtTime(now);
       who.appendChild(tm);
+      if (d.ed) {
+        var eb = document.createElement('span');
+        eb.className = 'pxc-edited';
+        eb.textContent = 'تم التعديل';
+        who.appendChild(eb);
+      }
       body.appendChild(who);
+
+      /* الرد على رسالة سابقة */
+      if (d.rt && d.rt.n) {
+        var rq = document.createElement('div');
+        rq.className = 'pxc-quote';
+        var rqn = document.createElement('span');
+        rqn.className = 'pxc-quote__name';
+        rqn.textContent = String(d.rt.n).slice(0, 18);
+        rq.appendChild(rqn);
+        if (d.rt.img) {
+          var rqi = document.createElement('img');
+          rqi.className = 'pxc-quote__img';
+          rqi.loading = 'lazy';
+          rqi.src = d.rt.img;
+          rqi.alt = '';
+          rqi.addEventListener('click', function (ev) { ev.stopPropagation(); lightbox(d.rt.img); });
+          rq.appendChild(rqi);
+        }
+        if (d.rt.t) {
+          var rqt = document.createElement('span');
+          rqt.className = 'pxc-quote__text';
+          rqt.innerHTML = renderRich(String(d.rt.t));
+          rq.appendChild(rqt);
+        }
+        body.appendChild(rq);
+      }
 
       if (text) {
         var tx = document.createElement('span');
         tx.className = 'pxc-msg__text';
-        tx.innerHTML = emojiAndSafe(text);
+        tx.innerHTML = renderRich(text);
         body.appendChild(tx);
       }
       if (d.img) {
@@ -737,7 +1130,40 @@
         body.appendChild(im);
       }
 
+      /* أزرار الرسالة: نسخ / رد / حذف / تفاعل */
+      var act = document.createElement('div');
+      act.className = 'pxc-msg__act';
+      var btn = function (label, fn) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = label;
+        b.addEventListener('click', function (ev) { ev.stopPropagation(); fn(); });
+        act.appendChild(b);
+        return b;
+      };
+      btn('نسخ', function () { copyMsg(text); });
+      btn('رد', function () { setReplyTo({ key: key, name: name, text: text, img: d.img }); });
+      if (isMe && typeof d.t === 'string') btn('تعديل', function () { startEdit(d, key); });
+      if (isMe) btn('حذف', function () {
+        try { curMsgListeners.msgRef.child(key).remove(); } catch (e) {}
+        toast('حُذفت رسالتك', 1200);
+        if (editingKey === key) cancelEdit();
+      });
+      var rxNew = document.createElement('button');
+      rxNew.textContent = '👍';
+      rxNew.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        toggleReact(key);
+      });
+      act.appendChild(rxNew);
       row.appendChild(body);
+      row.appendChild(act);
+
+      /* شريط الردود الفعلية */
+      var bar = document.createElement('div');
+      bar.className = 'pxc-react-bar';
+      renderReactBar(bar, key);
+      row.appendChild(bar);
 
       /* تجميع الرسائل المتتالية */
       var same = lastMsg && lastMsg.name === name && lastMsg.isMe === isMe && (now - lastMsg.ts) < 120000 && !d.img;
@@ -755,10 +1181,154 @@
       }
       feed.appendChild(row);
       lastMsg = { name: name, isMe: isMe, ts: now };
-      while (feed.children.length > 250) feed.removeChild(feed.firstChild);
+      feedKeys[key] = true;
+      if (now < oldestTs) oldestTs = now;
+
+      /* زر تحميل الأقدم */
+      ensureOlderBtn();
+
+      while (feed.children.length > 420) feed.removeChild(feed.firstChild);
       scrollBottom();
     }
     var lastDay = 0;
+
+    function copyMsg(text) {
+      var s = text || '';
+      if (!s) { toast('لا يوجد نص للنسخ'); return; }
+      try {
+        navigator.clipboard.writeText(s).then(function () { toast('نُسخ النص ✓', 1200); }, function () { toast('تعذر النسخ'); });
+      } catch (e) { toast('تعذر النسخ'); }
+    }
+
+    /* ───────── الردود الفعلية ───────── */
+    var REACT_EMOJI = ['❤️', '😂', '😍', '👍', '😲'];
+    function renderReactBar(bar, key) {
+      bar.innerHTML = '';
+      var map = rxCache[key] || {};
+      var mine = rxMine[key] || {};
+      var has = false;
+      REACT_EMOJI.forEach(function (e) {
+        var c = map[e] || 0;
+        if (!c) return;
+        has = true;
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pxc-react' + (mine[e] ? ' is-mine' : '');
+        b.innerHTML = '<span>' + e + '</span><b>' + c + '</b>';
+        b.addEventListener('click', function () { toggleReact(key, e); });
+        bar.appendChild(b);
+      });
+      if (!has) bar.hidden = true; else bar.hidden = false;
+    }
+    function toggleReact(key, emoji) {
+      if (!emoji) {
+        var patchEl = qs('.pxc-msg[data-key="' + key + '"] .pxc-msg__act', root);
+        if (!patchEl) return;
+        var m = patchEl.getBoundingClientRect();
+        var panel = qs('.pxc-react-panel', root);
+        if (panel) { panel.remove(); return; }
+        panel = document.createElement('div');
+        panel.className = 'pxc-react-panel';
+        REACT_EMOJI.forEach(function (e) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = e;
+          b.addEventListener('click', function () { toggleReact(key, e); });
+          panel.appendChild(b);
+        });
+        document.body.appendChild(panel);
+        var style = panel.style;
+        style.position = 'fixed';
+        style.left = Math.max(6, Math.min(window.innerWidth - 200, m.left)) + 'px';
+        style.top = Math.max(6, m.top - 56) + 'px';
+        return;
+      }
+      var msgRef = curMsgListeners.msgRef;
+      var meRef = msgRef.child(key).child('ra').child(emoji).child(curMsgListeners.myKey);
+      meRef.transaction(function (cur) { return cur ? null : true; }, function (err, committed, snap) {
+        if (err || !committed) return;
+        var on = !!snap.val();
+        var cntRef = msgRef.child(key).child('r').child(emoji);
+        cntRef.transaction(function (c) { return Math.max(0, (Number(c) || 0) + (on ? 1 : -1)); });
+      });
+    }
+
+    /* ───────── السجل الأقدم ───────── */
+    function ensureOlderBtn() {
+      if (buildingOlder) return;
+      var old = qs('.pxc-older', root);
+      if (old) old.remove();
+      if (oldestVis) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pxc-older';
+        b.textContent = '‏‏⤴ عرض رسائل أقدم';
+        b.addEventListener('click', loadOlder);
+        feed.insertBefore(b, feed.firstChild);
+      }
+    }
+    var buildingOlder = false;
+    var loadingOlder = false;
+    function loadOlder() {
+      if (!firebaseReady || !curMsgListeners || loadingOlder) return;
+      loadingOlder = true;
+      var real = feed;
+      var oldFeedHeight = real.scrollHeight;
+      var scrollPrev = real.scrollTop;
+      var before = oldestTs - 1;
+      curMsgListeners.msgRef.orderByChild('ts').endAt(before).limitToLast(60).once('value', function (snap) {
+        loadingOlder = false;
+        if (detached) return;
+        if (!snap.numChildren()) { oldestVis = null; ensureOlderBtn(); toast('وصلت إلى بداية السجل'); return; }
+        var rows = [];
+        snap.forEach(function (ch) {
+          if (feedKeys[ch.key]) return;
+          var d = ch.val();
+          if (!d || (!d.t && !d.img)) return;
+          rows.push({ key: ch.key, d: d });
+        });
+        if (!rows.length) { oldestVis = null; ensureOlderBtn(); toast('وصلت إلى بداية السجل'); return; }
+        rows.sort(function (a, b) { return (a.d.ts || 0) - (b.d.ts || 0); });
+
+        /* نوجّه الإضافة مؤقتًا إلى مسودة ليبنيها addMsg حفظًا للتجميع وفواصل الأيام */
+        var scratch = document.createElement('div');
+        var holdLastMsg = lastMsg;
+        var holdLastDay = lastDay;
+        feed = scratch;
+        buildingOlder = true;
+        lastMsg = null; lastDay = 0;
+        rows.forEach(function (r) { addMsg(r.d, r.key); });
+        buildingOlder = false;
+        var olderNodes = Array.prototype.slice.call(scratch.childNodes);
+        feed = real;
+        lastMsg = holdLastMsg; lastDay = holdLastDay;
+
+        var current = Array.prototype.slice.call(real.childNodes);
+        real.innerHTML = '';
+        olderNodes.forEach(function (n) { real.appendChild(n); });
+        current.forEach(function (n) { real.appendChild(n); });
+
+        /* استعادة حالة التجميع من آخر رسالة ظاهرة */
+        var lastRow = null;
+        for (var i = real.children.length - 1; i >= 0; i--) {
+          var el = real.children[i];
+          if (el.classList && el.classList.contains('pxc-msg')) { lastRow = el; break; }
+        }
+        if (lastRow) {
+          var whoEl = lastRow.querySelector('.pxc-msg__name');
+          lastMsg = {
+            name: whoEl ? whoEl.textContent : '',
+            isMe: lastRow.classList.contains('pxc-msg--me'),
+            ts: Number(lastRow.dataset.ts || 0)
+          };
+          lastDay = dayKey(lastMsg.ts || Date.now());
+        } else {
+          lastMsg = null; lastDay = 0;
+        }
+        real.scrollTop = scrollPrev + (real.scrollHeight - oldFeedHeight);
+        ensureOlderBtn();
+      });
+    }
     function dayKey(ts) {
       var d = new Date(ts);
       return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
@@ -777,6 +1347,36 @@
     }
     var SHORTCUTS = { ':قلب:': '❤️', ':ضحك:': '😂', ':حزين:': '😢', ':غاضب:': '😡', ':معجب:': '😍', ':كف:': '🙏', ':ممتاز:': '👌', ':ماشي:': '👍', ':ابتسامة:': '😊', ':عين:': '👀' };
 
+    /* عرض غني: يلون @منشن المتصلين ثم يحول الاختصارات */
+    function renderRich(s) {
+      var text = String(s);
+      var names = [];
+      Object.keys(members).forEach(function (k) {
+        var nm = String((members[k] && members[k].n) || '').trim().slice(0, 20);
+        if (nm && names.indexOf(nm) === -1) names.push(nm);
+      });
+      names.sort(function (a, b) { return b.length - a.length; });
+      if (!names.length) {
+        return text.indexOf(':') < 0 ? esc(text).replace(/\n/g, '<br>') : emojiAndSafe(text);
+      }
+      var alt = names.map(function (nm) { return nm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|');
+      var mre = new RegExp('(:[^:\\s]{1,14}:)|(@(?:' + alt + '))(?=[\\s<]|$)', 'g');
+      var out = '';
+      text.split(mre).forEach(function (tk) {
+        if (!tk) return;
+        if (/^:[^:\s]{1,14}:$/.test(tk)) {
+          var e = SHORTCUTS[tk];
+          out += e ? '<span class="pxc-emoji">' + esc(e) + '</span>' : esc(tk);
+        } else if (tk.charAt(0) === '@' && tk.length > 1) {
+          var nm = tk.slice(1);
+          out += '<span class="pxc-mention' + (nm === me.n ? ' pxc-mention--me' : '') + '" data-name="' + esc(nm) + '">@' + esc(nm) + '</span>';
+        } else {
+          out += esc(tk);
+        }
+      });
+      return out.replace(/\n/g, '<br>');
+    }
+
     function lightbox(url) {
       var lb = document.createElement('div');
       lb.className = 'pxc-lb';
@@ -792,19 +1392,86 @@
 
     function pushMsg(data) {
       if (!firebaseReady || !curMsgListeners) return;
-      var payload = { n: me.n, a: me.a, c: me.c, ts: data.ts || Date.now() };
+      var payload = { n: me.n, a: me.a, c: me.c, k: curMsgListeners.myKey, ts: data.ts || Date.now() };
       if (data.t) payload.t = data.t;
       if (data.img) { payload.img = data.img; if (data.w) payload.w = data.w; if (data.h) payload.h = data.h; }
+      if (data.rt) payload.rt = data.rt;
       try { curMsgListeners.msgRef.push(payload); } catch (e) {}
+    }
+
+    /* ───────── الرد على رسالة ───────── */
+    function setReplyTo(m) {
+      if (!m) return;
+      replyTo = { key: m.key, n: m.name, t: m.text };
+      if (m.img) replyTo.img = m.img;
+      replyChip.hidden = false;
+      replyChip.innerHTML = '';
+      var label = document.createElement('span');
+      label.innerHTML = 'رد على <b>' + esc(String(m.name).slice(0, 18)) + '</b>: ' + esc(String(m.text || 'صورة').slice(0, 40));
+      label.className = 'pxc-replychip__label';
+      var x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'pxc-replychip__x';
+      x.textContent = '✕';
+      x.setAttribute('aria-label', 'إلغاء الرد');
+      x.addEventListener('click', clearReply);
+      replyChip.appendChild(label); replyChip.appendChild(x);
+      field.focus();
+    }
+    function clearReply() {
+      replyTo = null;
+      if (replyChip) replyChip.hidden = true;
+    }
+
+    /* ───────── تعديل رسالتي ───────── */
+    function startEdit(d, key) {
+      if (!d || typeof d.t !== 'string' || !curMsgListeners) return;
+      clearReply();
+      editingKey = key;
+      editChip.hidden = false;
+      editChip.innerHTML = '';
+      var label = document.createElement('span');
+      label.className = 'pxc-editchip__label';
+      label.textContent = 'أنت تحرر رسالتك — ثم اضغط إرسال';
+      var x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'pxc-editchip__x';
+      x.textContent = '✕';
+      x.setAttribute('aria-label', 'إلغاء التعديل');
+      x.addEventListener('click', cancelEdit);
+      editChip.appendChild(label); editChip.appendChild(x);
+      field.value = d.t;
+      autosize(); sendForm();
+      field.focus();
+    }
+    function cancelEdit() {
+      editingKey = null;
+      if (editChip) editChip.hidden = true;
     }
 
     function doSend() {
       if (send.disabled) return;
       var text = cleanMsg(field.value);
       if (!text) return;
+      stopTyping();
+      if (editingKey) {
+        var upd = { t: text, ed: 1, edt: Date.now() };
+        try { curMsgListeners.msgRef.child(editingKey).update(upd); } catch (e) {}
+        cancelEdit();
+        field.value = '';
+        autosize(); sendForm();
+        field.focus();
+        return;
+      }
       field.value = '';
       autosize(); sendForm();
-      pushMsg({ t: text, ts: Date.now() });
+      var rt = null;
+      if (replyTo && replyTo.key) {
+        rt = { n: replyTo.n, t: replyTo.t };
+        if (replyTo.img) rt.img = replyTo.img;
+      }
+      pushMsg(rt ? { t: text, rt: rt, ts: Date.now() } : { t: text, ts: Date.now() });
+      clearReply();
       field.focus();
     }
 
@@ -815,7 +1482,16 @@
       if (roomPollTimer) { clearInterval(roomPollTimer); }
       closeRooms();
       sheets.slice().forEach(function (rm) { try { rm(); } catch (e) {} });
-      try { if (curMsgListeners) { curMsgListeners.presRef.off(); curMsgListeners.msgRef.off(); curMsgListeners.myPres.remove(); curMsgListeners.myPres.onDisconnect().cancel(); } } catch (e) {}
+      stopTyping();
+      if (typingLine) typingLine.hidden = true;
+      clearReply();
+      cancelEdit();
+      var oldBtn = qs('.pxc-older', root);
+      if (oldBtn) oldBtn.remove();
+      var rxP = qs('.pxc-react-panel', root);
+      if (rxP) rxP.remove();
+      document.title = room.title;
+      try { if (curMsgListeners) { curMsgListeners.presRef.off(); curMsgListeners.msgRef.off(); if (curMsgListeners.typingRef) curMsgListeners.typingRef.off(); curMsgListeners.myPres.remove(); curMsgListeners.myPres.onDisconnect().cancel(); } } catch (e) {}
       if (root.parentNode) root.parentNode.removeChild(root);
       document.removeEventListener('keydown', onKey, false);
     }
