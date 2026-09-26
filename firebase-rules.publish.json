@@ -1,45 +1,142 @@
 {
-  "_comment": [
-    "DRAFT - do not publish as-is.",
-    "",
-    "The production ruleset is currently broken (presence/typing have no .read,",
-    "block has no self .read, the published copy is truncated) and the Publish",
-    "button is not reachable from this session. Merge the `forum` subtree below",
-    "into the fixed chat rules, then publish from the Console or the Admin SDK.",
-    "",
-    "NAMESPACING: chat-iraq.com and iraqia-chat.com share ONE Firebase project,",
-    "so every forum path is scoped by roomPrefix. `$site` must be one of the two",
-    "known prefixes; `$other` denies anything else, so a client cannot invent a",
-    "third namespace. Change $site here if you add another site on this project.",
-    "",
-    "Shape enforced here:",
-    "  forum/staff/<uid>                        {n,ts}   NOT writable from any client",
-    "  forum/$site/counts/<topicId>             number   public counter",
-    "  forum/$site/<cat>/<topicId>              {t,b,u,n,ts}     staff write",
-    "  forum/$site/<cat>/<topicId>/r/<rid>      {t,u,n,ts}       author writes",
-    "  forum/$site/votes/<topicId>/<uid>        true     own uid only, toggle",
-    "  forum/$site/read/<uid>/<topicId>         ts       own uid only",
-    "  forum/$site/reports/<rid>                {t,u,ts,why}     member creates",
-    "  forum/$site/pending/<pid>                {..,state}       member asks",
-    "  forum/$site/rate/<uid>/<bucket>          ts       one write per uid per 20s",
-    "",
-    "THROTTLE LIMITATION (read before publishing): RTDB rules have no trusted",
-    "clock, so no rule can enforce a time window. The rate/uid/<window> bucket is",
-    "write-once and the pending write must quote a bucket that already exists, so",
-    "one write per 20s window holds for any client that uses the shipped code, and",
-    "a scripted flood that skips spendRate() is stopped by the structural .validate",
-    "limits instead. A hard guarantee needs Cloud Functions (blocked on Spark) or",
-    "App Check.",
-    "No Cloud Functions on the Spark plan, so `rate` is the throttle: a bucket key",
-    "can only be created once, and the other write paths require the matching",
-    "The pending write also carries `k`, the window key, because rules cannot call Math.floor() or String().",
-    "bucket to already exist. That caps a member at one write per 20s window",
-    "without needing a server.",
-    "",
-    "To bootstrap staff, write it from the Console or the Admin SDK, e.g.",
-    "  firebase.database().ref('forum/staff/<uid>').set({ n: 'Kaz', ts: 0 })"
-  ],
   "rules": {
+    "chat": {
+      "$room": {
+        ".read": true,
+        ".indexOn": [
+          "ts"
+        ],
+        "$msg": {
+          ".write": "auth != null && ((!data.exists() && newData.child('u').val() === auth.uid) || (data.exists() && data.child('u').val() === auth.uid && newData.child('u').val() === auth.uid))",
+          ".validate": "newData.hasChildren(['n','ts'])",
+          "n": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+          },
+          "u": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+          },
+          "k": {
+            ".validate": "newData.isString() && newData.val().length <= 60"
+          },
+          "a": {
+            ".validate": "newData.isNumber() || newData.isString()"
+          },
+          "c": {
+            ".validate": "newData.isNumber() || newData.isString()"
+          },
+          "t": {
+            ".validate": "newData.isString() && newData.val().length <= 2000"
+          },
+          "img": {
+            ".validate": "newData.isString() && newData.val().length < 1500000"
+          },
+          "w": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+          "h": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+          "ts": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 30000)"
+          },
+          "ed": {
+            ".validate": "newData.val() === 1"
+          },
+          "edt": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+          "rt": {
+            ".validate": "newData.hasChildren(['n'])",
+            "n": {
+              ".validate": "newData.isString() && newData.val().length <= 24"
+            },
+            "t": {
+              ".validate": "newData.isString() && newData.val().length <= 2000"
+            },
+            "img": {
+              ".validate": "newData.isString() && newData.val().length < 1500000"
+            }
+          },
+          "r": {
+            ".write": "auth != null",
+            "$rx": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999"
+            }
+          },
+          "ra": {
+            "$rx": {
+              "$actor": {
+                ".write": "auth != null && auth.uid === $actor",
+                ".validate": "newData.val() === true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "presence": {
+      "$room": {
+        "$tab": {
+          ".read": "auth != null",
+          ".write": "auth != null && (!data.exists() ? newData.child('u').val() === auth.uid : (data.child('u').val() === auth.uid || newData.child('u').val() === auth.uid))",
+          ".validate": "newData.hasChildren(['n','t','u'])",
+          "n": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+          },
+          "u": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+          },
+          "a": {
+            ".validate": "newData.isNumber() || newData.isString()"
+          },
+          "c": {
+            ".validate": "newData.isNumber() || newData.isString()"
+          },
+          "s": {
+            ".validate": "newData.isString() && newData.val().length <= 120"
+          },
+          "t": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 60000)"
+          }
+        }
+      }
+    },
+    "typing": {
+      "$room": {
+        "$tab": {
+          ".read": "auth != null",
+          ".write": "auth != null && newData.child('u').val() === auth.uid",
+          ".validate": "newData.hasChildren(['t'])",
+          "n": {
+            ".validate": "newData.isString() && newData.val().length <= 24"
+          },
+          "u": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+          },
+          "t": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 30000)"
+          }
+        }
+      }
+    },
+    "rate": {
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['ts'])",
+        "ts": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 30000) && (!data.exists() || newData.val() >= data.val() + 400)"
+        }
+      }
+    },
+    "block": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$other": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.val() === true"
+        }
+      }
+    },
     "forum": {
       ".read": false,
       ".write": false,

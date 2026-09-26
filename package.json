@@ -13,9 +13,11 @@
     "forum:nav": "node scripts/patch-forum-nav.mjs --write",
     "forum:verify": "node scripts/verify-forum.mjs && node scripts/verify-forum-rules.mjs && node scripts/verify-forum-links.mjs",
     "forum": "npm run forum:build && npm run forum:verify",
-    "forum:all": "npm run forum:promote && npm run forum:build && npm run forum:nav && npm run forum:verify",
+    "forum:all": "npm run forum:promote && npm run forum:build && npm run forum:nav && npm run forum:rules && npm run forum:verify",
     "forum:promote": "node scripts/promote-topic.mjs",
-    "forum:publish": "node scripts/promote-topic.mjs && node scripts/build-forum.mjs && node scripts/verify-forum.mjs"
+    "forum:publish": "node scripts/promote-topic.mjs && node scripts/build-forum.mjs && node scripts/verify-forum.mjs",
+    "forum:rules": "node scripts/build-rules.mjs",
+    "forum:staff": "node scripts/bootstrap-staff.mjs"
   },
   "dependencies": {
     "@fontsource/readex-pro": "^5.1.1",

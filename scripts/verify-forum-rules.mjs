@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
 const o = JSON.parse(readFileSync(path.join(process.cwd(), 'forum-rules.json'), 'utf8'))
 const r = o.rules.forum
@@ -22,7 +22,7 @@ for (const c of CATS) {
 }
 
 p(r.staff['$uid']['.write'] === false, 'staff node not client-writable')
-p(r.staff['.read'] === 'auth != null && auth.uid === $uid', 'staff readable only by its owner')
+p(r.staff['$uid']['.read'] === 'auth != null && auth.uid === $uid', 'staff readable only by its owner')
 p(NS['$other'] && NS['$other']['.write'] === false, 'unknown namespaces denied via $other')
 p(NS.counts['.read'] === true, 'counts publicly readable')
 p(NS.rate['$uid']['$window'] && NS.rate['$uid']['$window']['.write'].includes('!data.exists()'), 'rate bucket is write-once (real throttle)')
@@ -30,7 +30,7 @@ p(NS.pending['$pid']['.write'].includes("child('rate')"), 'pending write gated b
 p(NS.pending['$pid']['.write'].includes('$site'), 'pending rate lookup is namespace-scoped')
 p(NS.pending['$pid']['.write'].includes("newData.child('k')"), 'pending quotes the window key (rules cannot call Math/String)')
 p(/!newData\.exists\(\)/.test(NS.votes['$topicId']['$uid']['.write']), 'a vote can be removed, not only added')
-p(/data\.val\(\) \|\| 0\) \+ 1/.test(NS.counts['$topicId']['.write']), 'a counter moves by one, never set to an arbitrary number')
+p(/data\.exists\(\) \? data\.val\(\) : 0\) \+ 1/.test(NS.counts['$topicId']['.write']), 'a counter moves by one, never set to an arbitrary number')
 p(NS.votes['$topicId']['$uid']['.write'].includes('auth.uid === $uid'), 'votes bound to own uid')
 p(NS.read['$uid']['.write'].includes('auth.uid === $uid'), 'read state bound to own uid')
 p(NS.reports['.read'].includes("child('staff')"), 'reports readable by staff only')
@@ -57,6 +57,35 @@ JSON.stringify(r, (k, v) => {
   return v
 })
 p(bare.length === 0, 'no Math.* or bare String() in any rule expression' + (bare.length ? ' -> ' + bare.join(', ') : ''))
+
+/* ---- the merged paste-ready file must not have drifted from its sources ---- */
+const fullPath = process.cwd() + '/firebase-rules.full.json'
+if (existsSync(fullPath)) {
+  const full = JSON.parse(readFileSync(fullPath, 'utf8'))
+  const chatS = JSON.parse(readFileSync(process.cwd() + '/rules-chat.json', 'utf8'))
+  p(!!full.rules.chat && !!full.rules.presence && !!full.rules.typing && !!full.rules.rate && !!full.rules.block,
+    'merged rules keep every chat path (chat, presence, typing, rate, block)')
+  p(JSON.stringify(full.rules.forum) === JSON.stringify(r), 'merged forum subtree matches forum-rules.json exactly')
+  p(JSON.stringify(full.rules.chat) === JSON.stringify(chatS.rules.chat), 'merged chat subtree matches rules-chat.json exactly')
+  const readFixes = ['presence.$room.$tab', 'typing.$room.$tab', 'block.$uid']
+  for (const path of readFixes) {
+    const node = readFixes.indexOf(path) === 0 ? full.rules.presence.$room.$tab
+      : readFixes.indexOf(path) === 1 ? full.rules.typing.$room.$tab
+        : full.rules.block.$uid
+    p(!!node['.read'], path + ' has a .read (this was the Permission-denied bug)')
+  }
+
+  /* the publishable copy must be byte-identical in rules and carry ONLY "rules",
+     because the rules compiler rejects any other top-level key. */
+  const pubPath = process.cwd() + '/firebase-rules.publish.json'
+  if (existsSync(pubPath)) {
+    const pub = JSON.parse(readFileSync(pubPath, 'utf8'))
+    p(Object.keys(pub).join(',') === 'rules', 'publish file has only the "rules" key')
+    p(JSON.stringify(pub.rules) === JSON.stringify(full.rules), 'publish file rules match the merged file')
+  } else p(false, 'firebase-rules.publish.json is missing - run: node scripts/build-rules.mjs')
+} else {
+  p(false, 'firebase-rules.full.json is missing - run: node scripts/build-rules.mjs')
+}
 
 console.log(bad ? '\nPROBLEMS: ' + bad : '\nforum-rules.json: ALL STRUCTURAL CHECKS PASSED')
 process.exit(bad ? 1 : 0)

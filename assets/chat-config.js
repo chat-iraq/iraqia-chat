@@ -1,9 +1,9 @@
 ﻿window.CHAT_FIREBASE = {
-  apiKey: "AIzaSyBZ8X6Wvc0jY7P-9Wc3DybdnqIiqEUoOxA",
-  authDomain: "asltime-ds-chat-fire.firebaseapp.com",
-  databaseURL: "https://asltime-ds-chat-fire-default-rtdb.firebaseio.com",
-  projectId: "asltime-ds-chat-fire",
-  storageBucket: "asltime-ds-chat-fire.firebasestorage.app",
-  appId: "1:726652877785:web:fee8f5c43c942d095a77c8",
+  apiKey: "AIzaSyDbv-yrnOUCgmyKiITpkAa4I0j8pBS5nX8",
+  authDomain: "asltime-ds-chat-fire-new.firebaseapp.com",
+  databaseURL: "https://asltime-ds-chat-fire-new-default-rtdb.firebaseio.com",
+  projectId: "asltime-ds-chat-fire-new",
+  storageBucket: "asltime-ds-chat-fire-new.firebasestorage.app",
+  appId: "1:857995350685:web:e43f9a25f1e841826bba74",
   roomPrefix: "durar"
 };

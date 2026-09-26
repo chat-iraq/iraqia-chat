@@ -1,0 +1,97 @@
+{
+  "_comment": [
+    "Chat half of the ruleset. Pair it with the forum half:",
+    "  node scripts/build-rules.mjs   ->  firebase-rules.full.json  (paste that one)",
+    "",
+    "CHANGES vs what is deployed right now (review before publishing):",
+    "  presence.$room.$tab  .read  ADDED  auth != null",
+    "  typing.$room.$tab    .read  ADDED  auth != null",
+    "  block.$uid           .read  ADDED  auth != null && auth.uid === $uid",
+    "Those three had .write but no .read, which is why presence and typing came",
+    "back 'Permission denied': a client can announce itself but never read back.",
+    "presence/typing are tightened to auth != null, which is still stricter than",
+    "chat.$room, which is world-readable. block stays owner-only.",
+    "",
+    "Everything else here is the chat ruleset as previously validated by",
+    "browsertest3.js (24/24) and browsertest4.js (12/12)."
+  ],
+  "rules": {
+    "chat": {
+      "$room": {
+        ".read": true,
+        ".indexOn": ["ts"],
+        "$msg": {
+          ".write": "auth != null && ((!data.exists() && newData.child('u').val() === auth.uid) || (data.exists() && data.child('u').val() === auth.uid && newData.child('u').val() === auth.uid))",
+          ".validate": "newData.hasChildren(['n','ts'])",
+          "n": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24" },
+          "u": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60" },
+          "k": { ".validate": "newData.isString() && newData.val().length <= 60" },
+          "a": { ".validate": "newData.isNumber() || newData.isString()" },
+          "c": { ".validate": "newData.isNumber() || newData.isString()" },
+          "t": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+          "img": { ".validate": "newData.isString() && newData.val().length < 1500000" },
+          "w": { ".validate": "newData.isNumber() && newData.val() > 0" },
+          "h": { ".validate": "newData.isNumber() && newData.val() > 0" },
+          "ts": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 30000)" },
+          "ed": { ".validate": "newData.val() === 1" },
+          "edt": { ".validate": "newData.isNumber() && newData.val() > 0" },
+          "rt": {
+            ".validate": "newData.hasChildren(['n'])",
+            "n": { ".validate": "newData.isString() && newData.val().length <= 24" },
+            "t": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+            "img": { ".validate": "newData.isString() && newData.val().length < 1500000" }
+          },
+          "r": {
+            ".write": "auth != null",
+            "$rx": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 999" }
+          },
+          "ra": {
+            "$rx": {
+              "$actor": { ".write": "auth != null && auth.uid === $actor", ".validate": "newData.val() === true" }
+            }
+          }
+        }
+      }
+    },
+    "presence": {
+      "$room": {
+        "$tab": {
+          ".read": "auth != null",
+          ".write": "auth != null && (!data.exists() ? newData.child('u').val() === auth.uid : (data.child('u').val() === auth.uid || newData.child('u').val() === auth.uid))",
+          ".validate": "newData.hasChildren(['n','t','u'])",
+          "n": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24" },
+          "u": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60" },
+          "a": { ".validate": "newData.isNumber() || newData.isString()" },
+          "c": { ".validate": "newData.isNumber() || newData.isString()" },
+          "s": { ".validate": "newData.isString() && newData.val().length <= 120" },
+          "t": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 60000)" }
+        }
+      }
+    },
+    "typing": {
+      "$room": {
+        "$tab": {
+          ".read": "auth != null",
+          ".write": "auth != null && newData.child('u').val() === auth.uid",
+          ".validate": "newData.hasChildren(['t'])",
+          "n": { ".validate": "newData.isString() && newData.val().length <= 24" },
+          "u": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60" },
+          "t": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 30000)" }
+        }
+      }
+    },
+    "rate": {
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['ts'])",
+        "ts": { ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= (now + 30000) && (!data.exists() || newData.val() >= data.val() + 400)" }
+      }
+    },
+    "block": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$other": { ".write": "auth != null && auth.uid === $uid", ".validate": "newData.val() === true" }
+      }
+    }
+  }
+}

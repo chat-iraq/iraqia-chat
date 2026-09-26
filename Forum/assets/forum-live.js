@@ -278,6 +278,35 @@
       host.textContent = ''
       var p = el('p', 'fm-empty', 'هذه المنطقة للإدارة فقط. سجّل الدخول بحساب إدارة لعرض قائمة المراجعة.')
       host.appendChild(p)
+
+      /* Nobody can grant staff from the browser - the rules deny writes to
+         forum/staff/<uid> on purpose. So show the account's own uid and let
+         the owner paste it into bootstrap-staff.mjs. Without this the owner
+         has no way to learn which uid to grant. */
+      if (!me.uid) {
+        var anon = el('p', 'fm-state', 'تعذّر الحصول على معرّف الحساب. أعد تحميل الصفحة بعد تسجيل الدخول.')
+        host.appendChild(anon)
+        return
+      }
+      var w = el('div', 'fm-staff-item')
+      w.appendChild(el('h3', '', 'معرّف حسابك (uid)'))
+      w.appendChild(el('p', 'fm-state', 'أرسل هذا المعرّف لصاحب المشروع، أو نفّذ نيابةً عنه:'))
+      w.appendChild(el('code', 'fm-code', me.uid))
+      var row = el('div', 'fm-staff-acts')
+      var cp = el('button', 'fm-btn fm-btn--ghost', 'نسخ المعرّف')
+      cp.type = 'button'
+      cp.addEventListener('click', function () {
+        var m = el('p', 'fm-state', '')
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(me.uid).then(function () { m.textContent = 'نُسخ المعرّف ✔' }, function () { m.textContent = me.uid })
+        } else m.textContent = me.uid
+        w.appendChild(m)
+      })
+      row.appendChild(cp)
+      var cmd = el('code', 'fm-code', 'node scripts/bootstrap-staff.mjs --uid ' + me.uid)
+      row.appendChild(cmd)
+      w.appendChild(row)
+      host.appendChild(w)
     }
 
     function card(o, acts) {
