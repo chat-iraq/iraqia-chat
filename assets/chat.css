@@ -511,6 +511,16 @@
   cursor: pointer; font-weight: 700;
 }
 
+/* ── غلق بروفايل الأعضاء ── */
+.pxc-prof-block { margin-top: .6rem; }
+.pxc-btn-ghost {
+  width: 100%; border: 1px solid var(--pxc-line);
+  background: var(--pxc-surface-2); color: var(--pxc-ink);
+  border-radius: 12px; padding: .5rem .8rem;
+  font: inherit; font-weight: 800; cursor: pointer;
+}
+.pxc-btn-ghost:hover { background: color-mix(in srgb, #ff3d57 14%, var(--pxc-surface-2)); color: #ff3d57; }
+
 /* ── @منشن الأعضاء (قائمة الاختيار) ── */
 .pxc-mentions {
   position: absolute; bottom: calc(100% + .5rem); inset-inline-start: .9rem; inset-inline-end: .9rem;

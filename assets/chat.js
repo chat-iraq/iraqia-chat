@@ -241,6 +241,7 @@
     var unread = 0;
     var replyTo = null;          /* {key,n,t,img} للرد على رسالة */
     var editingKey = null;       /* مفتاح الرسالة قيد التحرير */
+    var blocks = {};             /* قائمة الحظر: uid -> true */
     var typingTimer = null;
     var typingRef = null;
     var typingShowTimer = null;
@@ -316,7 +317,7 @@
     /* ───────── مؤشر الكتابة ───────── */
     function setTyping() {
       if (!typingRef || !curMsgListeners) return;
-      try { typingRef.child(curMsgListeners.myKey).set({ n: me.n, t: Date.now() }); } catch (e) {}
+      try { typingRef.child(curMsgListeners.myKey).set({ n: me.n, t: Date.now(), u: authUid }); } catch (e) {}
       if (typingTimer) clearTimeout(typingTimer);
       typingTimer = setTimeout(stopTyping, 2800);
     }
@@ -558,7 +559,7 @@
       if (window.firebase && window.firebase.database && window.firebase.initializeApp) return cb();
       if ((depth || 0) > 4) return onFail();
       var base = 'https://www.gstatic.com/firebasejs/10.12.2/';
-      var scripts = ['firebase-app-compat.js', 'firebase-database-compat.js'];
+      var scripts = ['firebase-app-compat.js', 'firebase-database-compat.js', 'firebase-auth-compat.js'];
       var i = 0;
       (function next() {
         if (i >= scripts.length) {
@@ -575,15 +576,40 @@
     }
 
     var appRef = null;
-    loadFirebase(function () {
-      appRef = window.firebase.initializeApp(cfg, 'ds-chat');
-      db = window.firebase.database(appRef);
-      firebaseReady = true;
+    var authRef = null;
+    var authUid = null;
+    var authBooted = false;
+    function boot() {
+      if (authBooted) return;
+      authBooted = true;
       sendForm();
       attachRoom(function () {
         infoLine('تم الاتصال بالغرفة — تفضل أدردش!');
         field.focus();
       });
+      watchBlocks();
+    }
+    loadFirebase(function () {
+      appRef = window.firebase.initializeApp(cfg, 'ds-chat');
+      db = window.firebase.database(appRef);
+      firebaseReady = true;
+      if (!window.firebase.auth) { boot(); return; }
+      authRef = window.firebase.auth(appRef);
+      var onUser = function (user) {
+        if (!user || !user.uid) return;
+        if (authUid === user.uid) { if (!authBooted) boot(); return; }
+        authUid = user.uid;
+        boot();
+      };
+      authRef.onAuthStateChanged(onUser);
+      if (authRef.currentUser) onUser(authRef.currentUser);
+      else { try { authRef.signInAnonymously().then(onUser); } catch (e) {} }
+      setTimeout(function () {
+        if (!authBooted) {
+          boot();
+          toast('تعذّر التحقق من الهوية — بعض الخصائص قد تُقيَّد', 2600);
+        }
+      }, 7000);
     }, function () {
       infoLine('تعذر تحميل خدمة الدردشة الآن — جرّب بعد قليل.');
     });
@@ -597,11 +623,19 @@
 
       var myPres = presRef.child(myKey);
       myPres.onDisconnect().remove();
-      myPres.set({ n: me.n, a: me.a, c: me.c, s: me.s, t: Date.now() });
+      if (authUid) myPres.set({ n: me.n, a: me.a, c: me.c, s: me.s, t: Date.now(), u: authUid });
+      else {
+        try { myPres.remove(); } catch (e2) {}
+        var w = setInterval(function () {
+          if (!authUid) return;
+          clearInterval(w);
+          try { myPres.set({ n: me.n, a: me.a, c: me.c, s: me.s, t: Date.now(), u: authUid }); } catch (e2) {}
+        }, 400);
+      }
 
       typingRef = typingR;
 
-      curMsgListeners = { msgRef: msgRef, presRef: presRef, typingRef: typingR, myPres: myPres, myKey: myKey, on: true };
+      curMsgListeners = { msgRef: msgRef, presRef: presRef, typingRef: typingR, myPres: myPres, myKey: myKey, authUid: authUid, on: true };
       firstPres = true;
       prevPresKeys = null;
 
@@ -636,8 +670,9 @@
         var now = Date.now();
         typingKeys = {};
         snap.forEach(function (ch) {
-          if (ch.key === myKey) return;
-          var v = ch.val() || {};
+if (ch.key === myKey) return;
+        var v = ch.val() || {};
+        if (isBlocked(v.u)) return;
           if ((v.t || 0) > now - 3200) {
             typingKeys[ch.key] = true;
             names.push(String(v.n || 'شخص').slice(0, 20));
@@ -765,7 +800,7 @@
     /* ───────── قائمة الأعضاء ───────── */
     function renderMembers() {
       var list = [];
-      Object.keys(members).forEach(function (k) { list.push(members[k]); });
+      Object.keys(members).forEach(function (k) { if (!isBlocked(members[k].u)) list.push(members[k]); });
       list.sort(function (x, y) { return (x.t || 0) - (y.t || 0); });
       if (!list.length) {
         paneMembers.innerHTML = '<p class="pxc-info">لا يوجد متصلون الآن — كن أول من يتحدث!</p>';
@@ -927,6 +962,21 @@
         row('الحالة', isMe ? 'متصل الآن' : ((m && Object.prototype.hasOwnProperty.call(m, 'n')) ? 'متصل الآن' : 'غير معروف'));
         body.appendChild(rows);
 
+        if (!isMe && m && m.u && m.u !== authUid) {
+          var bwrap = document.createElement('div');
+          bwrap.className = 'pxc-prof-block';
+          var bb = document.createElement('button');
+          bb.type = 'button';
+          bb.className = 'pxc-btn-ghost';
+          bb.textContent = isBlocked(m.u) ? 'إلغاء الحظر' : 'حظر العضو';
+          bb.addEventListener('click', function () {
+            toggleBlock(m.u, name);
+            bb.textContent = isBlocked(m.u) ? 'إلغاء الحظر' : 'حظر العضو';
+          });
+          bwrap.appendChild(bb);
+          body.appendChild(bwrap);
+        }
+
         if (isMe) {
           var f1 = document.createElement('div');
           f1.className = 'pxc-field';
@@ -1052,6 +1102,7 @@
     }
 
     function addMsg(d, key) {
+      if (isBlocked(d.u)) return;
       var name = String(d.n || 'زائر').slice(0, 20);
       var text = (typeof d.t === 'string') ? d.t : '';
       var isMe = name === me.n && (d.c === undefined || d.c === me.c);
@@ -1392,11 +1443,39 @@
 
     function pushMsg(data) {
       if (!firebaseReady || !curMsgListeners) return;
-      var payload = { n: me.n, a: me.a, c: me.c, k: curMsgListeners.myKey, ts: data.ts || Date.now() };
+      var payload = { n: me.n, a: me.a, c: me.c, k: curMsgListeners.myKey, u: authUid, ts: data.ts || Date.now() };
       if (data.t) payload.t = data.t;
       if (data.img) { payload.img = data.img; if (data.w) payload.w = data.w; if (data.h) payload.h = data.h; }
       if (data.rt) payload.rt = data.rt;
+      if (data.t || data.img) {
+        var now = Date.now();
+        if (now - lastSendTs < 700) { toast('تمهّل قليلًا ⏳', 1000); return; }
+        lastSendTs = now;
+        payload.ts = now;
+        if (authUid) { try { db.ref('rate/' + authUid).child('ts').set(now); } catch (e) {} }
+      }
       try { curMsgListeners.msgRef.push(payload); } catch (e) {}
+    }
+    var lastSendTs = 0;
+
+    /* ───────── قائمة الحظر ───────── */
+    function watchBlocks() {
+      if (!db || !authUid) return;
+      try {
+        db.ref('block/' + authUid).on('value', function (snap) {
+          var v = snap.val() || {};
+          blocks = {};
+          Object.keys(v).forEach(function (k) { if (v[k]) blocks[k] = true; });
+          renderMembers();
+        });
+      } catch (e) {}
+    }
+    function isBlocked(u) { return !!(u && blocks[u]); }
+    function toggleBlock(u, name) {
+      if (!db || !authUid || !u || u === authUid) return;
+      var r = db.ref('block/' + authUid).child(u);
+      if (isBlocked(u)) { r.remove(); toast('ألغيت حظر ' + name, 1200); }
+      else { r.set(true); toast('حظرت ' + name + ' — لن ترى رسائله', 1400); }
     }
 
     /* ───────── الرد على رسالة ───────── */
