@@ -116,3 +116,10 @@
 .fm-staff-item h3{margin:0 0 .3rem;font-size:var(--ds-fs-md);color:var(--ds-heading)}
 .fm-staff-acts{display:flex;gap:.4rem;margin-block-start:.5rem}
 .fm-state{font-size:var(--ds-fs-xs);color:var(--ds-muted,#64748b)}
+
+/* approved-but-unpublished: the final URL the topic will live at */
+.fm-code{display:block;margin-block-start:.5rem;padding:.4rem .55rem;border-radius:var(--ds-r-sm);
+background:rgba(0,0,0,.045);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+font-size:var(--ds-fs-xs);direction:ltr;text-align:start;word-break:break-all;color:var(--ds-heading)}
+.fm-staff-acts .fm-btn{flex:0 0 auto}
+@media (max-width:420px){.fm-staff-acts{flex-wrap:wrap}}
