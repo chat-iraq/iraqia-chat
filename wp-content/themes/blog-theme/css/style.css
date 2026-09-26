@@ -1063,6 +1063,7 @@ p img.aligncenter {
 
 .pagination .prev a:disabled,
 .pagination .next a:disabled {
+}
     background-color: #ccc; /* Disabled background color */
     cursor: not-allowed; /* Show "not-allowed" cursor */
     pointer-events: none; /* Disable click events */

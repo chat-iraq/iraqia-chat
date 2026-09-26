@@ -8,7 +8,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "npm run build && node scripts/check.mjs"
+    "check": "npm run build && node scripts/check.mjs && npm run forum:verify",
+    "forum:build": "node scripts/build-forum.mjs",
+    "forum:nav": "node scripts/patch-forum-nav.mjs --write",
+    "forum:verify": "node scripts/verify-forum.mjs && node scripts/verify-forum-rules.mjs && node scripts/verify-forum-links.mjs",
+    "forum": "npm run forum:build && npm run forum:verify",
+    "forum:all": "npm run forum:build && npm run forum:nav && npm run forum:verify"
   },
   "dependencies": {
     "@fontsource/readex-pro": "^5.1.1",

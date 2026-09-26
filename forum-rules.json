@@ -1,0 +1,168 @@
+{
+  "_comment": [
+    "DRAFT - do not publish as-is.",
+    "",
+    "The production ruleset is currently broken (presence/typing have no .read,",
+    "block has no self .read, the published copy is truncated) and the Publish",
+    "button is not reachable from this session. Merge the `forum` subtree below",
+    "into the fixed chat rules, then publish from the Console or the Admin SDK.",
+    "",
+    "NAMESPACING: chat-iraq.com and iraqia-chat.com share ONE Firebase project,",
+    "so every forum path is scoped by roomPrefix. `$site` must be one of the two",
+    "known prefixes; `$other` denies anything else, so a client cannot invent a",
+    "third namespace. Change $site here if you add another site on this project.",
+    "",
+    "Shape enforced here:",
+    "  forum/staff/<uid>                        {n,ts}   NOT writable from any client",
+    "  forum/$site/counts/<topicId>             number   public counter",
+    "  forum/$site/<cat>/<topicId>              {t,b,u,n,ts}     staff write",
+    "  forum/$site/<cat>/<topicId>/r/<rid>      {t,u,n,ts}       author writes",
+    "  forum/$site/votes/<topicId>/<uid>        true     own uid only, toggle",
+    "  forum/$site/read/<uid>/<topicId>         ts       own uid only",
+    "  forum/$site/reports/<rid>                {t,u,ts,why}     member creates",
+    "  forum/$site/pending/<pid>                {..,state}       member asks",
+    "  forum/$site/rate/<uid>/<bucket>          ts       one write per uid per 20s",
+    "",
+    "No Cloud Functions on the Spark plan, so `rate` is the throttle: a bucket key",
+    "can only be created once, and the other write paths require the matching",
+    "bucket to already exist. That caps a member at one write per 20s window",
+    "without needing a server.",
+    "",
+    "To bootstrap staff, write it from the Console or the Admin SDK, e.g.",
+    "  firebase.database().ref('forum/staff/<uid>').set({ n: 'Kaz', ts: 0 })"
+  ],
+  "rules": {
+    "forum": {
+      ".read": false,
+      ".write": false,
+
+      "staff": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$uid": { ".write": false }
+      },
+
+      "$site": {
+        ".read": "auth != null",
+        "$other": { ".write": false, ".validate": false },
+
+        "counts": {
+          ".read": true,
+          "$topicId": {
+            ".write": "auth != null",
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000"
+          }
+        },
+
+        "access": {
+          "$topicId": {
+            ".read": "auth != null",
+            ".write": "root.child('forum').child('staff').child(auth.uid).exists()",
+            ".validate": "!newData.exists() || newData.hasChildren(['t', 'ts'])",
+            "r": {
+              "$rid": {
+                ".write": "auth != null && (((!data.exists() || data.child('u').val() === auth.uid) && newData.child('u').val() === auth.uid) || root.child('forum').child('staff').child(auth.uid).exists())",
+                ".validate": "newData.hasChildren(['t', 'u', 'n', 'ts']) && newData.child('t').isString() && newData.child('t').val().length >= 2 && newData.child('t').val().length <= 1200 && newData.child('n').isString() && newData.child('n').val().length <= 24 && newData.child('ts').isNumber() && (!newData.child('u').isString() || newData.child('u').val().length <= 128)"
+              }
+            }
+          }
+        },
+
+        "tech": {
+          "$topicId": {
+            ".read": "auth != null",
+            ".write": "root.child('forum').child('staff').child(auth.uid).exists()",
+            ".validate": "!newData.exists() || newData.hasChildren(['t', 'ts'])",
+            "r": {
+              "$rid": {
+                ".write": "auth != null && (((!data.exists() || data.child('u').val() === auth.uid) && newData.child('u').val() === auth.uid) || root.child('forum').child('staff').child(auth.uid).exists())",
+                ".validate": "newData.hasChildren(['t', 'u', 'n', 'ts']) && newData.child('t').isString() && newData.child('t').val().length >= 2 && newData.child('t').val().length <= 1200 && newData.child('n').isString() && newData.child('n').val().length <= 24 && newData.child('ts').isNumber() && (!newData.child('u').isString() || newData.child('u').val().length <= 128)"
+              }
+            }
+          }
+        },
+
+        "ban": {
+          "$topicId": {
+            ".read": "auth != null",
+            ".write": "root.child('forum').child('staff').child(auth.uid).exists()",
+            ".validate": "!newData.exists() || newData.hasChildren(['t', 'ts'])",
+            "r": {
+              "$rid": {
+                ".write": "auth != null && (((!data.exists() || data.child('u').val() === auth.uid) && newData.child('u').val() === auth.uid) || root.child('forum').child('staff').child(auth.uid).exists())",
+                ".validate": "newData.hasChildren(['t', 'u', 'n', 'ts']) && newData.child('t').isString() && newData.child('t').val().length >= 2 && newData.child('t').val().length <= 1200 && newData.child('n').isString() && newData.child('n').val().length <= 24 && newData.child('ts').isNumber() && (!newData.child('u').isString() || newData.child('u').val().length <= 128)"
+              }
+            }
+          }
+        },
+
+        "ideas": {
+          "$topicId": {
+            ".read": "auth != null",
+            ".write": "root.child('forum').child('staff').child(auth.uid).exists()",
+            ".validate": "!newData.exists() || newData.hasChildren(['t', 'ts'])",
+            "r": {
+              "$rid": {
+                ".write": "auth != null && (((!data.exists() || data.child('u').val() === auth.uid) && newData.child('u').val() === auth.uid) || root.child('forum').child('staff').child(auth.uid).exists())",
+                ".validate": "newData.hasChildren(['t', 'u', 'n', 'ts']) && newData.child('t').isString() && newData.child('t').val().length >= 2 && newData.child('t').val().length <= 1200 && newData.child('n').isString() && newData.child('n').val().length <= 24 && newData.child('ts').isNumber() && (!newData.child('u').isString() || newData.child('u').val().length <= 128)"
+              }
+            }
+          }
+        },
+
+        "general": {
+          "$topicId": {
+            ".read": "auth != null",
+            ".write": "root.child('forum').child('staff').child(auth.uid).exists()",
+            ".validate": "!newData.exists() || newData.hasChildren(['t', 'ts'])",
+            "r": {
+              "$rid": {
+                ".write": "auth != null && (((!data.exists() || data.child('u').val() === auth.uid) && newData.child('u').val() === auth.uid) || root.child('forum').child('staff').child(auth.uid).exists())",
+                ".validate": "newData.hasChildren(['t', 'u', 'n', 'ts']) && newData.child('t').isString() && newData.child('t').val().length >= 2 && newData.child('t').val().length <= 1200 && newData.child('n').isString() && newData.child('n').val().length <= 24 && newData.child('ts').isNumber() && (!newData.child('u').isString() || newData.child('u').val().length <= 128)"
+              }
+            }
+          }
+        },
+
+        "votes": {
+          "$topicId": {
+            ".read": "auth != null",
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && newData.val() === true",
+              ".validate": "newData.val() === true"
+            }
+          }
+        },
+
+        "read": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && auth.uid === $uid",
+            "$topicId": { ".validate": "newData.isNumber()" }
+          }
+        },
+
+        "reports": {
+          ".read": "auth != null && root.child('forum').child('staff').child(auth.uid).exists()",
+          ".write": "auth != null && (!data.exists() || data.child('u').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['t', 'u', 'ts'])",
+          "$rid": { ".validate": "newData.child('ts').isNumber() && (!newData.child('why').isString() || newData.child('why').val().length <= 200)" }
+        },
+
+        "pending": {
+          ".read": "auth != null && root.child('forum').child('staff').child(auth.uid).exists()",
+          "$pid": {
+            ".write": "auth != null && ((!data.exists() && newData.child('state').val() === 'pending' && root.child('forum').child($site).child('rate').child(auth.uid).child(String(Math.floor(newData.child('ts').val() / 20000))).exists()) || (data.exists() && root.child('forum').child('staff').child(auth.uid).exists()))",
+            ".validate": "(newData.child('t').isString() && newData.child('t').val().length >= 8 && newData.child('t').val().length <= 140 && newData.child('cat').isString() && newData.child('ts').isNumber()) || root.child('forum').child('staff').child(auth.uid).exists()"
+          }
+        },
+
+        "rate": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isNumber()",
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          }
+        }
+      }
+    }
+  }
+}
