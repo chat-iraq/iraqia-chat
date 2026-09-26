@@ -75,9 +75,24 @@
   }
   function spendRate() {
     var b = rateBucket()
-    return db.ref(b.path).transaction(function (cur) {
-      return cur === null ? Date.now() : undefined /* abort if already used */
-    })
+    return db.ref(b.path)
+      .transaction(function (cur) {
+        return cur === null ? Date.now() : undefined /* abort if already used */
+      })
+      .then(function (res) { return { committed: res.committed, k: b.id } })
+  }
+
+  /* URL-safe topic id: ascii from the title when possible, always suffixed
+     with the tail of the push key so two identical titles never collide. */
+  function topicId(title, pushKey) {
+    var base = String(title || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 40)
+      .replace(/-+$/, '')
+    if (base.length < 3) base = 'q'
+    return base + '-' + String(pushKey).slice(-6)
   }
 
   function hint(node, msg, kind) {
@@ -238,6 +253,7 @@
             u: me.uid,
             n: nick || 'زائر',
             ts: Date.now(),
+            k: res.k,
             state: 'pending'
           })
         })
@@ -298,12 +314,22 @@
           wrap.appendChild(
             card(o, [
               {
-                label: 'نشر',
+                label: 'اعتماد ونشر',
                 run: function () {
-                  var slug = String(o.t || c.key).replace(/[^\u0600-\u06FF\w]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || c.key
-                  db.ref(NS + '/' + o.cat + '/' + c.key)
+                  /* the id must be identical in RTDB and in data/forum.json, so the
+                     static page, the reply list, the counters and the votes all
+                     agree. Derive it from the push key -> always unique. */
+                  var id = topicId(o.t, c.key)
+                  db.ref(NS + '/' + o.cat + '/' + id)
                     .set({ t: o.t, b: o.b, u: o.u, n: o.n, ts: o.ts, tags: o.tags || [], cat: o.cat, approved: true })
-                    .then(function () { db.ref(NS + '/pending/' + c.key).remove() })
+                    .then(function () { return db.ref(NS + '/counts/' + id).set(0) })
+                    .then(function () {
+                      return db.ref(NS + '/pending/' + c.key).update({ state: 'approved', pid: id })
+                    })
+                    .then(function () {
+                      window.alert('تم الاعتماد. العنوان النهائي:\n/Forum/t/' + id + '/\n\nالخطوة التالية: نزّل البيانات من هذه الصفحة ثم شغّل:\nnode scripts/promote-topic.mjs && npm run forum:build')
+                    })
+                    .catch(function (e) { window.alert('تعذّر الاعتماد: ' + e.message) })
                 }
               },
               { label: 'رفض', run: function () { db.ref(NS + '/pending/' + c.key + '/state').set('rejected') } }
@@ -312,6 +338,117 @@
         })
         if (!any) wrap.appendChild(el('p', 'fm-empty', 'لا توجد مواضيع بانتظار المراجعة.'))
         host.appendChild(wrap)
+      })
+
+      /* ---------------------------------------------------------------- *
+       * Awaiting publish. An approved thread is live in RTDB but has no
+       * HTML page yet: this is a static host with no server to render it.
+       * The operator exports the JSON here, runs promote-topic.mjs, then
+       * forum:build. That is what makes the topic indexable and shareable.
+       * ---------------------------------------------------------------- */
+      var publishBox = el('div')
+
+      function toData(o, pid) {
+        return {
+          id: pid,
+          slug: String(o.t || '').trim().replace(/\s+/g, '-').slice(0, 70),
+          cat: o.cat,
+          tags: Array.isArray(o.tags) ? o.tags : [],
+          pinned: false,
+          title: String(o.t || '').slice(0, 140),
+          author: { name: String(o.n || 'عضو').slice(0, 24) },
+          datePublished: new Date(o.ts || Date.now()).toISOString(),
+          body: String(o.b || '').slice(0, 2000)
+        }
+      }
+
+      function renderPublish(list) {
+        publishBox.textContent = ''
+        var h = el('h2', 'fm-h2', 'معتمدة — بانتظار إنشاء الصفحة')
+        publishBox.appendChild(h)
+
+        if (!list.length) {
+          publishBox.appendChild(el('p', 'fm-empty', 'لا توجد مواضيع معتمدة تنتظر النشر.'))
+          host.appendChild(publishBox)
+          return
+        }
+
+        var dl = el('p', 'fm-hint',
+          'المواضيع أدناه معتمدة ومكتوبة في قاعدة البيانات، لكنها بلا صفحة HTML بعد. ' +
+          'نزّل الملف ثم نفّذ الأمرين في مجلد المشروع: ' +
+          'node scripts/promote-topic.mjs ثم npm run forum:build — لتصبح قابلة للفهرسة والمشاركة.')
+        publishBox.appendChild(dl)
+
+        var payload = []
+        list.forEach(function (row) {
+          payload.push(toData(row.o, row.pid))
+          var url = location.origin + '/Forum/t/' + row.pid + '/'
+
+          var d = el('div', 'fm-staff-item')
+          d.appendChild(el('h3', '', row.o.t || '(بلا عنوان)'))
+          var meta = el('p', 'fm-state', (row.o.n || 'زائر') + ' — ' + new Date(row.o.ts || Date.now()).toLocaleString('ar'))
+          d.appendChild(meta)
+          d.appendChild(el('p', 'fm-reply-body', row.o.b || ''))
+          d.appendChild(el('code', 'fm-code', url))
+          var acts = el('div', 'fm-staff-acts')
+          var copy = el('button', 'fm-btn fm-btn--ghost', 'نسخ رابط الموضوع')
+          copy.type = 'button'
+          copy.addEventListener('click', function () {
+            var done = function () { hint(meta, 'نُسخ الرابط ✔', 'ok') }
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () {})
+            else hint(meta, 'انسخه يدويًا: ' + url, 'ok')
+          })
+          acts.appendChild(copy)
+
+          var open = el('a', 'fm-btn fm-btn--ghost', 'فتح')
+          open.href = '/Forum/t/' + row.pid + '/'
+          open.target = '_blank'
+          open.rel = 'noopener'
+          acts.appendChild(open)
+
+          var undo = el('button', 'fm-btn fm-btn--ghost', 'إلغاء الاعتماد')
+          undo.type = 'button'
+          undo.addEventListener('click', function () {
+            db.ref(NS + '/' + row.o.cat + '/' + row.pid).remove()
+              .then(function () { return db.ref(NS + '/counts/' + row.pid).remove() })
+              .then(function () { return db.ref(NS + '/pending/' + row.key).update({ state: 'pending', pid: null }) })
+              .catch(function (e) { window.alert('تعذّر الإلغاء: ' + e.message) })
+          })
+          acts.appendChild(undo)
+
+          d.appendChild(acts)
+          publishBox.appendChild(d)
+        })
+
+        var dl2 = el('div', 'fm-staff-acts')
+        var save = el('button', 'fm-btn', 'تنزيل المواضيع المعتمدة (data/pending-topics.json)')
+        save.type = 'button'
+        save.addEventListener('click', function () {
+          var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+          var a = document.createElement('a')
+          a.href = URL.createObjectURL(blob)
+          a.download = 'pending-topics.json'
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          setTimeout(function () { URL.revokeObjectURL(a.href) }, 1000)
+          hint(dl, 'نزّل الملف — ضعه في data/ ثم شغّل promote-topic.mjs', 'ok')
+        })
+        dl2.appendChild(save)
+        publishBox.appendChild(dl2)
+
+        host.appendChild(publishBox)
+      }
+
+      var publishRows = []
+      db.ref(NS + '/pending').orderByChild('ts').on('value', function (s) {
+        publishRows = []
+        s.forEach(function (c) {
+          var o = c.val()
+          if (!o || o.state !== 'approved' || !o.pid) return
+          publishRows.push({ o: o, pid: o.pid, key: c.key })
+        })
+        renderPublish(publishRows)
       })
 
       db.ref(NS + '/reports').orderByChild('ts').limitToLast(25).on('value', function (s) {

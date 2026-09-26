@@ -13,6 +13,7 @@ const ok = (c, m) => {
 
 /* ---- 1. sitemap.xml well-formed + balanced ---- */
 const xml = readFileSync(ROOT + '/sitemap.xml', 'utf8')
+const txtRaw = readFileSync(ROOT + '/sitemap.txt', 'utf8')
 ok((xml.match(/<urlset/g) || []).length === 1, 'sitemap has exactly 1 <urlset>')
 ok((xml.match(/<\/urlset>/g) || []).length === 1, 'sitemap has exactly 1 </urlset>')
 ok((xml.match(/<url>/g) || []).length === (xml.match(/<\/url>/g) || []).length, '<url> balanced')
@@ -97,7 +98,19 @@ for (const f of ['headline', 'text', 'url', 'datePublished', 'author']) {
   ok(!!post?.[f], 'DiscussionForumPosting.' + f)
 }
 ok(!!post?.author?.name, 'author.name present (Google requires it)')
-ok(!!post?.suggestedAnswer?.text, 'suggestedAnswer.text present')
+const hasAnswer = !!D.topics.find((t) => t.id === 'visitors')?.answer
+ok(!hasAnswer || !!post?.suggestedAnswer?.text, 'suggestedAnswer.text present when an official answer exists')
+
+/* a member question with no official answer must not claim one */
+const bare = D.topics.filter((t) => !t.answer)
+for (const t of bare) {
+  const h = readFileSync(ROOT + '/' + t.id.replace(/^/, 'Forum/t/') + '/index.html', 'utf8')
+  const g2 = JSON.parse(/"@graph":(\[.*?\])\s*<\/script>/.exec(h)[1].replace(/\\u003c/g, '<'))
+  const p2 = g2.find((n) => n['@type'] === 'DiscussionForumPosting')
+  ok(!p2?.suggestedAnswer, t.id + ': no suggestedAnswer emitted (no official answer exists)')
+  ok(!h.includes('الجواب الرسمي'), t.id + ': no official-answer block rendered')
+  ok(!h.includes('جواب رسمي'), t.id + ': no official-answer badge in listings')
+}
 const bc = g['@graph'].find((n) => n['@type'] === 'BreadcrumbList')
 ok(!!bc, 'topic page has BreadcrumbList')
 
@@ -105,8 +118,7 @@ ok(!!bc, 'topic page has BreadcrumbList')
 ok(t1.includes('>المنتدى</a>'), 'nav contains the forum link')
 ok(t1.includes(ORIGIN + '/Forum/'), 'nav points at the forum home')
 
-/* ---- 7b. the live layer needs its Firebase config, and the right namespace ---- */
-const tHome = readFileSync(ROOT + '/Forum/index.html', 'utf8')
+/* ---- 7b. the live layer needs its Firebase config, and the right namespace ---- */const tHome = readFileSync(ROOT + '/Forum/index.html', 'utf8')
 for (const s of ['/assets/chat-config.js', '/assets/forum-data.js', '/Forum/assets/forum.js', '/Forum/assets/forum-live.js']) {
   ok(tHome.includes('src="' + s + '"'), 'home page loads ' + s)
 }
@@ -127,6 +139,21 @@ if (prefix) {
 /* ---- 8. staff page must not be indexable ---- */
 const st = readFileSync(ROOT + '/Forum/staff/index.html', 'utf8')
 ok(/name="robots" content="noindex, follow"/.test(st), 'staff page is noindex')
+ok(!xml.includes(ORIGIN + '/Forum/staff/'), 'noindex staff page is absent from sitemap.xml')
+ok(!txtRaw.includes(ORIGIN + '/Forum/staff/'), 'noindex staff page is absent from sitemap.txt')
+
+/* ---- 9. the publish loop must be complete and wired end to end ---- */
+ok(existsSync(ROOT + '/scripts/promote-topic.mjs'), 'scripts/promote-topic.mjs exists')
+const pro = readFileSync(ROOT + '/scripts/promote-topic.mjs', 'utf8')
+ok(pro.includes('pending-topics.json'), 'promote script reads data/pending-topics.json')
+ok(/byId\.has\(it\.id\)/.test(pro), 'promote script is idempotent (replaces an existing id)')
+ok(/catKeys\.has\(it\.cat\)/.test(pro), 'promote script rejects an unknown category')
+const live2 = readFileSync(ROOT + '/Forum/assets/forum-live.js', 'utf8')
+ok(/function topicId\(/.test(live2), 'forum-live.js derives a URL-safe topic id at approve time')
+ok(/state: 'approved', pid: id/.test(live2), 'approval stores the id for the static build')
+ok(/pending-topics\.json/.test(live2), 'staff page can export data/pending-topics.json')
+ok(/k: res\.k/.test(live2), 'ask form sends the rate window key the rules require')
+ok(/location\.origin \+ '\/Forum\/t\/'/.test(live2), 'staff page shows the final absolute URL')
 
 console.log('\n' + (fail ? 'FAILURES: ' + fail : 'ALL CHECKS PASSED'))
 process.exit(fail ? 1 : 0)

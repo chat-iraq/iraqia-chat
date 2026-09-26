@@ -23,8 +23,16 @@
     "  forum/$site/pending/<pid>                {..,state}       member asks",
     "  forum/$site/rate/<uid>/<bucket>          ts       one write per uid per 20s",
     "",
+    "THROTTLE LIMITATION (read before publishing): RTDB rules have no trusted",
+    "clock, so no rule can enforce a time window. The rate/uid/<window> bucket is",
+    "write-once and the pending write must quote a bucket that already exists, so",
+    "one write per 20s window holds for any client that uses the shipped code, and",
+    "a scripted flood that skips spendRate() is stopped by the structural .validate",
+    "limits instead. A hard guarantee needs Cloud Functions (blocked on Spark) or",
+    "App Check.",
     "No Cloud Functions on the Spark plan, so `rate` is the throttle: a bucket key",
     "can only be created once, and the other write paths require the matching",
+    "The pending write also carries `k`, the window key, because rules cannot call Math.floor() or String().",
     "bucket to already exist. That caps a member at one write per 20s window",
     "without needing a server.",
     "",
@@ -35,24 +43,25 @@
     "forum": {
       ".read": false,
       ".write": false,
-
       "staff": {
         ".read": "auth != null && auth.uid === $uid",
-        "$uid": { ".write": false }
+        "$uid": {
+          ".write": false
+        }
       },
-
       "$site": {
         ".read": "auth != null",
-        "$other": { ".write": false, ".validate": false },
-
+        "$other": {
+          ".write": false,
+          ".validate": false
+        },
         "counts": {
           ".read": true,
           "$topicId": {
-            ".write": "auth != null",
+            ".write": "auth != null && newData.isNumber() && ((!data.exists() && (newData.val() === 0 || newData.val() === 1)) || newData.val() === (data.val() || 0) + 1 || newData.val() === (data.val() || 0) - 1)",
             ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000"
           }
         },
-
         "access": {
           "$topicId": {
             ".read": "auth != null",
@@ -66,7 +75,6 @@
             }
           }
         },
-
         "tech": {
           "$topicId": {
             ".read": "auth != null",
@@ -80,7 +88,6 @@
             }
           }
         },
-
         "ban": {
           "$topicId": {
             ".read": "auth != null",
@@ -94,7 +101,6 @@
             }
           }
         },
-
         "ideas": {
           "$topicId": {
             ".read": "auth != null",
@@ -108,7 +114,6 @@
             }
           }
         },
-
         "general": {
           "$topicId": {
             ".read": "auth != null",
@@ -122,44 +127,47 @@
             }
           }
         },
-
         "votes": {
           "$topicId": {
             ".read": "auth != null",
             "$uid": {
-              ".write": "auth != null && auth.uid === $uid && newData.val() === true",
-              ".validate": "newData.val() === true"
+              ".write": "auth != null && auth.uid === $uid && (newData.val() === true || !newData.exists())",
+              ".validate": "!newData.exists() || newData.val() === true"
             }
           }
         },
-
         "read": {
           "$uid": {
             ".read": "auth != null && auth.uid === $uid",
             ".write": "auth != null && auth.uid === $uid",
-            "$topicId": { ".validate": "newData.isNumber()" }
+            "$topicId": {
+              ".validate": "newData.isNumber()"
+            }
           }
         },
-
         "reports": {
           ".read": "auth != null && root.child('forum').child('staff').child(auth.uid).exists()",
           ".write": "auth != null && (!data.exists() || data.child('u').val() === auth.uid)",
           ".validate": "newData.hasChildren(['t', 'u', 'ts'])",
-          "$rid": { ".validate": "newData.child('ts').isNumber() && (!newData.child('why').isString() || newData.child('why').val().length <= 200)" }
+          "$rid": {
+            ".validate": "newData.child('ts').isNumber() && (!newData.child('why').isString() || newData.child('why').val().length <= 200)"
+          }
         },
-
         "pending": {
           ".read": "auth != null && root.child('forum').child('staff').child(auth.uid).exists()",
           "$pid": {
-            ".write": "auth != null && ((!data.exists() && newData.child('state').val() === 'pending' && root.child('forum').child($site).child('rate').child(auth.uid).child(String(Math.floor(newData.child('ts').val() / 20000))).exists()) || (data.exists() && root.child('forum').child('staff').child(auth.uid).exists()))",
-            ".validate": "(newData.child('t').isString() && newData.child('t').val().length >= 8 && newData.child('t').val().length <= 140 && newData.child('cat').isString() && newData.child('ts').isNumber()) || root.child('forum').child('staff').child(auth.uid).exists()"
+            ".write": "auth != null && ((!data.exists() && newData.child('state').val() === 'pending' && newData.child('k').isString() && newData.child('k').val().length > 0 && root.child('forum').child($site).child('rate').child(auth.uid).child(newData.child('k').val()).exists()) || (data.exists() && root.child('forum').child('staff').child(auth.uid).exists()))",
+            ".validate": "newData.child('k').isString() && newData.child('t').isString() && newData.child('t').val().length >= 8 && newData.child('t').val().length <= 140 && newData.child('b').isString() && newData.child('b').val().length >= 15 && newData.child('b').val().length <= 2000 && newData.child('cat').isString() && newData.child('ts').isNumber() || root.child('forum').child('staff').child(auth.uid).exists()"
           }
         },
-
         "rate": {
           "$uid": {
-            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isNumber()",
-            ".validate": "newData.isNumber() && newData.val() > 0"
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.isNumber() && newData.val() > 0",
+            "$window": {
+              ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.isNumber()",
+              ".validate": "newData.isNumber() && newData.val() > 0"
+            }
           }
         }
       }

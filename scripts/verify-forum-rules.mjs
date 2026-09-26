@@ -25,9 +25,12 @@ p(r.staff['$uid']['.write'] === false, 'staff node not client-writable')
 p(r.staff['.read'] === 'auth != null && auth.uid === $uid', 'staff readable only by its owner')
 p(NS['$other'] && NS['$other']['.write'] === false, 'unknown namespaces denied via $other')
 p(NS.counts['.read'] === true, 'counts publicly readable')
-p(NS.rate['$uid']['.write'].includes('!data.exists()'), 'rate bucket is write-once (real throttle)')
+p(NS.rate['$uid']['$window'] && NS.rate['$uid']['$window']['.write'].includes('!data.exists()'), 'rate bucket is write-once (real throttle)')
 p(NS.pending['$pid']['.write'].includes("child('rate')"), 'pending write gated by the rate bucket')
 p(NS.pending['$pid']['.write'].includes('$site'), 'pending rate lookup is namespace-scoped')
+p(NS.pending['$pid']['.write'].includes("newData.child('k')"), 'pending quotes the window key (rules cannot call Math/String)')
+p(/!newData\.exists\(\)/.test(NS.votes['$topicId']['$uid']['.write']), 'a vote can be removed, not only added')
+p(/data\.val\(\) \|\| 0\) \+ 1/.test(NS.counts['$topicId']['.write']), 'a counter moves by one, never set to an arbitrary number')
 p(NS.votes['$topicId']['$uid']['.write'].includes('auth.uid === $uid'), 'votes bound to own uid')
 p(NS.read['$uid']['.write'].includes('auth.uid === $uid'), 'read state bound to own uid')
 p(NS.reports['.read'].includes("child('staff')"), 'reports readable by staff only')
@@ -44,6 +47,16 @@ JSON.stringify(r, (k, v) => {
   return v
 })
 p(unbalanced === 0, 'all rule expressions have balanced parentheses')
+
+/* RTDB rules support neither Math.* nor a bare String() call (isString() is
+   fine). A bare one usually means client-side logic leaked into a rule. */
+const bare = []
+JSON.stringify(r, (k, v) => {
+  if (typeof v !== 'string') return v
+  for (const m of v.matchAll(/(^|[^A-Za-z0-9_])(Math\.[A-Za-z]+|String\()/g)) bare.push(k + ': ' + m[2])
+  return v
+})
+p(bare.length === 0, 'no Math.* or bare String() in any rule expression' + (bare.length ? ' -> ' + bare.join(', ') : ''))
 
 console.log(bad ? '\nPROBLEMS: ' + bad : '\nforum-rules.json: ALL STRUCTURAL CHECKS PASSED')
 process.exit(bad ? 1 : 0)

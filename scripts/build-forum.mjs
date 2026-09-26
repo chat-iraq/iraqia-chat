@@ -170,12 +170,17 @@ function tagChips(keys) {
     .join('')
 }
 
+/* member-submitted topics have no avatar file; fall back instead of emitting src="" */
+const DEFAULT_AV = { img: '/assets/brand-logo.webp', w: 34, h: 34 }
+const av = (a) => a || DEFAULT_AV
+
 function topicRow(t, { showCat = true } = {}) {
   const c = catOf(t.cat)
+  const a = av(t.author)
   return `        <article class="fm-row" data-topic="${t.id}" data-cat="${t.cat}" data-tags="${t.tags.join(' ')}" data-search="${esc((t.title + ' ' + t.body + ' ' + t.tags.map((g) => tagOf(g)?.title || '').join(' ')).toLowerCase())}">
-          <a class="fm-row-av" href="${abs(topicUrl(t))}" tabindex="-1" aria-hidden="true"><img src="${t.author.img}" alt="" width="${t.author.w}" height="${t.author.h}" loading="lazy"></a>
+          <a class="fm-row-av" href="${abs(topicUrl(t))}" tabindex="-1" aria-hidden="true"><img src="${a.img}" alt="" width="${a.w}" height="${a.h}" loading="lazy"></a>
           <div class="fm-row-main">
-            <h3 class="fm-row-title"><a href="${abs(topicUrl(t))}">${esc(t.title)}</a>${t.pinned ? '<span class="fm-badge fm-badge--pin" title="مثبّت">مثبّت</span>' : ''}<span class="fm-badge fm-badge--ok" title="له جواب رسمي">جواب رسمي</span></h3>
+            <h3 class="fm-row-title"><a href="${abs(topicUrl(t))}">${esc(t.title)}</a>${t.pinned ? '<span class="fm-badge fm-badge--pin" title="مثبّت">مثبّت</span>' : ''}${t.answer ? '<span class="fm-badge fm-badge--ok" title="له جواب رسمي">جواب رسمي</span>' : ''}</h3>
             <p class="fm-row-excerpt">${esc(t.body)}</p>
             <p class="fm-row-meta"><span class="fm-who">${esc(t.author.name)}</span>${showCat && c ? `<a class="fm-cat-link" href="${abs(catUrl(c.key))}">${esc(c.title)}</a>` : ''}${timeTag(t.datePublished)}${tagChips(t.tags)}</p>
           </div>
@@ -380,9 +385,10 @@ ${topicList(list)}
 function topicPage(t) {
   const c = catOf(t.cat)
   const canonical = topicUrl(t)
-  const a = t.answer
-  const mod = D.moderators.find((m) => m.handle === a.by)
+  const a = t.answer || null
+  const mod = a ? D.moderators.find((m) => m.handle === a.by) : null
   const related = D.topics.filter((x) => x.cat === t.cat && x.id !== t.id)
+  const au = av(t.author)
 
   const body = `  <article class="fm-topic">
     <header class="fm-topic-head">
@@ -399,19 +405,21 @@ function topicPage(t) {
       <p class="fm-block-lbl">سؤال ${esc(t.author.name)}</p>
       <div class="fm-block-body"><p>${esc(t.body)}</p></div>
     </section>
-
+${a
+      ? `
     <section class="fm-block fm-block--a">
       <p class="fm-block-lbl">الجواب الرسمي${mod ? ' — ' + esc(mod.name) : ''}</p>
       <div class="fm-block-body">
         <p>${esc(a.lead)}</p>
-        <ol>${a.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
-        <p class="fm-post-tip">${esc(a.tip)}</p>
+        <ol>${(a.steps || []).map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
+        ${a.tip ? `<p class="fm-post-tip">${esc(a.tip)}</p>` : ''}
         <p class="fm-block-time">${timeTag(a.datePublished)}</p>
       </div>
     </section>
-
+`
+      : ''}
     <section class="fm-block fm-block--live" id="fmLive" data-topic="${t.id}" data-cat="${t.cat}">
-      <h2 class="fm-h2">ردود الأعضاء <span class="fm-count" data-count-for="${t.id}">٠</span></h2>
+      <h2 class="fm-h2">${a ? 'ردود الأعضاء' : 'الردود'} <span class="fm-count" data-count-for="${t.id}">٠</span></h2>
       <div class="fm-replies" id="fmReplies" aria-live="polite">
         <p class="fm-empty">لم تُكتب ردود بعد — كن أول من يشارك.</p>
       </div>
@@ -461,13 +469,18 @@ ${topicList(topicsIn(related), { showCat: false })}
         author: { '@type': 'Person', name: t.author.name },
         isPartOf: { '@id': abs(BASE) + '#webpage' },
         keywords: t.tags.map((k) => tagOf(k)?.title).filter(Boolean).join(', '),
-        suggestedAnswer: {
-          '@type': 'Answer',
-          text: a.lead + ' ' + a.steps.join(' ') + ' ' + a.tip,
-          url: abs(canonical),
-          datePublished: a.datePublished,
-          author: { '@type': mod ? 'Organization' : 'Person', ...(mod ? { name: mod.name, url: ORIGIN + '/' } : { name: a.by }) }
-        }
+        /* only claim an official answer when one actually exists */
+        ...(a
+          ? {
+              suggestedAnswer: {
+                '@type': 'Answer',
+                text: [a.lead, ...(a.steps || []), a.tip].filter(Boolean).join(' '),
+                url: abs(canonical),
+                datePublished: a.datePublished,
+                author: { '@type': mod ? 'Organization' : 'Person', ...(mod ? { name: mod.name, url: ORIGIN + '/' } : { name: a.by }) }
+              }
+            }
+          : {})
       },
       breadcrumbLd([['/', 'الرئيسية'], [BASE, 'منتدى'], [catUrl(c.key), c.title], [canonical, t.title]])
     ],
